@@ -198,7 +198,7 @@ function viewConfianza(){
 function viewEntrega(){
   var n = S.frases.filter(function(r){ return r.correccion.trim(); }).length;
   return '<div class="card"><h2>¡Has terminado! Descarga y entrega tus respuestas</h2><p class="ok">Frases: '+n+' de 6 · Párrafo de transferencia: '+(S.parrafo.trim()?'respondido':'sin respuesta')+'</p>' +
-    '<ol><li>Pulsa <b>Descargar mis respuestas</b>: se guardará un archivo con tus tres dígitos como nombre (por ejemplo, <b>T'+esc(S.id||'274')+'_diferido.json</b>).</li>' +
+    '<ol><li>Pulsa <b>Descargar mis respuestas</b>: se guardará un archivo con tus tres dígitos como nombre (por ejemplo, <b>T'+esc(S.id||'274')+'-2.json</b>).</li>' +
     '<li>Entrega este archivo .json que has descargado en la tarea «Descarga cognitiva - segunda parte» del aula de Moodlerooms (apartado «Descarga cognitiva»).</li></ol>' +
     '<div class="btnrow"><button class="btn amar" id="dl">⬇ Descargar mis respuestas</button></div></div>';
 }
@@ -239,9 +239,9 @@ function download(){
     eventos: S.ev
   };
   var blob = new Blob([JSON.stringify(out, null, 2)], { type: "application/json" });
-  var a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = "T" + S.id + "_diferido.json";
+  var a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = "T" + S.id + "-2.json";
   document.body.appendChild(a); a.click(); setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); }, 500);
-  toast("Archivo T" + S.id + "_diferido.json descargado. Revisa tu carpeta de descargas.");
+  toast("Archivo T" + S.id + "-2.json descargado. Revisa tu carpeta de descargas.");
 }
 function wire(){
   var st = document.getElementById("stage");

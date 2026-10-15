@@ -9,7 +9,7 @@ La contraseña de profesora (`TEACHER_PASSWORD`) muestra todas las asignaturas.
 - `tee/config.json` controla qué opciones de TEE ve el alumnado (`principal`, `retro`, `posterior`); se cambia desde el
   menú de TEE con la contraseña de profesora + token de GitHub (Modo profesora).
 - Las respuestas del alumnado no se envían a ningún servidor: se guardan en la pestaña (sessionStorage) y el alumnado
-  descarga un archivo `NNN.json` (o `NNN_diferido.json`) que entrega por Moodle.
+  descarga un archivo `NNN-1.json` (principal) o `NNN-2.json` (diferido; con letra de asignatura, p. ej. `J789-2.json`) que entrega por Moodle.
 
 ## Asignaturas TJ, TM, PLN y DM
 Se generan con `node gen-asignaturas.js` (datos en `gen/subjects.js` y `gen/tasks.js`, motor en `gen/engine.js`); copian el patrón de TEE
@@ -21,7 +21,7 @@ completa: tarea A, tarea B, recuerdo inmediato y hoja diferida) y `posterior`, m
 
 ### Diseño de datos (TJ, TM, PLN, DM)
 - **Identificador con letra**: el alumnado escribe 3 dígitos; la web antepone la letra de la asignatura (T, J, P, D, M) en `codigo_alumno` y en el nombre del
-  fichero (`J274.json`, `J274_diferido.json`). TEE: el diferido ya usa `T`; los ficheros de la parte principal de TEE (sin letra) se renombran a mano.
+  fichero (`J274-1.json` parte principal, `J274-2.json` hoja diferida). TEE: el diferido ya usa `T274-2.json`; los ficheros de la parte principal de TEE (`274.json`, sin letra) se renombran a mano a `T274-1.json`.
 - **Contrabalanceo** (solo TJ, TM, PLN, DM; TEE no lo tiene porque su parte principal ya se hizo): la versión se deduce del último dígito del identificador
   (par = N: Tarea A manual con el contenido 1 y Tarea B con IA con el contenido 2; impar = S: al revés). El JSON guarda `version_diseno`, el contenido de cada
   tarea y la condición (`manual` / `con_IA`) de cada bloque de recuerdo.

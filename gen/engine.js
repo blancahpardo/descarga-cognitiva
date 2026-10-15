@@ -280,7 +280,7 @@ function viewEntrega(){
   var mainB = ISCODE ? (S.b.codigo.trim()?'código entregado':'sin código') : (S.b.trad.trim()?'traducción entregada':'sin traducción');
   return '<div class="card"><h2>¡Has terminado! Descarga y entrega tus respuestas</h2>' +
     '<p class="ok">Tarea A: '+main+' · Tarea B: '+mainB+' · Recuerdo inmediato: '+nRec()+' de '+totRec()+' preguntas</p>' +
-    '<ol><li>Pulsa <b>Descargar mis respuestas</b>: se guardará un archivo con tu código como nombre (por ejemplo, <b>'+esc(CFG.prefix+(S.id||'274'))+'.json</b>).</li>' +
+    '<ol><li>Pulsa <b>Descargar mis respuestas</b>: se guardará un archivo con tu código como nombre (por ejemplo, <b>'+esc(CFG.prefix+(S.id||'274'))+'-1.json</b>).</li>' +
     '<li>Entrega este archivo .json que has descargado en el aula de Moodlerooms de la asignatura: sección «Descarga cognitiva» → tarea «Descarga cognitiva».</li></ol>' +
     '<div class="btnrow"><button class="btn amar" id="dl">⬇ Descargar mis respuestas</button></div></div>';
 }
@@ -336,7 +336,7 @@ function download(){
     },
     autoevaluacion_1_a_5: CFG.likert.map(function(q,i){ return { afirmacion: q, valor: S.auto[i] }; })
   };
-  dlJson(out, CFG.prefix + S.id + ".json");
+  dlJson(out, CFG.prefix + S.id + "-1.json");
 }
 
 function wire(){
@@ -412,7 +412,7 @@ function viewQ3(){
 function viewEntrega(){
   var n = S.q1.concat([S.q2,S.q3,S.q4]).filter(function(x){ return String(x).trim(); }).length;
   return '<div class="card"><h2>¡Has terminado! Descarga y entrega tus respuestas</h2><p class="ok">Respondidas: '+n+' de '+(S.q1.length+3)+' preguntas abiertas</p>' +
-    '<ol><li>Pulsa <b>Descargar mis respuestas</b>: se guardará un archivo con tu código como nombre (por ejemplo, <b>'+esc(CFG.prefix+(S.id||'274'))+'_diferido.json</b>).</li>' +
+    '<ol><li>Pulsa <b>Descargar mis respuestas</b>: se guardará un archivo con tu código como nombre (por ejemplo, <b>'+esc(CFG.prefix+(S.id||'274'))+'-2.json</b>).</li>' +
     '<li>Entrega este archivo .json que has descargado en la tarea «Descarga cognitiva - segunda parte» del aula de Moodlerooms (sección «Descarga cognitiva»).</li></ol>' +
     '<div class="btnrow"><button class="btn amar" id="dl">⬇ Descargar mis respuestas</button></div></div>';
 }
@@ -452,7 +452,7 @@ function download(){
     },
     eventos: S.ev
   };
-  dlJson(out, CFG.prefix + S.id + "_diferido.json");
+  dlJson(out, CFG.prefix + S.id + "-2.json");
 }
 function wire(){
   var st = document.getElementById("stage");
