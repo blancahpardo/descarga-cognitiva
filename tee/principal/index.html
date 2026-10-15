@@ -93,6 +93,7 @@ footer.copy{ text-align:center; padding:18px 4vw 34px; font-size:11px; color:var
   table.resp td.n{ width:auto; text-align:left; background:none; }
   .recans{ grid-template-columns:1fr; }
 }
+.idrow .pref{ font-size:22px; font-weight:bold; color:var(--azul); }
 </style>
 </head>
 <body>
@@ -200,7 +201,7 @@ function viewInicio(){
   '<label class="chk"><input type="checkbox" data-consent="2"'+(S.consent[2]?' checked':'')+'><span>Autorizo el uso de mis respuestas (identificadas únicamente por los tres últimos dígitos de mi clave académica) con fines de investigación docente, en los términos descritos.</span></label>' +
   '<p style="font-size:13px;color:#5a6b72">No es necesaria firma manuscrita: marcar las casillas y entregar tu archivo al final equivale a la aceptación. Si no autorizas el uso de tus datos, haces la actividad igualmente y tus respuestas no entran en el estudio.</p>' +
   '<h3>Tu identificador</h3><p>Los tres últimos dígitos de tu clave académica. No escribas tu nombre en ningún sitio.</p>' +
-  '<div class="idrow"><input type="text" inputmode="numeric" maxlength="3" pattern="[0-9]{3}" autocomplete="off" spellcheck="false" placeholder="000" id="idfield" value="'+esc(S.id)+'"></div>' +
+  '<div class="idrow"><span class="pref">T</span><input type="text" inputmode="numeric" maxlength="3" pattern="[0-9]{3}" autocomplete="off" spellcheck="false" placeholder="000" id="idfield" value="'+esc(S.id)+'"></div>' +
   '</div>' +
   '<div class="card"><h2>Objetivo y cómo funciona</h2>' +
   '<p>Vas a corregir un texto-caso que contiene errores de distintos planos (ortográfico, ortotipográfico, morfosintáctico, léxico, discursivo y de puntuación), aplicando los criterios del Tema 3. Lo harás una vez sin ayuda de IA y otra vez con apoyo de un asistente de IA. El objetivo no es qué corrección «gana», sino comparar qué se te queda en cada condición.</p>' +
@@ -287,7 +288,7 @@ function viewEntrega(){
   var nR = S.r.rows.filter(function(r){ return r.correccion.trim(); }).length;
   return '<div class="card"><h2>¡Has terminado! Descarga y entrega tus respuestas</h2>' +
     '<p class="ok">Tarea A: '+nA+' correcciones · Tarea B: '+nB+' propuestas revisadas · Recuerdo inmediato: '+nR+' de 6 frases</p>' +
-    '<ol><li>Pulsa <b>Descargar mis respuestas</b>: se guardará un archivo con tus tres dígitos como nombre (por ejemplo, <b>'+esc(S.id||'274')+'.json</b>).</li>' +
+    '<ol><li>Pulsa <b>Descargar mis respuestas</b>: se guardará un archivo con tus tres dígitos como nombre (por ejemplo, <b>T'+esc(S.id||'274')+'-1.json</b>).</li>' +
     '<li>Entrega este archivo .json que has descargado en el aula de Moodlerooms de la asignatura: sección «Descarga cognitiva» → tarea «Descarga cognitiva».</li></ol>' +
     '<div class="btnrow"><button class="btn amar" id="dl">⬇ Descargar mis respuestas</button></div></div>';
 }
@@ -328,7 +329,7 @@ function download(){
   function dur(k){ var t = S.tiempos[k]; return t && t.start && t.end ? Math.round((t.end - t.start)/1000) : null; }
   var out = {
     actividad: "Descarga cognitiva e IA — TEE, Tema 3, Práctica 1 (Con copiloto o sin él)",
-    version_web: 2, codigo_alumno: S.id, inicio: S.inicio, fin: S.fin,
+    version_web: 3, codigo_alumno: "T" + S.id, inicio: S.inicio, fin: S.fin,
     inicio_legible: S.inicio ? new Date(S.inicio).toISOString() : null, fin_legible: S.fin ? new Date(S.fin).toISOString() : null,
     duracion_segundos: { tarea_a: dur("a"), tarea_b: dur("b"), recuerdo_inmediato: dur("r") },
     consentimiento: { leido_entendido: S.consent[0], voluntario: S.consent[1], autoriza_uso_investigacion: S.consent[2] },
@@ -340,9 +341,9 @@ function download(){
     autoevaluacion: { frases_corregidas_correctamente_0_a_6: S.auto.n, condicion_mejor_retencion: S.auto.cond, por_que: S.auto.porque }
   };
   var blob = new Blob([JSON.stringify(out, null, 2)], { type: "application/json" });
-  var a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = S.id + ".json";
+  var a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = "T" + S.id + "-1.json";
   document.body.appendChild(a); a.click(); setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); }, 500);
-  toast("Archivo " + S.id + ".json descargado. Revisa tu carpeta de descargas.");
+  toast("Archivo T" + S.id + "-1.json descargado. Revisa tu carpeta de descargas.");
 }
 
 function copyText(txt, okMsg){

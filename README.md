@@ -21,7 +21,7 @@ completa: tarea A, tarea B, recuerdo inmediato y hoja diferida) y `posterior`, m
 
 ### Diseño de datos (TJ, TM, PLN, DM)
 - **Identificador con letra**: el alumnado escribe 3 dígitos; la web antepone la letra de la asignatura (T, J, P, D, M) en `codigo_alumno` y en el nombre del
-  fichero (`J274-1.json` parte principal, `J274-2.json` hoja diferida). TEE: el diferido ya usa `T274-2.json`; los ficheros de la parte principal de TEE (`274.json`, sin letra) se renombran a mano a `T274-1.json`.
+  fichero (`J274-1.json` parte principal, `J274-2.json` hoja diferida). TEE: el diferido ya usa `T274-2.json`; la parte principal de TEE ya genera `T274-1.json` (`version_web: 3`); los ficheros del curso 2026-27, hechos antes del cambio (`274.json`, sin letra), se renombraron a mano.
 - **Contrabalanceo** (solo TJ, TM, PLN, DM; TEE no lo tiene porque su parte principal ya se hizo): la versión se deduce del último dígito del identificador
   (par = N: Tarea A manual con el contenido 1 y Tarea B con IA con el contenido 2; impar = S: al revés). El JSON guarda `version_diseno`, el contenido de cada
   tarea y la condición (`manual` / `con_IA`) de cada bloque de recuerdo.
