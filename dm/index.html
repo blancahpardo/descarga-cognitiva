@@ -6,7 +6,4 @@
 <body><div id="b" style="visibility:hidden"><div class="k">Descarga cognitiva e IA</div><h1>Datos Masivos</h1>
 <p>Esta actividad todavía no está disponible.</p><p><a href="../index.html">← Volver</a></p></div>
 <script>(function(){var s="";try{s=sessionStorage.getItem("dc_unlocked")||"";}catch(e){}
-if(!s){location.replace("../index.html");return;}
-function show(){document.getElementById("b").style.visibility="visible";}
-if(s==="teacher"){show();return;}
-fetch("../config.json?t="+Date.now()).then(function(r){return r.json();}).then(function(c){if(c["dm"]===true)show();else location.replace("../index.html");}).catch(function(){});})();</script></body></html>
+if(s==="teacher"||s==="dm"){document.getElementById("b").style.visibility="visible";}else{location.replace("../index.html");}})();</script></body></html>

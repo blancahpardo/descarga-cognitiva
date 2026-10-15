@@ -49,91 +49,48 @@ footer{ text-align:center; padding:20px 6vw 34px; font-size:11px; color:var(--hu
 </div></div>
 <div id="page">
 <header><div class="kicker">Estudio docente 2026-27</div><h1>Descarga cognitiva e IA</h1>
-  <p class="author">Dra. Blanca Hernández Pardo</p><p>Elige tu asignatura</p></header>
-<div class="teacher-wrap"><div id="teacher-panel" class="teacher-banner" hidden>
-  <strong>⚙ Modo profesora</strong>
-  <p>Pega aquí tu token de GitHub (solo para esta sesión de navegador; se pierde al cerrar la pestaña) y marca qué asignaturas ve el alumnado. Los cambios se publican en 1-2 minutos.</p>
-  <div class="teacher-token-row"><input type="password" id="gh-token" placeholder="Token de GitHub (github_pat_...)"><button id="gh-token-save">Guardar token de esta sesión</button></div>
-  <div class="teacher-status" id="teacher-status"></div>
-  <ul class="teacher-toggle-list">
-      <li><input type="checkbox" id="chk-tee" data-tema="tee"><label for="chk-tee">TEE · Técnicas y estrategias de expresión escrita</label></li>
-      <li><input type="checkbox" id="chk-pln" data-tema="pln"><label for="chk-pln">PLN · Programación para PLN (actividad aún sin construir)</label></li>
-      <li><input type="checkbox" id="chk-dm" data-tema="dm"><label for="chk-dm">DM · Datos Masivos (actividad aún sin construir)</label></li>
-      <li><input type="checkbox" id="chk-tj" data-tema="tj"><label for="chk-tj">TJ · Traducción Jurídica FR-ES (actividad aún sin construir)</label></li>
-      <li><input type="checkbox" id="chk-tm" data-tema="tm"><label for="chk-tm">TM · Traducción Médica EN-ES (actividad aún sin construir)</label></li>
-  </ul></div></div>
+  <p class="author">Dra. Blanca Hernández Pardo</p><p id="sub">Accede a tu actividad</p></header>
 <main id="cards">
   <a class="tema-btn" data-tema="tee" href="tee/index.html" style="display:none">
-    <span class="teacher-hint" data-hint="tee"></span>
     <span class="tema-num">TEE</span>
     <span class="tema-title">Técnicas y estrategias de expresión escrita</span>
   </a>
   <a class="tema-btn" data-tema="pln" href="pln/index.html" style="display:none">
-    <span class="teacher-hint" data-hint="pln"></span>
     <span class="tema-num">PLN</span>
     <span class="tema-title">Programación para PLN</span>
   </a>
   <a class="tema-btn" data-tema="dm" href="dm/index.html" style="display:none">
-    <span class="teacher-hint" data-hint="dm"></span>
     <span class="tema-num">DM</span>
     <span class="tema-title">Datos Masivos</span>
   </a>
   <a class="tema-btn" data-tema="tj" href="tj/index.html" style="display:none">
-    <span class="teacher-hint" data-hint="tj"></span>
     <span class="tema-num">TJ</span>
     <span class="tema-title">Traducción Jurídica FR-ES</span>
   </a>
   <a class="tema-btn" data-tema="tm" href="tm/index.html" style="display:none">
-    <span class="teacher-hint" data-hint="tm"></span>
     <span class="tema-num">TM</span>
     <span class="tema-title">Traducción Médica EN-ES</span>
   </a>
-  <div class="empty" id="empty" hidden>De momento no hay ninguna actividad abierta. Tu profesora la abrirá cuando corresponda.</div>
 </main>
-<button class="teacher-link" id="teacher-toggle-link">⚙ Modo profesora</button>
 <footer>© Dra. Blanca Hernández Pardo · Descarga cognitiva e IA · Estudio docente 2026-27<br>Queda prohibida la difusión, distribución o reproducción total o parcial de este material sin autorización expresa de la autora.</footer>
 </div>
 <script>
 (function(){
-  var HASH="823e291431cff346861d254b6919a7f81aae326620bcab48baf225b77521cfc8", TEACHER_HASH="7678a7bd09af823e88f67cda81c986a38bb5a603c47b1c85398c7032942f8575", SESSION_KEY="dc_unlocked", REPO="blancahpardo/descarga-cognitiva", PATH="config.json";
-  var sha=null, isTeacher=false;
+  var MAP = {"823e291431cff346861d254b6919a7f81aae326620bcab48baf225b77521cfc8":"tee","5272a169a8d850e32d3d672c968177268073978acabc705c9b90b61c37050e8a":"pln","423ef74f884b6b547f1d1a6f00f0a4cd5d7edb3b455befe2e7f69980d9263f11":"tj","6e71138a331037ba576d354dcf359dd1e101dfcdd448aa54cbf0b98b2b2d70a8":"tm","858a20ecc01eed785df83b9ffa3daa214c2c665b19d6b261220187f05391f944":"dm"}, TEACHER_HASH = "7678a7bd09af823e88f67cda81c986a38bb5a603c47b1c85398c7032942f8575", SESSION_KEY = "dc_unlocked";
   function sha256Hex(t){ return crypto.subtle.digest("SHA-256", new TextEncoder().encode(t)).then(function(b){ return Array.prototype.map.call(new Uint8Array(b),function(x){return x.toString(16).padStart(2,"0");}).join(""); }); }
-  function fetchConfig(){ return fetch("config.json?t="+Date.now()).then(function(r){ return r.json(); }); }
-  function hdr(t){ return {"Authorization":"Bearer "+t,"Accept":"application/vnd.github+json"}; }
-  function ghGet(t){ return fetch("https://api.github.com/repos/"+REPO+"/contents/"+PATH,{headers:hdr(t)}).then(function(r){ if(!r.ok) throw new Error("No se pudo leer el fichero ("+r.status+")"); return r.json(); }).then(function(d){ sha=d.sha; return JSON.parse(decodeURIComponent(escape(atob(d.content.replace(/\n/g,""))))); }); }
-  function ghPut(t,obj){ return fetch("https://api.github.com/repos/"+REPO+"/contents/"+PATH,{method:"PUT",headers:Object.assign({"Content-Type":"application/json"},hdr(t)),body:JSON.stringify({message:"Modo profesora: actualizar visibilidad de asignaturas (config.json)",content:btoa(unescape(encodeURIComponent(JSON.stringify(obj,null,2)+"\n"))),sha:sha})}).then(function(r){ if(!r.ok) return r.text().then(function(x){ throw new Error("Error al guardar ("+r.status+"): "+x); }); return r.json(); }).then(function(d){ sha=d.content.sha; }); }
-  function tok(){ try{ return sessionStorage.getItem("gh_pat")||""; }catch(e){ return ""; } }
-  function status(m,err){ var e=document.getElementById("teacher-status"); e.textContent=m; e.style.color=err?"#FFB3B3":"#9FE6A0"; }
-  function apply(c){
-    var any=false;
-    document.querySelectorAll(".tema-btn[data-tema]").forEach(function(b){ var on=c[b.dataset.tema]===true; b.style.display=(isTeacher||on)?"":"none"; if(isTeacher||on) any=true; });
-    document.getElementById("empty").hidden = any;
+  function reveal(who){
+    document.getElementById("gate").style.display = "none"; document.getElementById("page").style.display = "flex";
+    document.querySelectorAll(".tema-btn[data-tema]").forEach(function(b){ b.style.display = (who === "teacher" || who === b.dataset.tema) ? "" : "none"; });
+    if (who === "teacher") document.getElementById("sub").textContent = "Modo profesora: ves todas las asignaturas";
+    try { sessionStorage.setItem(SESSION_KEY, who); } catch(e){}
   }
-  function hints(c){
-    document.querySelectorAll(".teacher-hint[data-hint]").forEach(function(s){ var on=c[s.dataset.hint]===true; s.textContent=on?"visible":"oculto"; s.className="teacher-hint "+(on?"on":"off"); });
-    document.querySelectorAll("#teacher-panel input[data-tema]").forEach(function(k){ k.checked=c[k.dataset.tema]===true; });
+  function tryUnlock(){
+    sha256Hex(document.getElementById("pw").value.trim().toLowerCase()).then(function(h){
+      if (h === TEACHER_HASH) reveal("teacher"); else if (MAP[h]) reveal(MAP[h]); else document.getElementById("err").textContent = "Contraseña incorrecta.";
+    });
   }
-  function initTeacher(){
-    document.getElementById("teacher-panel").hidden=false;
-    var inp=document.getElementById("gh-token"); inp.value=tok();
-    function refresh(){ var t=tok(); if(!t){ fetchConfig().then(function(c){ apply(c); hints(c); }); return; } status("Cargando estado actual..."); ghGet(t).then(function(c){ apply(c); hints(c); status("Conectado. Puedes abrir o cerrar asignaturas."); }).catch(function(e){ status(e.message,true); fetchConfig().then(function(c){ apply(c); hints(c); }); }); }
-    document.getElementById("gh-token-save").onclick=function(){ try{ sessionStorage.setItem("gh_pat",inp.value.trim()); }catch(e){} status(inp.value.trim()?"Token guardado para esta sesión.":"Token borrado."); refresh(); };
-    document.querySelectorAll("#teacher-panel input[data-tema]").forEach(function(k){ k.addEventListener("change",function(){
-      var t=tok(); if(!t){ status("Pega primero tu token de GitHub.",true); k.checked=!k.checked; return; }
-      status("Guardando...");
-      ghGet(t).then(function(c){ c[k.dataset.tema]=k.checked; return ghPut(t,c).then(function(){ return c; }); }).then(function(c){ hints(c); apply(c); status("Guardado ✓ — el alumnado lo verá en 1-2 minutos."); }).catch(function(e){ k.checked=!k.checked; status(e.message,true); });
-    }); });
-    refresh();
-  }
-  function reveal(teacher){
-    isTeacher=teacher; document.getElementById("gate").style.display="none"; document.getElementById("page").style.display="flex";
-    if(teacher) initTeacher(); else fetchConfig().then(apply).catch(function(){});
-    try{ sessionStorage.setItem(SESSION_KEY, teacher?"teacher":"1"); }catch(e){}
-  }
-  function tryUnlock(){ sha256Hex(document.getElementById("pw").value).then(function(h){ if(h===TEACHER_HASH) reveal(true); else if(h===HASH) reveal(false); else document.getElementById("err").textContent="Contraseña incorrecta."; }); }
-  document.getElementById("enter").onclick=tryUnlock;
-  document.getElementById("pw").addEventListener("keydown",function(e){ if(e.key==="Enter") tryUnlock(); });
-  document.getElementById("teacher-toggle-link").onclick=function(){ var v=prompt("Contraseña de profesora:"); if(v===null) return; sha256Hex(v).then(function(h){ if(h===TEACHER_HASH) reveal(true); else alert("Contraseña incorrecta."); }); };
-  try{ var s=sessionStorage.getItem(SESSION_KEY); if(s==="teacher") reveal(true); else if(s==="1") reveal(false); }catch(e){}
+  document.getElementById("enter").onclick = tryUnlock;
+  document.getElementById("pw").addEventListener("keydown", function(e){ if (e.key === "Enter") tryUnlock(); });
+  try { var s = sessionStorage.getItem(SESSION_KEY); if (s === "teacher" || document.querySelector('.tema-btn[data-tema="' + s + '"]')) reveal(s); } catch(e){}
 })();
 </script></body></html>

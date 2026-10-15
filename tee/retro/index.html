@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Retroalimentación · TEE · Descarga cognitiva</title>
+<style>
+:root{ --azul:#003B5C; --azul-d:#00283F; --amar:#F4C542; --gris:#34484F; --claro:#F3F3F4; --humo:#9FB1BA; --verde:#2E7D32; --rojo:#B00020; --cian:#0E7C86; }
+*{ box-sizing:border-box; }
+body{ margin:0; font-family:Arial,Helvetica,sans-serif; color:var(--gris); background:#EEF3F6; }
+#boot{ padding:40px 16px; text-align:center; color:var(--humo); font-size:14px; }
+#app{ display:none; min-height:100vh; }
+header.top{ background:linear-gradient(115deg,var(--azul-d),var(--azul) 55%,var(--cian)); color:#fff; padding:16px 4vw 0; }
+header.top .kicker{ color:var(--amar); font-size:12px; font-weight:bold; letter-spacing:2.5px; text-transform:uppercase; }
+header.top h1{ margin:4px 0 2px; font-size:clamp(20px,3vw,28px); }
+header.top p{ margin:0 0 12px; font-size:13px; color:#C9D6DD; }
+header.top a{ color:#C9D6DD; font-size:12px; }
+.tabs{ display:flex; gap:6px; flex-wrap:wrap; }
+.tabs button{ border:none; font-family:inherit; font-size:14px; font-weight:bold; padding:10px 20px; border-radius:10px 10px 0 0; background:rgba(255,255,255,.14); color:#E3ECF0; cursor:pointer; }
+.tabs button.on{ background:#EEF3F6; color:var(--azul); }
+main{ padding:16px 1.5vw 50px; }
+.intro{ background:#FFF8E1; border-left:6px solid var(--amar); border-radius:10px; padding:12px 16px; margin-bottom:14px; font-size:14px; line-height:1.5; }
+.split{ display:grid; grid-template-columns:1fr 1fr; gap:16px; align-items:start; }
+.split .left{ position:sticky; top:10px; }
+.card{ background:#fff; border-radius:16px; padding:18px 20px; box-shadow:0 4px 18px rgba(0,40,63,.08); }
+.card h2{ margin:0 0 10px; color:var(--azul); font-size:19px; }
+.casebox{ border:2px solid #D0D8DD; border-radius:12px; overflow:hidden; background:#fff; cursor:zoom-in; }
+.casebox img{ display:block; width:100%; height:auto; }
+.hintzoom{ font-size:12px; color:#6b7c84; margin:6px 0 0; }
+.fix{ border:1px solid #D8DEE1; border-left:6px solid var(--cian); border-radius:10px; padding:10px 14px; margin-bottom:10px; background:#FAFCFD; }
+.fix .top{ display:flex; gap:10px; align-items:baseline; flex-wrap:wrap; }
+.fix .n{ font-weight:bold; color:#fff; background:var(--azul); border-radius:999px; min-width:26px; height:26px; display:inline-grid; place-items:center; font-size:13px; flex:none; }
+.fix .err{ color:var(--rojo); text-decoration:line-through; text-decoration-thickness:2px; font-weight:bold; }
+.fix .arrow{ color:#6b7c84; }
+.fix .ok{ color:var(--verde); font-weight:bold; }
+.chip{ margin-left:auto; font-size:11px; font-weight:bold; padding:3px 10px; border-radius:999px; color:#fff; white-space:nowrap; }
+.chip.ortografico{ background:#6A1B9A; } .chip.ortotipografico{ background:#00796B; } .chip.morfosintactico{ background:#C0392B; }
+.chip.lexico{ background:#EF8F00; } .chip.discursivo{ background:#1565C0; } .chip.puntuacion{ background:#546E7A; }
+.fix p{ margin:6px 0 0; font-size:14px; line-height:1.5; }
+.sent{ display:grid; grid-template-columns:1fr 1fr; gap:16px; align-items:center; border-bottom:1px dashed #D0D8DD; padding:12px 0; }
+.sent:last-child{ border-bottom:none; }
+.sent .casebox{ cursor:default; }
+footer.copy{ text-align:center; padding:18px 4vw 34px; font-size:11px; color:var(--humo); font-style:italic; }
+@media (max-width:900px){ .split, .sent{ grid-template-columns:1fr; } .split .left{ position:static; } .chip{ margin-left:0; } }
+</style>
+</head>
+<body>
+<div id="boot">Comprobando acceso…</div>
+<div id="app">
+  <header class="top">
+    <a href="../index.html">← Volver a TEE</a>
+    <div class="kicker">Descarga cognitiva e IA · Técnicas y estrategias de expresión escrita</div>
+    <h1>Retroalimentación de «Con copiloto o sin él»</h1>
+    <p>Revisa con calma, a tu ritmo, la corrección de cada ejercicio de la actividad principal.</p>
+    <div class="tabs" id="tabs"></div>
+  </header>
+  <main id="stage"></main>
+  <footer class="copy">© Dra. Blanca Hernández Pardo · Técnicas y estrategias de comunicación escrita en español · Tema 3: La corrección de estilo<br>
+  Queda prohibida la difusión, distribución o reproducción total o parcial de este material sin autorización expresa de la autora.</footer>
+</div>
+<script>
+(function(){
+  var s = ""; try { s = sessionStorage.getItem("dc_unlocked") || ""; } catch(e){}
+  if (!s) { location.replace("../../index.html"); return; }
+  function go(){ document.getElementById("boot").style.display = "none"; document.getElementById("app").style.display = "block"; start(); }
+  if (s === "teacher") { go(); return; }
+  if (s !== "tee") { location.replace("../../index.html"); return; }
+  fetch("../config.json?t=" + Date.now()).then(function(r){ return r.json(); }).then(function(c){
+    if (c.retro === true) go(); else location.replace("../index.html");
+  }).catch(function(){ document.getElementById("boot").textContent = "No se ha podido comprobar el acceso. Recarga la página."; });
+})();
+
+function start(){
+var PL = { o:["Ortográfico","ortografico"], t:["Ortotipográfico","ortotipografico"], m:["Morfosintáctico","morfosintactico"], l:["Léxico","lexico"], d:["Discursivo","discursivo"], p:["De puntuación","puntuacion"] };
+// [error, corrección, plano, explicación]
+var A = [
+ ["asignaturas Donde se trabaja","asignaturas donde se trabaja","t","«Donde» es aquí un adverbio relativo en medio de la oración: no lleva mayúscula inicial."],
+ ["Pienso de que este sistema","Pienso que este sistema","m","Dequeísmo: el verbo «pensar» introduce la oración subordinada directamente, sin la preposición «de»."],
+ ["la evaluación entre pares, permite","la evaluación entre pares permite","p","No se separa con coma el sujeto de su verbo."],
+ ["se quejan que la nota final","se quejan de que la nota final","m","Queísmo: «quejarse» exige la preposición «de» ante la oración subordinada."],
+ ["En base a varios estudios","Según varios estudios (o: A partir de varios estudios)","l","Calco: «en base a» es una construcción que conviene evitar; «según» o «a partir de» dicen lo mismo con más precisión."],
+ ["un grupo de amigos se favorezcan","un grupo de amigos se favorezca","m","Discordancia con el colectivo: el núcleo del sujeto es «grupo», singular, y el verbo debe concordar con él."],
+ ["la Objetividad del proceso","la objetividad del proceso","t","Mayúscula indebida: es un sustantivo común en mitad de la oración."],
+ ["no saben que criterio aplicar","no saben qué criterio aplicar","o","Falta la tilde diacrítica: «qué» es interrogativo (pregunta indirecta) y se escribe acentuado."],
+ ["\"se combina\"","«se combina»","t","Las comillas rectas se sustituyen por las angulares (o latinas) en español."],
+ ["debería, mantenerse","debería mantenerse","p","No se pone coma entre el verbo auxiliar y el infinitivo que forman una misma perífrasis."]
+];
+var B = [
+ ["las Aulas universitarias","las aulas universitarias","t","Mayúscula indebida: «aulas» es un sustantivo común."],
+ ["piensan de que el móvil","piensan que el móvil","m","Dequeísmo: «pensar» no lleva la preposición «de» ante la oración subordinada."],
+ ["el móvil, puede convertirse","el móvil puede convertirse","p","No se separa con coma el sujeto de su verbo."],
+ ["se quejan que las normas","se quejan de que las normas","m","Queísmo: «quejarse» exige «de» ante la oración subordinada."],
+ ["A nivel de organización","En cuanto a la organización","l","Calco: «a nivel de» se usa mucho como muletilla; «en cuanto a», «en lo que respecta a» o «en el plano de» son más precisos."],
+ ["Un grupo de estudiantes defienden","Un grupo de estudiantes defiende","m","Discordancia con el colectivo: el núcleo del sujeto es «grupo» (singular)."],
+ ["\"el problema\"","«el problema»","t","Las comillas rectas se sustituyen por las angulares en español."],
+ ["no está claro que hacer","no está claro qué hacer","o","Falta la tilde diacrítica: «qué» es interrogativo (pregunta indirecta)."],
+ ["dentro de la Facultad","dentro de la facultad","t","Mayúscula indebida: «facultad» en uso genérico es un sustantivo común."],
+ ["y cada centro suele aplicar su propio criterio","(eliminar o reformular esta parte de la frase)","d","Redundancia: repite lo que ya dice «cada profesor decide» dos frases antes, sin aportar información nueva."]
+];
+var R = [
+ ["Estoy convencido que","Estoy convencido de que","m","Queísmo: «convencido» se construye con «de que»."],
+ ["presentó, sus conclusiones","presentó sus conclusiones","p","No se separa con coma el verbo de su complemento directo."],
+ ["El Profesor entregó","El profesor entregó","t","Mayúscula indebida: «profesor» es un sustantivo común."],
+ ["Un equipo de investigadores concluyeron","Un equipo de investigadores concluyó","m","Discordancia con el colectivo: el núcleo del sujeto es «equipo» (singular)."],
+ ["No se sabe que solución","No se sabe qué solución","o","Falta la tilde diacrítica: «qué» es interrogativo (pregunta indirecta)."],
+ ["En base a los resultados","Según los resultados (o: A partir de los resultados)","l","Calco: «según» o «a partir de» son más precisos que «en base a»."]
+];
+function esc(x){ return String(x).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
+function fix(i, f){ var pl = PL[f[2]];
+  return '<div class="fix"><div class="top"><span class="n">'+(i+1)+'</span><span class="err">'+esc(f[0])+'</span><span class="arrow">→</span><span class="ok">'+esc(f[1])+'</span><span class="chip '+pl[1]+'">'+pl[0]+'</span></div><p>'+esc(f[3])+'</p></div>'; }
+var VIEWS = {
+ a: { tab:"Tarea A (sin IA)", html:function(){
+   return '<div class="intro">En el texto había <b>10 errores</b> de distintos planos. Compara esta lista con lo que corregiste tú: lo importante no es solo cuántos encontraste, sino si reconocías <b>de qué plano</b> era cada uno.</div>' +
+   '<div class="split"><div class="left"><div class="card"><h2>Texto-caso A</h2><div class="casebox zoomable"><img src="../img/texto-a.png" alt="Texto-caso A"></div><p class="hintzoom">Pulsa sobre el texto para verlo más grande.</p></div></div>' +
+   '<div class="right"><div class="card"><h2>Las 10 correcciones</h2>'+A.map(function(f,i){ return fix(i,f); }).join("")+'</div></div></div>'; } },
+ b: { tab:"Tarea B (con IA)", html:function(){
+   return '<div class="intro">También aquí había <b>10 errores</b>. Fíjate en tres cosas al comparar con la revisión que hiciste de las propuestas de Copilot: qué errores detectó la IA, cuáles <b>no</b> detectó y si alguna de sus correcciones era innecesaria o incorrecta.</div>' +
+   '<div class="split"><div class="left"><div class="card"><h2>Texto-caso B</h2><div class="casebox zoomable"><img src="../img/texto-b.png" alt="Texto-caso B"></div><p class="hintzoom">Pulsa sobre el texto para verlo más grande.</p></div></div>' +
+   '<div class="right"><div class="card"><h2>Las 10 correcciones</h2>'+B.map(function(f,i){ return fix(i,f); }).join("")+'</div></div></div>'; } },
+ r: { tab:"Recuerdo inmediato", html:function(){
+   return '<div class="intro">Seis frases nuevas, una por error. Esta hoja se hacía de memoria y sin IA: sirve para ver qué criterios se te habían quedado.</div>' +
+   '<div class="card"><h2>Las 6 frases del recuerdo inmediato</h2>'+R.map(function(f,i){ return '<div class="sent"><div class="casebox" style="cursor:default"><img src="../img/rec-'+(i+1)+'.png" alt="Frase '+(i+1)+'"></div><div>'+fix(i,f)+'</div></div>'; }).join("")+'</div>'; } }
+};
+var cur = "a";
+function render(){
+  document.getElementById("tabs").innerHTML = Object.keys(VIEWS).map(function(k){ return '<button class="'+(k===cur?'on':'')+'" data-k="'+k+'">'+VIEWS[k].tab+'</button>'; }).join("");
+  document.getElementById("stage").innerHTML = VIEWS[cur].html();
+  document.querySelectorAll("#tabs button").forEach(function(b){ b.onclick = function(){ cur = b.dataset.k; render(); window.scrollTo(0,0); }; });
+  document.querySelectorAll(".casebox.zoomable img").forEach(function(img){ img.onclick = function(){
+    var z = document.createElement("div"); z.style.cssText = "position:fixed;inset:0;background:rgba(0,40,63,.92);z-index:60;display:flex;align-items:center;justify-content:center;padding:2vw;cursor:zoom-out";
+    z.innerHTML = '<img src="'+img.getAttribute("src")+'" style="max-width:96vw;max-height:94vh;background:#fff;border-radius:8px" alt="">'; z.onclick = function(){ z.remove(); }; document.body.appendChild(z); }; });
+}
+document.addEventListener("keydown", function(e){ if (e.key === "Escape"){ var z = document.querySelector("body > div[style*='z-index:60']"); if (z) z.remove(); } });
+render();
+}
+</script>
+</body>
+</html>

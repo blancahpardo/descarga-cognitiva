@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Actividad posterior · TEE · Descarga cognitiva</title>
+<style>
+:root{ --azul:#003B5C; --azul-d:#00283F; --amar:#F4C542; --gris:#34484F; --claro:#F3F3F4; --humo:#9FB1BA; --verde:#2E7D32; --rojo:#B00020; --cian:#0E7C86; }
+*{ box-sizing:border-box; }
+body{ margin:0; font-family:Arial,Helvetica,sans-serif; color:var(--gris); background:#EEF3F6; }
+#boot{ padding:40px 16px; text-align:center; color:var(--humo); font-size:14px; }
+#app{ display:none; min-height:100vh; }
+header.top{ background:linear-gradient(115deg,var(--azul-d),var(--azul) 55%,var(--cian)); color:#fff; padding:18px 4vw 14px; }
+header.top .kicker{ color:var(--amar); font-size:12px; font-weight:bold; letter-spacing:2.5px; text-transform:uppercase; }
+header.top h1{ margin:4px 0 2px; font-size:clamp(20px,3vw,28px); }
+header.top p{ margin:0; font-size:13px; color:#C9D6DD; }
+.stepper{ display:flex; gap:6px; margin-top:14px; flex-wrap:wrap; }
+.stepper span{ font-size:12px; padding:5px 12px; border-radius:999px; background:rgba(255,255,255,.14); color:#C9D6DD; }
+.stepper span.done{ background:rgba(255,255,255,.28); color:#fff; }
+.stepper span.now{ background:var(--amar); color:var(--azul-d); font-weight:bold; }
+main{ max-width:1100px; margin:0 auto; padding:22px 4vw 60px; }
+main.wide{ max-width:none; padding:14px 1.2vw 40px; }
+.split{ display:grid; grid-template-columns:1fr 1fr; gap:16px; align-items:start; }
+.split .left{ position:sticky; top:66px; }
+.split .card{ margin-bottom:0; padding:18px 20px; }
+.card{ background:#fff; border-radius:16px; padding:24px 26px; box-shadow:0 4px 18px rgba(0,40,63,.08); margin-bottom:18px; }
+.card h2{ margin:0 0 8px; color:var(--azul); font-size:22px; }
+.split .card h2{ font-size:19px; }
+.card h3{ margin:18px 0 6px; color:var(--azul); font-size:16px; }
+.card p, .card li{ font-size:15px; line-height:1.55; }
+.rules{ background:#FFF8E1; border-left:6px solid var(--amar); border-radius:10px; padding:12px 16px; margin:14px 0; font-size:14px; }
+.rules ul{ margin:6px 0 0; padding-left:20px; } .rules li{ font-size:14px; margin-bottom:3px; }
+.headsplit{ display:flex; gap:20px; align-items:flex-start; justify-content:space-between; flex-wrap:wrap; margin-bottom:6px; }
+.headsplit > div:first-child{ flex:1 1 320px; }
+.alert-red{ flex:0 1 430px; background:#FDECEC; border:3px solid var(--rojo); color:var(--rojo); border-radius:12px; padding:12px 18px; font-weight:bold; font-size:19px; line-height:1.35; }
+.alert-red small{ display:block; font-size:15px; margin-top:4px; }
+.btn{ background:var(--azul); color:#fff; border:none; border-radius:999px; padding:13px 26px; font-size:15px; font-weight:bold; cursor:pointer; font-family:inherit; }
+.btn:hover{ filter:brightness(1.12); } .btn.amar{ background:var(--amar); color:var(--azul-d); }
+.btnrow{ display:flex; gap:10px; flex-wrap:wrap; margin-top:16px; align-items:center; }
+.timer{ position:sticky; top:0; z-index:5; background:var(--azul-d); color:#fff; border-radius:12px; padding:10px 18px; display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; font-size:14px; }
+.timer b{ font-size:22px; font-variant-numeric:tabular-nums; color:var(--amar); } .timer.warn b{ color:#FF8A80; }
+.casebox{ border:2px solid #D0D8DD; border-radius:12px; overflow:hidden; background:#fff; margin:10px 0 18px; }
+.casebox img{ display:block; width:100%; height:auto; }
+.casebox.zoomable{ cursor:zoom-in; }
+.hintzoom{ font-size:12px; color:#6b7c84; margin:6px 0 0; }
+.zoom{ position:fixed; inset:0; background:rgba(0,40,63,.92); z-index:60; display:flex; align-items:center; justify-content:center; padding:2vw; cursor:zoom-out; }
+.zoom img{ max-width:96vw; max-height:94vh; background:#fff; border-radius:8px; }
+textarea, input[type=text], select{ width:100%; font-family:inherit; font-size:15px; color:var(--gris); padding:8px 10px; border:1px solid #C5CED3; border-radius:8px; background:#FAFCFD; }
+textarea{ resize:vertical; min-height:52px; } textarea.big{ min-height:200px; }
+textarea:focus, input:focus, select:focus{ outline:2px solid var(--amar); border-color:var(--amar); }
+.recrow{ display:grid; grid-template-columns:1fr; gap:8px; margin-bottom:16px; padding-bottom:16px; border-bottom:1px dashed #D0D8DD; }
+.recrow:last-child{ border-bottom:none; }
+.recans{ display:grid; grid-template-columns:2fr 1fr; gap:10px; }
+.idrow{ display:flex; gap:14px; align-items:center; flex-wrap:wrap; margin-top:10px; }
+.idrow input{ width:110px; font-size:22px; text-align:center; letter-spacing:6px; font-weight:bold; }
+.toast{ position:fixed; bottom:20px; left:50%; transform:translateX(-50%); background:var(--azul-d); color:#fff; padding:12px 20px; border-radius:10px; font-size:14px; z-index:70; display:none; max-width:90vw; box-shadow:0 6px 20px rgba(0,0,0,.3); }
+.ok{ color:var(--verde); font-weight:bold; }
+footer.copy{ text-align:center; padding:18px 4vw 34px; font-size:11px; color:var(--humo); font-style:italic; }
+@media (max-width:900px){ .split{ grid-template-columns:1fr; } .split .left{ position:static; } }
+@media (max-width:700px){ .card{ padding:18px 16px; } .recans{ grid-template-columns:1fr; } }
+</style>
+</head>
+<body>
+<div id="boot">Comprobando acceso…</div>
+<div id="app">
+  <header class="top">
+    <div class="kicker">Descarga cognitiva e IA · Técnicas y estrategias de expresión escrita</div>
+    <h1>Hoja de seguimiento</h1>
+    <p>Actividad posterior a «Con copiloto o sin él»</p>
+    <div class="stepper" id="stepper"></div>
+  </header>
+  <main id="stage"></main>
+  <footer class="copy">© Dra. Blanca Hernández Pardo · Técnicas y estrategias de comunicación escrita en español · Tema 3: La corrección de estilo<br>
+  Queda prohibida la difusión, distribución o reproducción total o parcial de este material sin autorización expresa de la autora.</footer>
+</div>
+<div class="toast" id="toast"></div>
+<script>
+(function(){
+  var s = ""; try { s = sessionStorage.getItem("dc_unlocked") || ""; } catch(e){}
+  if (!s) { location.replace("../../index.html"); return; }
+  function go(){ document.getElementById("boot").style.display = "none"; document.getElementById("app").style.display = "block"; startApp(); }
+  if (s === "teacher") { go(); return; }
+  if (s !== "tee") { location.replace("../../index.html"); return; }
+  fetch("../config.json?t=" + Date.now()).then(function(r){ return r.json(); }).then(function(c){
+    if (c.posterior === true) go(); else location.replace("../index.html");
+  }).catch(function(){ document.getElementById("boot").textContent = "No se ha podido comprobar el acceso. Recarga la página."; });
+})();
+
+function startApp(){
+var KEY = "dc_tee_dif_v1";
+var PLANOS = ["Ortográfico","Ortotipográfico","Morfosintáctico","Léxico","Discursivo","De puntuación"];
+var STEPS = ["Inicio","Frases","Párrafo","Confianza","Entrega"];
+var MIN = 15;
+function fresh(){ var rows = []; for (var i=0;i<6;i++) rows.push({correccion:"",plano:""});
+  return { v:1, step:0, id:"", inicio:null, fin:null, tiempos:{}, frases:rows, parrafo:"", confianza:"" }; }
+var S; try { S = JSON.parse(sessionStorage.getItem(KEY) || "null"); } catch(e){ S = null; }
+if (!S || S.v !== 1) S = fresh();
+function save(){ try { sessionStorage.setItem(KEY, JSON.stringify(S)); } catch(e){} }
+var ATTR = 'spellcheck="false" autocorrect="off" autocapitalize="off" autocomplete="off" translate="no" lang="es" data-gramm="false" data-gramm_editor="false" data-enable-grammarly="false" data-lt-active="false" data-ms-editor="false"';
+function esc(s){ return String(s==null?"":s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
+function toast(m){ var t = document.getElementById("toast"); t.textContent = m; t.style.display = "block"; clearTimeout(toast._t); toast._t = setTimeout(function(){ t.style.display = "none"; }, 3500); }
+function setPath(p,v){ var ks = p.split("."), last = ks.pop(); var o = ks.reduce(function(o,k){ return o[k]; }, S); o[last] = v; }
+function planoSelect(path,val){ return '<select data-path="'+path+'"><option value="">Elige plano…</option>'+PLANOS.map(function(p){ return '<option'+(p===val?' selected':'')+'>'+p+'</option>'; }).join("")+'</select>'; }
+function ta(path,val,cls){ return '<textarea '+ATTR+' data-nopaste="1" data-path="'+path+'"'+(cls?' class="'+cls+'"':'')+'>'+esc(val)+'</textarea>'; }
+var ALERT = '<div class="alert-red">⚠ Esta parte se hace SIN IA de ningún tipo.<small>Tranquilo/a: no te preocupes, no penaliza.</small></div>';
+function timerBar(){ if (!S.tiempos.start) return ""; return '<div class="timer" id="timer" data-start="'+S.tiempos.start+'" data-min="'+MIN+'"><span>Tiempo disponible: '+MIN+' minutos (orientativo; la profesora marca el ritmo)</span><b id="timerval">--:--</b></div>'; }
+function tick(){ var el = document.getElementById("timer"); if (!el) return; var left = Math.round(+el.dataset.min*60 - (Date.now()-(+el.dataset.start))/1000); var a = Math.abs(left);
+  document.getElementById("timerval").textContent = (left<0?"+":"") + String(Math.floor(a/60)).padStart(2,"0") + ":" + String(a%60).padStart(2,"0"); el.classList.toggle("warn", left <= 180); }
+setInterval(tick, 1000);
+function stepper(){ document.getElementById("stepper").innerHTML = STEPS.map(function(n,i){ return '<span class="'+(i<S.step?'done':i===S.step?'now':'')+'">'+(i<S.step?'✓ ':'')+n+'</span>'; }).join(""); }
+
+function viewInicio(){
+  return '<div class="card"><div class="headsplit"><div><h2>Hoja de seguimiento</h2><p>Esta hoja forma parte del mismo estudio docente en el que participaste en la actividad principal. Si no autorizaste el uso de tus datos, la haces igualmente y tus respuestas no entran en el estudio.</p></div>' + ALERT + '</div>' +
+    '<div class="rules"><b>Condiciones de realización</b><ul><li>Trabaja de forma individual, en este ordenador, de memoria y sin ninguna ayuda (apuntes, buscadores, compañeros/as ni IA).</li>' +
+    '<li>Los cuadros de respuesta no subrayan errores ni corrigen automáticamente lo que escribes, y no permiten pegar texto.</li>' +
+    '<li>Tu trabajo se guarda en esta pestaña mientras no la cierres. Al final descargarás un archivo con tus respuestas.</li></ul></div>' +
+    '<h3>Tu identificador</h3><p>Los mismos tres últimos dígitos de tu clave académica que usaste en la actividad principal. No escribas tu nombre en ningún sitio.</p>' +
+    '<div class="idrow"><input type="text" inputmode="numeric" maxlength="3" pattern="[0-9]{3}" autocomplete="off" spellcheck="false" placeholder="000" id="idfield" value="'+esc(S.id)+'"></div>' +
+    '<p><b>Tiempo disponible: '+MIN+' minutos.</b> Empieza cuando la profesora lo indique.</p>' +
+    '<div class="btnrow"><button class="btn amar" id="go0">Empezar →</button></div></div>';
+}
+function viewFrases(){
+  var rows = S.frases.map(function(r,i){ return '<div class="recrow"><div class="casebox" style="margin:0"><img src="img/dif-'+(i+1)+'.png" alt="Frase '+(i+1)+' (imagen)"></div><div class="recans">'+ta('frases.'+i+'.correccion',r.correccion)+planoSelect('frases.'+i+'.plano',r.plano)+'</div></div>'; }).join("");
+  return timerBar() + '<div class="card"><div class="headsplit"><div><h2>1. Corrige cada frase</h2><p>Escribe la frase corregida e indica a qué plano de corrección pertenece el error.</p></div>' + ALERT + '</div>' + rows +
+    '<div class="btnrow"><span style="flex:1"></span><button class="btn amar" data-finish="frases">Terminar esta parte y continuar →</button></div></div>';
+}
+function viewParrafo(){
+  return timerBar() + '<div class="split"><div class="left"><div class="card"><h2>2. Transferencia</h2><p style="margin-top:0">Corrige este párrafo nuevo, sin ayuda de IA (contiene varios errores de distintos planos).</p>' +
+    '<div class="casebox zoomable" style="margin-bottom:0"><img src="img/dif-parrafo.png" alt="Párrafo de transferencia (imagen)"></div><p class="hintzoom">Pulsa sobre el texto para verlo más grande.</p></div></div>' +
+    '<div class="right"><div class="card">' + ALERT + '<h3>Tu corrección</h3><p>Reescribe el párrafo corregido, o lista cada error con su corrección y plano.</p>' + ta('parrafo',S.parrafo,'big') +
+    '<div class="btnrow"><span style="flex:1"></span><button class="btn amar" data-finish="parrafo">Terminar esta parte y continuar →</button></div></div></div></div>';
+}
+function viewConfianza(){
+  return timerBar() + '<div class="card"><h2>3. Tu confianza de aquel día</h2><p>Vuelve a valorar tu confianza de aquel día: en retrospectiva, ¿tu predicción de la semana pasada fue acertada?</p>' + ta('confianza',S.confianza,'big') +
+    '<div class="btnrow"><span style="flex:1"></span><button class="btn amar" data-finish="confianza">Terminar →</button></div></div>';
+}
+function viewEntrega(){
+  var n = S.frases.filter(function(r){ return r.correccion.trim(); }).length;
+  return '<div class="card"><h2>¡Has terminado! Descarga y entrega tus respuestas</h2><p class="ok">Frases: '+n+' de 6 · Párrafo de transferencia: '+(S.parrafo.trim()?'respondido':'sin respuesta')+'</p>' +
+    '<ol><li>Pulsa <b>Descargar mis respuestas</b>: se guardará un archivo con tus tres dígitos como nombre (por ejemplo, <b>'+esc(S.id||'274')+'_diferido.json</b>).</li>' +
+    '<li>Entrega este archivo .json que has descargado a través de la tarea habilitada en el aula de Moodlerooms.</li></ol>' +
+    '<div class="btnrow"><button class="btn amar" id="dl">⬇ Descargar mis respuestas</button></div></div>';
+}
+function render(){
+  stepper();
+  var views = [viewInicio, viewFrases, viewParrafo, viewConfianza, viewEntrega];
+  document.getElementById("stage").classList.toggle("wide", S.step === 2);
+  document.getElementById("stage").innerHTML = views[S.step]();
+  window.scrollTo(0,0); tick(); wire();
+}
+function finish(which){
+  if (which === "frases"){ var n = S.frases.filter(function(r){ return r.correccion.trim(); }).length;
+    if (!confirm(n < 6 ? "Has respondido "+n+" de 6 frases. ¿Terminar de todas formas? Después no podrás volver a ellas." : "¿Terminar esta parte? Después no podrás volver a ella.")) return; S.step = 2; }
+  else if (which === "parrafo"){ if (!confirm("¿Terminar esta parte? Después no podrás volver a ella.")) return; S.step = 3; }
+  else if (which === "confianza"){ if (!confirm("¿Terminar la hoja? Después no podrás volver a ella.")) return; S.fin = Date.now(); S.tiempos.end = S.fin; S.step = 4; }
+  save(); render();
+}
+function download(){
+  var out = {
+    actividad: "Descarga cognitiva e IA — TEE, Tema 3, Práctica 1 (Con copiloto o sin él) — hoja de recuerdo diferido",
+    version_web: 1, codigo_alumno: S.id, inicio: S.inicio, fin: S.fin,
+    inicio_legible: S.inicio ? new Date(S.inicio).toISOString() : null, fin_legible: S.fin ? new Date(S.fin).toISOString() : null,
+    duracion_segundos: S.tiempos.start && S.tiempos.end ? Math.round((S.tiempos.end - S.tiempos.start)/1000) : null,
+    recuerdo_diferido_frases: S.frases.map(function(r,i){ return { frase: i+1, correccion: r.correccion, plano: r.plano }; }),
+    transferencia_parrafo: S.parrafo,
+    confianza_retrospectiva: S.confianza
+  };
+  var blob = new Blob([JSON.stringify(out, null, 2)], { type: "application/json" });
+  var a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = S.id + "_diferido.json";
+  document.body.appendChild(a); a.click(); setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); }, 500);
+  toast("Archivo " + S.id + "_diferido.json descargado. Revisa tu carpeta de descargas.");
+}
+function wire(){
+  var st = document.getElementById("stage");
+  var go0 = document.getElementById("go0");
+  if (go0) go0.onclick = function(){
+    var id = document.getElementById("idfield").value.trim();
+    if (!/^\d{3}$/.test(id)){ alert("Escribe los tres últimos dígitos de tu clave académica (solo tres números)."); return; }
+    S.id = id; if (!S.inicio) S.inicio = Date.now(); S.tiempos.start = Date.now(); S.step = 1; save(); render();
+  };
+  var idf = document.getElementById("idfield");
+  if (idf) idf.addEventListener("input", function(){ S.id = idf.value.replace(/\D/g,"").slice(0,3); idf.value = S.id; save(); });
+  st.querySelectorAll("[data-finish]").forEach(function(b){ b.onclick = function(){ finish(b.dataset.finish); }; });
+  var dl = document.getElementById("dl"); if (dl) dl.onclick = download;
+  st.querySelectorAll(".casebox.zoomable img").forEach(function(img){ img.onclick = function(){
+    var z = document.createElement("div"); z.className = "zoom"; z.innerHTML = '<img src="'+img.getAttribute("src")+'" alt="">'; z.onclick = function(){ z.remove(); }; document.body.appendChild(z); }; });
+}
+document.addEventListener("keydown", function(e){ if (e.key === "Escape"){ var z = document.querySelector(".zoom"); if (z) z.remove(); } });
+document.getElementById("stage").addEventListener("input", function(e){ var p = e.target.dataset && e.target.dataset.path; if (p){ setPath(p, e.target.value); save(); } });
+document.getElementById("stage").addEventListener("change", function(e){ var p = e.target.dataset && e.target.dataset.path; if (p){ setPath(p, e.target.value); save(); } });
+["paste","drop"].forEach(function(ev){ document.getElementById("stage").addEventListener(ev, function(e){ if (e.target.dataset && e.target.dataset.nopaste){ e.preventDefault(); toast("En esta hoja no se puede pegar texto: escribe tu respuesta."); } }); });
+render();
+}
+</script>
+</body>
+</html>
