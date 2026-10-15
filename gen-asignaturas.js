@@ -4,8 +4,9 @@
 // Uso: node gen-asignaturas.js
 const fs = require('fs');
 const path = require('path');
-const { ACCESS, PRINCIPAL, POSTERIOR } = require('./gen/engine');
-const { SUBJECTS } = require('./gen/subjects');
+const { ACCESS, PRINCIPAL, POSTERIOR, DIF_CSS } = require('./gen/engine');
+const { SUBJECTS: BASE } = require('./gen/subjects');
+const SUBJECTS = require('./gen/tasks').apply(BASE);
 
 const ROOT = __dirname;
 const rd = p => fs.readFileSync(path.join(ROOT, p), 'utf8');
@@ -27,12 +28,7 @@ textarea.big.code{ min-height:200px; } textarea.big.code.tall{ min-height:320px;
 .explain h3{ margin:14px 0 6px; color:var(--azul); font-size:16px; } .explain h3:first-child{ margin-top:0; }
 .explain p, .explain li{ font-size:14px; line-height:1.55; } .explain ol{ padding-left:20px; margin:6px 0; }
 code{ background:#EEF3F6; padding:1px 5px; border-radius:4px; font-size:.92em; font-family:Menlo,Consolas,"Courier New",monospace; }
-table.likert{ width:100%; border-collapse:collapse; margin:10px 0; }
-table.likert th{ background:var(--azul); color:#fff; font-size:13px; text-align:center; padding:8px 6px; } table.likert th:first-child{ text-align:left; }
-table.likert td{ border:1px solid #D8DEE1; padding:8px 6px; text-align:center; background:#fff; } table.likert td.s{ text-align:left; width:52%; font-size:14px; line-height:1.4; }
-table.likert input{ width:20px; height:20px; }
-@media (max-width:700px){ table.likert td.s{ width:auto; } }
-`;
+`+DIF_CSS;
 
 const CSS_RETRO = `
 :root{ --azul:#003B5C; --azul-d:#00283F; --amar:#F4C542; --gris:#34484F; --claro:#F3F3F4; --humo:#9FB1BA; --verde:#2E7D32; --rojo:#B00020; --cian:#0E7C86; }

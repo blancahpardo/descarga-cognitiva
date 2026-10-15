@@ -100,6 +100,12 @@ textarea.big.code{ min-height:200px; } textarea.big.code.tall{ min-height:320px;
 .explain h3{ margin:14px 0 6px; color:var(--azul); font-size:16px; } .explain h3:first-child{ margin-top:0; }
 .explain p, .explain li{ font-size:14px; line-height:1.55; } .explain ol{ padding-left:20px; margin:6px 0; }
 code{ background:#EEF3F6; padding:1px 5px; border-radius:4px; font-size:.92em; font-family:Menlo,Consolas,"Courier New",monospace; }
+
+.idrow .pref{ font-size:22px; font-weight:bold; color:var(--azul); }
+.blk{ background:var(--claro); border-left:6px solid var(--azul); padding:8px 12px; border-radius:8px; margin:18px 0 10px; font-size:16px; color:var(--azul); }
+.confrow{ display:flex; gap:12px; align-items:center; flex-wrap:wrap; margin:12px 0 4px; padding:10px 14px; background:#F3F8FB; border-radius:10px; font-size:14px; }
+label.chk{ display:flex; gap:10px; align-items:flex-start; margin:6px 0; font-size:15px; line-height:1.45; }
+label.chk input{ width:20px; height:20px; margin-top:2px; flex:none; }
 table.likert{ width:100%; border-collapse:collapse; margin:10px 0; }
 table.likert th{ background:var(--azul); color:#fff; font-size:13px; text-align:center; padding:8px 6px; } table.likert th:first-child{ text-align:left; }
 table.likert td{ border:1px solid #D8DEE1; padding:8px 6px; text-align:center; background:#fff; } table.likert td.s{ text-align:left; width:52%; font-size:14px; line-height:1.4; }
@@ -122,7 +128,7 @@ table.likert input{ width:20px; height:20px; }
 </div>
 <div class="toast" id="toast"></div>
 <script>
-var CFG = {"dir":"tj","kind":"translation","asig":"Traducción Jurídica FR-ES","asigLarga":"Traducción Jurídica Francés-Español","titulo":"El contrato con la IA","subtitulo":"Traducir cláusulas jurídicas con y sin inteligencia artificial — un experimento sobre lo que de verdad se te queda","desc1":"El contrato con la IA: traducción de cláusulas jurídicas con y sin IA.","actividadJson":"Descarga cognitiva e IA — Traducción Jurídica FR-ES, Práctica 1 (El contrato con la IA)","minA":30,"minB":30,"minPost":15,"objetivo":["Vas a traducir del francés al español dos cláusulas contractuales de dificultad equivalente, cada una enmarcada en un contrato de prestación de servicios lingüísticos (traducción en un caso, interpretación en el otro). Una la traducirás sin ningún apoyo de IA, usando solo diccionarios especializados, corpus paralelos o glosarios propios; la otra, con apoyo de traducción automática y posedición.","A diferencia de un ejercicio de traducción de frases sueltas, aquí tienes el contrato completo como contexto: tipo de servicio, partes implicadas y las cláusulas que rodean el fragmento. Ese contexto debería ayudarte a entender mejor el efecto jurídico del fragmento resaltado antes de traducirlo.","\u003cb>Importante:\u003c/b> en la condición con IA, la traducción automática es solo un borrador: sigue siendo tu responsabilidad revisar la precisión terminológica y el efecto jurídico de cada cláusula."],"aImg":"img/texto-a.png","bImg":"img/texto-b.png","aIntro":"\u003cp>Este fragmento pertenece a un contrato de prestación de servicios de traducción, relectura y revisión de documentos, redactado en francés jurídico estándar entre un prestador de servicios lingüísticos y un cliente. Lee primero el contrato completo para situar el fragmento en su contexto (tipo de cláusulas que lo rodean, terminología del sector, estructura habitual de este tipo de contrato). El fragmento que debes traducir al español está resaltado (\u003cb>Artículo 5 — Confidencialidad\u003c/b>).\u003c/p>\u003ch3>Instrucciones\u003c/h3>\u003col>\u003cli>Lee el contrato completo para situar el fragmento resaltado en su contexto.\u003c/li>\u003cli>Traduce al español el fragmento resaltado utilizando exclusivamente diccionarios especializados, corpus paralelos o tus propios glosarios. No emplees ningún asistente de IA ni traductor automático.\u003c/li>\u003cli>Señala los 3-4 términos u opciones de traducción que te hayan planteado más dudas y justifica brevemente la solución elegida.\u003c/li>\u003c/ol>","aRules":["Sin IA ni traductor automático: solo diccionarios especializados, corpus paralelos o tus propios glosarios. En esta tarea los cuadros no permiten pegar texto."],"bIntro":"\u003cp>Este fragmento pertenece a un contrato de prestación de servicios de interpretación de conferencia, redactado en francés jurídico estándar entre un prestador de servicios lingüísticos y un cliente. Lee primero el contrato completo para situar el fragmento en su contexto. El fragmento que debes traducir al español está resaltado (\u003cb>Artículo 5 — Responsabilidad\u003c/b>).\u003c/p>\u003ch3>Instrucciones\u003c/h3>\u003col>\u003cli>Lee el contrato completo para situar el fragmento resaltado en su contexto.\u003c/li>\u003cli>Genera un primer borrador de la traducción del fragmento resaltado con \u003cb>Microsoft Copilot\u003c/b> (con tu cuenta de la universidad).\u003c/li>\u003cli>Poséditalo: revisa y corrige el borrador prestando especial atención a la precisión terminológica y al efecto jurídico de cada cláusula (límites de responsabilidad, exclusiones, daños indirectos).\u003c/li>\u003cli>Señala los 3-4 puntos en los que corregiste o matizaste la propuesta de la IA, y por qué.\u003c/li>\u003c/ol>","bRules":["Usa solo Microsoft Copilot, con el modelo que viene por defecto y entrando con tu cuenta de la universidad.","La traducción automática es solo un borrador: revisa y justifica lo que cambias."],"promptB":"Traduce al español este fragmento de un contrato de prestación de servicios de interpretación de conferencia, redactado en francés:\n\nLe Prestataire ne pourra être tenu responsable des conséquences dommageables résultant d'une interprétation erronée que dans la mesure où celle-ci procéderait d'une faute lourde ou intentionnelle imputable à l'interprète. En tout état de cause, la responsabilité du Prestataire, toutes causes confondues, sera limitée au montant des honoraires perçus au titre de la mission concernée. Le Prestataire ne pourra en aucun cas être tenu responsable des dommages indirects, tels que la perte d'image, de clientèle ou de chiffre d'affaires, subis par le Client du fait de l'exécution du présent contrat.","recIntro":"Responde de memoria. No tienes el contrato, tu traducción ni la IA disponibles.","recQs":["Explica en tus propias palabras, en español, qué obligación o efecto jurídico establecía la cláusula que tradujiste.","¿Qué excepciones o límites contemplaba la cláusula (si los había)? Descríbelos de memoria.","Escribe de memoria la traducción al español de 3 términos clave del fragmento (indica el término en francés y tu propuesta)."],"likert":["Estoy seguro/a de que recordaré con precisión la terminología dentro de una semana.","Entiendo en profundidad el efecto jurídico de la cláusula, no solo su traducción literal.","El esfuerzo mental que me ha exigido la tarea ha sido alto.","Podría traducir una cláusula similar sin apoyo, sin volver a consultar esta."],"post":{"min":15,"q1":{"title":"Efecto jurídico de la cláusula","prompt":"Explica de nuevo, de memoria, el efecto jurídico de la cláusula que tradujiste hace una semana."},"q2":{"title":"Transferencia","img":"img/transferencia.png","prompt":"Traduce al español esta nueva cláusula, terminológicamente emparentada con las que trabajaste (pertenece también a un contrato de prestación de servicios lingüísticos), sin ayuda de IA ni diccionarios.","answerHint":"Escribe aquí tu traducción de la cláusula."},"q3":{"title":"Términos","prompt":"Señala qué términos de la cláusula nueva reconoces por haberlos trabajado antes, y cuáles te han costado más."}},"footer":"Traducción Jurídica Francés-Español · Descarga cognitiva e IA"};
+var CFG = {"dir":"tj","kind":"translation","asig":"Traducción Jurídica FR-ES","asigLarga":"Traducción Jurídica Francés-Español","titulo":"El contrato con la IA","subtitulo":"Traducir cláusulas jurídicas con y sin inteligencia artificial — un experimento sobre lo que de verdad se te queda","desc1":"El contrato con la IA: traducción de cláusulas jurídicas con y sin IA.","actividadJson":"Descarga cognitiva e IA — Traducción Jurídica FR-ES, Práctica 1 (El contrato con la IA)","minA":30,"minB":30,"minPost":15,"objetivo":["Vas a traducir del francés al español dos cláusulas contractuales de dificultad equivalente, cada una enmarcada en un contrato de prestación de servicios lingüísticos (traducción en un caso, interpretación en el otro). Una la traducirás sin ningún apoyo de IA, usando solo diccionarios especializados, corpus paralelos o glosarios propios; la otra, con apoyo de traducción automática y posedición.","A diferencia de un ejercicio de traducción de frases sueltas, aquí tienes el contrato completo como contexto: tipo de servicio, partes implicadas y las cláusulas que rodean el fragmento. Ese contexto debería ayudarte a entender mejor el efecto jurídico del fragmento resaltado antes de traducirlo.","\u003cb>Importante:\u003c/b> en la condición con IA, la traducción automática es solo un borrador: sigue siendo tu responsabilidad revisar la precisión terminológica y el efecto jurídico de cada cláusula."],"likert":["Estoy seguro/a de que recordaré con precisión la terminología dentro de una semana.","Entiendo en profundidad el efecto jurídico de la cláusula, no solo su traducción literal.","El esfuerzo mental que me ha exigido la tarea ha sido alto.","Podría traducir una cláusula similar sin apoyo, sin volver a consultar esta."],"post":{"min":20,"q1":{"title":"Efecto jurídico de la cláusula","prompt":"Explica de nuevo, de memoria, el efecto jurídico de cada una de las dos cláusulas que tradujiste hace una semana.","items":["Cláusula de confidencialidad (contrato de servicios de traducción)","Cláusula de responsabilidad (contrato de interpretación)"]},"q2":{"title":"Transferencia","img":"img/transferencia.png","prompt":"Traduce al español esta nueva cláusula, terminológicamente emparentada con las que trabajaste (pertenece también a un contrato de prestación de servicios lingüísticos), sin ayuda de IA ni diccionarios.","answerHint":"Escribe aquí tu traducción de la cláusula."},"q3":{"title":"Términos","prompt":"Señala qué términos de la cláusula nueva reconoces por haberlos trabajado antes, y cuáles te han costado más."}},"footer":"Traducción Jurídica Francés-Español · Descarga cognitiva e IA","taskX":{"name":"Contrato de servicios de traducción · Artículo 5 — Confidencialidad","img":"img/texto-a.png","manualIntro":"\u003cp>Este fragmento pertenece a un contrato de prestación de servicios de traducción, relectura y revisión de documentos, redactado en francés jurídico estándar entre un prestador de servicios lingüísticos y un cliente. Lee primero el contrato completo para situar el fragmento en su contexto (tipo de cláusulas que lo rodean, terminología del sector, estructura habitual de este tipo de contrato). El fragmento que debes traducir al español está resaltado (\u003cb>Artículo 5 — Confidencialidad\u003c/b>).\u003c/p>\u003ch3>Instrucciones\u003c/h3>\u003col>\u003cli>Lee el contrato completo para situar el fragmento resaltado (Artículo 5 — Confidencialidad) en su contexto.\u003c/li>\u003cli>Traduce al español el fragmento resaltado utilizando exclusivamente diccionarios especializados, corpus paralelos o tus propios glosarios. No emplees ningún asistente de IA ni traductor automático.\u003c/li>\u003cli>Señala los 3-4 términos u opciones de traducción que te hayan planteado más dudas y justifica brevemente la solución elegida.\u003c/li>\u003c/ol>","aiIntro":"\u003cp>Este fragmento pertenece a un contrato de prestación de servicios de traducción, relectura y revisión de documentos, redactado en francés jurídico estándar entre un prestador de servicios lingüísticos y un cliente. Lee primero el contrato completo para situar el fragmento en su contexto (tipo de cláusulas que lo rodean, terminología del sector, estructura habitual de este tipo de contrato). El fragmento que debes traducir al español está resaltado (\u003cb>Artículo 5 — Confidencialidad\u003c/b>).\u003c/p>\u003ch3>Instrucciones\u003c/h3>\u003col>\u003cli>Lee el contrato completo para situar el fragmento resaltado (Artículo 5 — Confidencialidad) en su contexto.\u003c/li>\u003cli>Genera un primer borrador de la traducción del fragmento resaltado con \u003cb>Microsoft Copilot\u003c/b> (con tu cuenta de la universidad).\u003c/li>\u003cli>Poséditalo: revisa y corrige el borrador prestando especial atención a la precisión terminológica y al efecto jurídico de cada cláusula (alcance de la obligación, plazo, excepciones).\u003c/li>\u003cli>Señala los 3-4 puntos en los que corregiste o matizaste la propuesta de la IA, y por qué.\u003c/li>\u003c/ol>","promptAI":"Traduce al español este fragmento de un contrato de prestación de servicios de traducción, relectura y revisión de documentos, redactado en francés:\n\nLe Prestataire s'engage à garder strictement confidentielle toute information, de quelque nature que ce soit, contenue dans les documents qui lui sont confiés par le Client aux fins de traduction, ainsi que toute information dont il pourrait avoir connaissance à l'occasion de l'exécution du présent contrat. Cette obligation de confidentialité s'applique également aux traducteurs, relecteurs et collaborateurs auxquels le Prestataire ferait appel, qui devront être liés par un engagement de confidentialité équivalent. L'obligation de confidentialité prévue au présent article demeurera en vigueur pendant une durée de cinq (5) ans à compter de la fin de la mission, sauf si les informations concernées sont ou deviennent publiques sans faute du Prestataire."},"taskY":{"name":"Contrato de interpretación · Artículo 5 — Responsabilidad","img":"img/texto-b.png","manualIntro":"\u003cp>Este fragmento pertenece a un contrato de prestación de servicios de interpretación de conferencia, redactado en francés jurídico estándar entre un prestador de servicios lingüísticos y un cliente. Lee primero el contrato completo para situar el fragmento en su contexto. El fragmento que debes traducir al español está resaltado (\u003cb>Artículo 5 — Responsabilidad\u003c/b>).\u003c/p>\u003ch3>Instrucciones\u003c/h3>\u003col>\u003cli>Lee el contrato completo para situar el fragmento resaltado (Artículo 5 — Responsabilidad) en su contexto.\u003c/li>\u003cli>Traduce al español el fragmento resaltado utilizando exclusivamente diccionarios especializados, corpus paralelos o tus propios glosarios. No emplees ningún asistente de IA ni traductor automático.\u003c/li>\u003cli>Señala los 3-4 términos u opciones de traducción que te hayan planteado más dudas y justifica brevemente la solución elegida.\u003c/li>\u003c/ol>","aiIntro":"\u003cp>Este fragmento pertenece a un contrato de prestación de servicios de interpretación de conferencia, redactado en francés jurídico estándar entre un prestador de servicios lingüísticos y un cliente. Lee primero el contrato completo para situar el fragmento en su contexto. El fragmento que debes traducir al español está resaltado (\u003cb>Artículo 5 — Responsabilidad\u003c/b>).\u003c/p>\u003ch3>Instrucciones\u003c/h3>\u003col>\u003cli>Lee el contrato completo para situar el fragmento resaltado (Artículo 5 — Responsabilidad) en su contexto.\u003c/li>\u003cli>Genera un primer borrador de la traducción del fragmento resaltado con \u003cb>Microsoft Copilot\u003c/b> (con tu cuenta de la universidad).\u003c/li>\u003cli>Poséditalo: revisa y corrige el borrador prestando especial atención a la precisión terminológica y al efecto jurídico de cada cláusula (límites de responsabilidad, exclusiones, daños indirectos).\u003c/li>\u003cli>Señala los 3-4 puntos en los que corregiste o matizaste la propuesta de la IA, y por qué.\u003c/li>\u003c/ol>","promptAI":"Traduce al español este fragmento de un contrato de prestación de servicios de interpretación de conferencia, redactado en francés:\n\nLe Prestataire ne pourra être tenu responsable des conséquences dommageables résultant d'une interprétation erronée que dans la mesure où celle-ci procéderait d'une faute lourde ou intentionnelle imputable à l'interprète. En tout état de cause, la responsabilité du Prestataire, toutes causes confondues, sera limitée au montant des honoraires perçus au titre de la mission concernée. Le Prestataire ne pourra en aucun cas être tenu responsable des dommages indirects, tels que la perte d'image, de clientèle ou de chiffre d'affaires, subis par le Client du fait de l'exécution du présent contrat."},"manualRules":["Sin IA ni traductor automático: solo diccionarios especializados, corpus paralelos o tus propios glosarios. En esta tarea los cuadros no permiten pegar texto."],"aiRules":["Usa solo Microsoft Copilot, con el modelo que viene por defecto y entrando con tu cuenta de la universidad.","La traducción automática es solo un borrador: revisa y justifica lo que cambias."],"rec":{"intro":"Responde de memoria sobre cada una de las dos cláusulas. No tienes los contratos, tus traducciones ni la IA disponibles.","blocks":[{"title":"Cláusula de confidencialidad (contrato de servicios de traducción)","qs":["Explica en tus propias palabras, en español, qué obligación o efecto jurídico establecía la cláusula.","¿Qué excepciones o límites contemplaba la cláusula (si los había)? Descríbelos de memoria.","Escribe de memoria la traducción al español de 3 términos clave del fragmento (indica el término en francés y tu propuesta)."]},{"title":"Cláusula de responsabilidad (contrato de interpretación)","qs":["Explica en tus propias palabras, en español, qué obligación o efecto jurídico establecía la cláusula.","¿Qué excepciones o límites contemplaba la cláusula (si los había)? Descríbelos de memoria.","Escribe de memoria la traducción al español de 3 términos clave del fragmento (indica el término en francés y tu propuesta)."]}],"extra":[]},"prefix":"J","minR":15};
 
 (function(){
   var s = ""; try { s = sessionStorage.getItem("dc_unlocked") || ""; } catch(e){}
@@ -136,12 +142,13 @@ var CFG = {"dir":"tj","kind":"translation","asig":"Traducción Jurídica FR-ES",
 })();
 
 function startApp(){
-var KEY = "dc_" + CFG.dir + "_post_v1";
+var KEY = "dc_" + CFG.dir + "_post_v2";
 var MIN = CFG.post.min;
-var STEPS = ["Inicio","1 · Recuerdo","2 · Transferencia","3 · Reflexión","Entrega"];
-function fresh(){ return { v:1, step:0, id:"", inicio:null, fin:null, tiempos:{}, tarea:"", q1:"", q2:"", q3:"", q4:"" }; }
+var STEPS = ["Inicio","1 · Recuerdo","2 · Transferencia","3 · Reflexión","4 · Cuestionario","Entrega"];
+var LAST = 5;
+function fresh(){ return { v:2, step:0, id:"", inicio:null, fin:null, tiempos:{}, ev:{ pegado_bloqueado:0, salidas_pestana:0 },
+  q1: CFG.post.q1.items.map(function(){ return ""; }), q2:"", q3:"", q4:"", conf:{ rec1:"", rec2:"", transf:"", term:"" }, qq:qqFresh() }; }
 var S; try { S = JSON.parse(sessionStorage.getItem(KEY) || "null"); } catch(e){ S = null; }
-if (!S || S.v !== 1) S = fresh();
 function save(){ try { sessionStorage.setItem(KEY, JSON.stringify(S)); } catch(e){} }
 
 var COPILOT = "https://m365.cloud.microsoft/chat";
@@ -153,8 +160,9 @@ function toast(msg){ var t = document.getElementById("toast"); t.textContent = m
 function setPath(p,v){ var ks = p.split("."), last = ks.pop(); var o = ks.reduce(function(o,k){ return o[k]; }, S); o[last] = v; }
 function ta(path, val, nopaste, cls, ph){ return '<textarea '+ATTR+' data-path="'+path+'"'+(nopaste?' data-nopaste="1"':'')+(cls?' class="'+cls+'"':'')+(ph?' placeholder="'+esc(ph)+'"':'')+'>'+esc(val)+'</textarea>'; }
 function rulesBox(items){ return '<div class="rules"><b>Condiciones de realización</b><ul>' + items.map(function(i){ return '<li>'+i+'</li>'; }).join("") + '</ul></div>'; }
-function olist(items){ return '<ol>' + items.map(function(i){ return '<li>'+i+'</li>'; }).join("") + '</ol>'; }
 function mkRows(n, keys){ var a = []; for (var i=0;i<n;i++){ var o = {}; keys.forEach(function(k){ o[k]=""; }); a.push(o); } return a; }
+function idRow(){ return '<div class="idrow"><span class="pref">'+CFG.prefix+'</span><input type="text" inputmode="numeric" maxlength="3" pattern="[0-9]{3}" autocomplete="off" spellcheck="false" placeholder="000" id="idfield" value="'+esc(S.id)+'"></div>'; }
+function versionDe(id){ return (parseInt(String(id).slice(-1), 10) % 2 === 0) ? "N" : "S"; }
 var ALERT = '<div class="alert-red">⚠ Esta parte se hace SIN IA de ningún tipo.<small>Tranquilo/a: no te preocupes, no penaliza.</small></div>';
 function stepper(){
   document.getElementById("stepper").innerHTML = STEPS.map(function(n,i){
@@ -181,7 +189,7 @@ function commonListeners(){
   st.addEventListener("change", function(e){ var p = e.target.dataset && e.target.dataset.path; if (p){ setPath(p, e.target.value); save(); } });
   ["paste","drop"].forEach(function(ev){
     st.addEventListener(ev, function(e){
-      if (e.target.dataset && e.target.dataset.nopaste){ e.preventDefault(); toast("En esta hoja no se puede pegar texto: escribe tu respuesta."); }
+      if (e.target.dataset && e.target.dataset.nopaste){ e.preventDefault(); if (S.ev){ S.ev.pegado_bloqueado++; save(); } toast("En esta hoja no se puede pegar texto: escribe tu respuesta."); }
     });
   });
 }
@@ -197,6 +205,49 @@ function dlJson(obj, name){
   toast("Archivo " + name + " descargado. Revisa tu carpeta de descargas.");
 }
 
+
+var DQ_LIK = [
+  'Habría aprendido más si hubiera hecho las dos tareas sin IA.',
+  'Con la IA trabajé con menos esfuerzo mental que sin ella.',
+  'Cuando usé la IA, revisé con detalle cada propuesta antes de aceptarla.',
+  'Ahora mismo me sentiría capaz de hacer estas tareas sin IA.',
+  'Me preocupa depender demasiado de la IA para tareas como estas.',
+  'Usar la IA en tareas como estas me parece útil para mi futuro profesional.'
+];
+function qqFresh(){ return { rep:"", ia:"", aviso:"", rec_manual:"", rec_ia:"", esfuerzo:"", lk:["","","","","",""], comentario:"" }; }
+function pctOpts(val){ var h = '<option value="">Elige…</option>'; for (var i=0;i<=100;i+=10) h += '<option value="'+i+'"'+(String(val)===String(i)?' selected':'')+'>'+i+' %</option>'; return h; }
+function confSel(path, val){
+  return '<div class="confrow"><label><b>¿Qué confianza tienes en que lo que has escrito en esta parte es correcto?</b></label><select data-path="'+path+'" style="max-width:150px">'+pctOpts(val)+'</select></div>';
+}
+function radiosQ(path, val, opts){
+  return opts.map(function(o){ return '<label class="chk"><input type="radio" name="'+path+'" value="'+esc(o)+'" data-path="'+path+'"'+(val===o?' checked':'')+'><span>'+esc(o)+'</span></label>'; }).join("");
+}
+function viewCuest(){
+  var q = S.qq;
+  var eff = '<option value="">Elige…</option>';
+  for (var i=1;i<=9;i++) eff += '<option value="'+i+'"'+(String(q.esfuerzo)===String(i)?' selected':'')+'>'+i+(i===1?' · muy, muy poco esfuerzo':i===5?' · esfuerzo medio':i===9?' · muchísimo esfuerzo':'')+'</option>';
+  var lik = DQ_LIK.map(function(t,i){ return '<tr><td class="s">'+t+'</td>' + [1,2,3,4,5].map(function(v){ return '<td><input type="radio" name="qq.lk.'+i+'" value="'+v+'" data-path="qq.lk.'+i+'"'+(String(q.lk[i])===String(v)?' checked':'')+' aria-label="'+v+'"></td>'; }).join("") + '</tr>'; }).join("");
+  return '<div class="card"><h2>Cuestionario final</h2><p>Son preguntas rápidas: marca la opción que mejor te describa. No hay respuestas correctas ni penalizan.</p>' +
+    '<h3>Entre las dos sesiones</h3>' +
+    '<p>¿Has repasado o vuelto a trabajar los contenidos de la actividad?</p>' + radiosQ('qq.rep', q.rep, ['No','Un poco','Bastante']) +
+    '<p>¿Has consultado a alguna IA sobre estos contenidos?</p>' + radiosQ('qq.ia', q.ia, ['No','Sí, alguna vez','Sí, bastante']) +
+    '<p>Antes de empezar hoy, ¿sabías que habría esta hoja de seguimiento?</p>' + radiosQ('qq.aviso', q.aviso, ['No','Lo sospechaba','Sí']) +
+    '<h3>Lo que recuerdas</h3>' +
+    '<p>¿Qué porcentaje de lo trabajado en la tarea <b>SIN IA</b> (manual) crees que recuerdas ahora?</p><select data-path="qq.rec_manual" style="max-width:150px">'+pctOpts(q.rec_manual)+'</select>' +
+    '<p>¿Qué porcentaje de lo trabajado en la tarea <b>CON IA</b> crees que recuerdas ahora?</p><select data-path="qq.rec_ia" style="max-width:150px">'+pctOpts(q.rec_ia)+'</select>' +
+    '<p>¿Cuánto esfuerzo mental te ha costado esta hoja de seguimiento?</p><select data-path="qq.esfuerzo" style="max-width:300px">'+eff+'</select>' +
+    '<h3>Tu opinión</h3><p>Valora de 1 a 5 (1 = totalmente en desacuerdo · 5 = totalmente de acuerdo).</p>' +
+    '<table class="likert"><thead><tr><th>Afirmación</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th></tr></thead><tbody>'+lik+'</tbody></table>' +
+    '<h3>Comentario (opcional)</h3><p style="font-size:13px">Si quieres, cuéntanos algo sobre cómo has vivido la actividad.</p>' +
+    '<textarea '+ATTR+' data-nopaste="1" data-path="qq.comentario">'+esc(q.comentario)+'</textarea>' +
+    '<div class="btnrow"><span style="flex:1"></span><button class="btn amar" data-finish="cuest">Terminar →</button></div></div>';
+}
+function qqMissing(){ var q = S.qq; var n = 0; ["rep","ia","aviso","rec_manual","rec_ia","esfuerzo"].forEach(function(k){ if (q[k] === "") n++; }); q.lk.forEach(function(x){ if (x === "") n++; }); return n; }
+function evtInit(lastStep){
+  document.addEventListener("visibilitychange", function(){ if (document.hidden && S.step > 0 && S.step < lastStep){ S.ev.salidas_pestana++; save(); } });
+}
+
+if (!S || S.v !== 2) S = fresh();
 function timerBar(){ if (!S.tiempos.start) return ""; return '<div class="timer" id="timer" data-start="'+S.tiempos.start+'" data-min="'+MIN+'"><span>Tiempo disponible: '+MIN+' minutos (orientativo; la profesora marca el ritmo)</span><b id="timerval">--:--</b></div>'; }
 function tick(){ var el = document.getElementById("timer"); if (!el) return; var left = Math.round(+el.dataset.min*60 - (Date.now()-(+el.dataset.start))/1000); var a = Math.abs(left);
   document.getElementById("timerval").textContent = (left<0?"+":"") + String(Math.floor(a/60)).padStart(2,"0") + ":" + String(a%60).padStart(2,"0"); el.classList.toggle("warn", left <= 180); }
@@ -207,64 +258,75 @@ function viewInicio(){
     '<div class="rules"><b>Condiciones de realización</b><ul><li>Trabaja de forma individual, en este ordenador, de memoria y sin ninguna ayuda (apuntes, buscadores, compañeros/as, diccionarios ni IA).</li>' +
     '<li>Los cuadros de respuesta no subrayan errores ni corrigen automáticamente lo que escribes, y no permiten pegar texto.</li>' +
     '<li>Tu trabajo se guarda en esta pestaña mientras no la cierres. Al final descargarás un archivo con tus respuestas.</li></ul></div>' +
-    '<h3>Tu identificador</h3><p>Los mismos tres últimos dígitos de tu clave académica que usaste en la actividad principal. No escribas tu nombre en ningún sitio.</p>' +
-    '<div class="idrow"><input type="text" inputmode="numeric" maxlength="3" pattern="[0-9]{3}" autocomplete="off" spellcheck="false" placeholder="000" id="idfield" value="'+esc(S.id)+'"></div>' +
+    '<h3>Tu identificador</h3><p>Los mismos tres últimos dígitos de tu clave académica que usaste en la actividad principal (la letra ya está puesta). No escribas tu nombre en ningún sitio.</p>' +
+    idRow() +
     '<p><b>Tiempo disponible: '+MIN+' minutos.</b> Empieza cuando la profesora lo indique.</p>' +
     '<div class="btnrow"><button class="btn amar" id="go0">Empezar →</button></div></div>';
 }
 function viewQ1(){
-  var sel = '<div class="idrow" style="margin:6px 0 14px"><label for="tareasel"><b>Tarea sobre la que respondes:</b></label><select id="tareasel" data-path="tarea" style="max-width:300px"><option value="">Elige…</option>' +
-    ['A — manual (sin IA)','B — con IA'].map(function(o){ return '<option'+(o===S.tarea?' selected':'')+'>'+o+'</option>'; }).join("") + '</select></div>';
-  return timerBar() + '<div class="card"><div class="headsplit"><div><h2>1. '+CFG.post.q1.title+'</h2></div>' + ALERT + '</div>' + sel +
-    '<p>'+CFG.post.q1.prompt+'</p>' + ta('q1',S.q1,true,'big') +
+  var blocks = CFG.post.q1.items.map(function(name,i){
+    return '<h3 class="blk">'+name+'</h3>' + ta('q1.'+i,S.q1[i],true,'big') + confSel('conf.rec'+(i+1), S.conf['rec'+(i+1)]);
+  }).join("");
+  return timerBar() + '<div class="card"><div class="headsplit"><div><h2>1. '+CFG.post.q1.title+'</h2></div>' + ALERT + '</div>' +
+    '<p>'+CFG.post.q1.prompt+'</p>' + blocks +
     '<div class="btnrow"><span style="flex:1"></span><button class="btn amar" data-finish="q1">Terminar esta parte y continuar →</button></div></div>';
 }
 function viewQ2(){
   var q = CFG.post.q2;
   var left = q.img ? '<div class="casebox zoomable" style="margin-bottom:0"><img src="'+q.img+'" alt="Texto de transferencia (imagen)"></div><p class="hintzoom">Pulsa sobre el texto para verlo más grande.</p>' : '<div class="explain">'+q.html+'</div>';
   return timerBar() + '<div class="split"><div class="left"><div class="card"><h2>2. '+q.title+'</h2><p style="margin-top:0">'+q.prompt+'</p>' + left + '</div></div>' +
-    '<div class="right"><div class="card">' + ALERT + '<h3>Tu respuesta</h3><p>'+q.answerHint+'</p>' + ta('q2',S.q2,true,'big tall'+(ISCODE?' code':'')) +
+    '<div class="right"><div class="card">' + ALERT + '<h3>Tu respuesta</h3><p>'+q.answerHint+'</p>' + ta('q2',S.q2,true,'big tall'+(ISCODE?' code':'')) + confSel('conf.transf', S.conf.transf) +
     '<div class="btnrow"><span style="flex:1"></span><button class="btn amar" data-finish="q2">Terminar esta parte y continuar →</button></div></div></div></div>';
 }
 function viewQ3(){
-  return timerBar() + '<div class="card"><h2>3. '+CFG.post.q3.title+'</h2><p>'+CFG.post.q3.prompt+'</p>' + ta('q3',S.q3,true,'big') +
-    '<h2 style="margin-top:22px">4. Tu confianza de aquel día</h2><p>Vuelve a valorar tu confianza de aquel día: en retrospectiva, ¿tu predicción de la semana pasada fue acertada?</p>' + ta('q4',S.q4,true,'big') +
-    '<div class="btnrow"><span style="flex:1"></span><button class="btn amar" data-finish="q3">Terminar →</button></div></div>';
+  return timerBar() + '<div class="card"><h2>3. '+CFG.post.q3.title+'</h2><p>'+CFG.post.q3.prompt+'</p>' + ta('q3',S.q3,true,'big') + confSel('conf.term', S.conf.term) +
+    '<h2 style="margin-top:22px">Tu confianza de aquel día</h2><p>Vuelve a valorar tu confianza de aquel día: en retrospectiva, ¿tu predicción de la semana pasada fue acertada?</p>' + ta('q4',S.q4,true,'big') +
+    '<div class="btnrow"><span style="flex:1"></span><button class="btn amar" data-finish="q3">Terminar esta parte y continuar →</button></div></div>';
 }
 function viewEntrega(){
-  var n = [S.q1,S.q2,S.q3,S.q4].filter(function(x){ return x.trim(); }).length;
-  return '<div class="card"><h2>¡Has terminado! Descarga y entrega tus respuestas</h2><p class="ok">Respondidas: '+n+' de 4 preguntas</p>' +
-    '<ol><li>Pulsa <b>Descargar mis respuestas</b>: se guardará un archivo con tus tres dígitos como nombre (por ejemplo, <b>'+esc(S.id||'274')+'_diferido.json</b>).</li>' +
+  var n = S.q1.concat([S.q2,S.q3,S.q4]).filter(function(x){ return String(x).trim(); }).length;
+  return '<div class="card"><h2>¡Has terminado! Descarga y entrega tus respuestas</h2><p class="ok">Respondidas: '+n+' de '+(S.q1.length+3)+' preguntas abiertas</p>' +
+    '<ol><li>Pulsa <b>Descargar mis respuestas</b>: se guardará un archivo con tu código como nombre (por ejemplo, <b>'+esc(CFG.prefix+(S.id||'274'))+'_diferido.json</b>).</li>' +
     '<li>Entrega este archivo .json que has descargado en la tarea «Descarga cognitiva - segunda parte» del aula de Moodlerooms (sección «Descarga cognitiva»).</li></ol>' +
     '<div class="btnrow"><button class="btn amar" id="dl">⬇ Descargar mis respuestas</button></div></div>';
 }
 function render(){
   stepper();
-  var views = [viewInicio, viewQ1, viewQ2, viewQ3, viewEntrega];
+  var views = [viewInicio, viewQ1, viewQ2, viewQ3, viewCuest, viewEntrega];
   document.getElementById("stage").classList.toggle("wide", S.step === 2);
   document.getElementById("stage").innerHTML = views[S.step]();
   window.scrollTo(0,0); tick(); wire();
 }
 function finish(which){
-  if (which === "q1"){ if (!S.tarea && !confirm("No has indicado sobre qué tarea (A o B) respondes. ¿Continuar de todas formas?")) return;
-    if (!confirm("¿Terminar esta parte? Después no podrás volver a ella.")) return; S.step = 2; }
+  if (which === "q1"){ if (!confirm("¿Terminar esta parte? Después no podrás volver a ella.")) return; S.step = 2; }
   else if (which === "q2"){ if (!confirm("¿Terminar esta parte? Después no podrás volver a ella.")) return; S.step = 3; }
-  else if (which === "q3"){ if (!confirm("¿Terminar la hoja? Después no podrás volver a ella.")) return; S.fin = Date.now(); S.tiempos.end = S.fin; S.step = 4; }
+  else if (which === "q3"){ if (!confirm("¿Terminar esta parte? Después no podrás volver a ella.")) return; S.step = 4; }
+  else if (which === "cuest"){ var m = qqMissing(); if (!confirm(m ? "Te faltan "+m+" respuestas del cuestionario. ¿Terminar de todas formas?" : "¿Terminar la hoja? Después no podrás volver a ella.")) return; S.fin = Date.now(); S.tiempos.end = S.fin; S.step = 5; }
   save(); render();
 }
+function versionDeId(){ return versionDe(S.id); }
 function download(){
+  var cod = versionDeId() === "N" ? ["manual","con_IA"] : ["con_IA","manual"];
   var out = {
     actividad: CFG.actividadJson + " — hoja de recuerdo diferido",
-    version_web: 1, codigo_alumno: S.id, inicio: S.inicio, fin: S.fin,
+    version_web: 2, codigo_alumno: CFG.prefix + S.id, inicio: S.inicio, fin: S.fin,
     inicio_legible: S.inicio ? new Date(S.inicio).toISOString() : null, fin_legible: S.fin ? new Date(S.fin).toISOString() : null,
     duracion_segundos: S.tiempos.start && S.tiempos.end ? Math.round((S.tiempos.end - S.tiempos.start)/1000) : null,
-    tarea_sobre_la_que_responde: S.tarea,
-    recuerdo_diferido: S.q1,
-    transferencia: S.q2,
-    reconocimiento_o_logica_util: S.q3,
-    confianza_retrospectiva: S.q4
+    version_diseno_deducida_del_id: versionDeId(),
+    recuerdo_diferido: CFG.post.q1.items.map(function(name,i){ return { contenido: name, condicion: cod[i], respuesta: S.q1[i], confianza_0_100: S.conf['rec'+(i+1)] }; }),
+    transferencia: { respuesta: S.q2, confianza_0_100: S.conf.transf },
+    reconocimiento_o_logica_util: { respuesta: S.q3, confianza_0_100: S.conf.term },
+    confianza_retrospectiva: S.q4,
+    cuestionario_final: {
+      repaso_entre_sesiones: S.qq.rep, consulta_ia_entre_sesiones: S.qq.ia, sabia_que_habria_hoja: S.qq.aviso,
+      porcentaje_recordado_tarea_sin_ia: S.qq.rec_manual, porcentaje_recordado_tarea_con_ia: S.qq.rec_ia,
+      esfuerzo_mental_1_a_9: S.qq.esfuerzo,
+      opinion_1_a_5: DQ_LIK.map(function(t,i){ return { afirmacion: t, valor: S.qq.lk[i] }; }),
+      comentario: S.qq.comentario
+    },
+    eventos: S.ev
   };
-  dlJson(out, S.id + "_diferido.json");
+  dlJson(out, CFG.prefix + S.id + "_diferido.json");
 }
 function wire(){
   var st = document.getElementById("stage");
@@ -281,6 +343,7 @@ function wire(){
   wireZoom(st);
 }
 commonListeners();
+evtInit(LAST);
 render();
 }
 
