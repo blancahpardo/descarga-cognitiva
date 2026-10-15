@@ -1,5 +1,5 @@
 {
-  "principal": true,
+  "principal": false,
   "retro": false,
   "posterior": false
 }
