@@ -139,7 +139,7 @@ function viewEntrega(){
   var n = S.frases.filter(function(r){ return r.correccion.trim(); }).length;
   return '<div class="card"><h2>¡Has terminado! Descarga y entrega tus respuestas</h2><p class="ok">Frases: '+n+' de 6 · Párrafo de transferencia: '+(S.parrafo.trim()?'respondido':'sin respuesta')+'</p>' +
     '<ol><li>Pulsa <b>Descargar mis respuestas</b>: se guardará un archivo con tus tres dígitos como nombre (por ejemplo, <b>'+esc(S.id||'274')+'_diferido.json</b>).</li>' +
-    '<li>Entrega este archivo .json que has descargado a través de la tarea habilitada en el aula de Moodlerooms.</li></ol>' +
+    '<li>Entrega este archivo .json que has descargado en la tarea «Descarga cognitiva - segunda parte» del aula de Moodlerooms (apartado «Descarga cognitiva»).</li></ol>' +
     '<div class="btnrow"><button class="btn amar" id="dl">⬇ Descargar mis respuestas</button></div></div>';
 }
 function render(){
