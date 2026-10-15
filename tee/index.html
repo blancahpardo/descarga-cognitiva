@@ -163,9 +163,9 @@ function stepper(){
     return '<span class="'+(i<S.step?'done':i===S.step?'now':'')+'">'+(i<S.step?'✓ ':'')+n+'</span>';
   }).join("");
 }
-function timerBar(key, minutes){
+function timerBar(key, minutes, label){
   var t = S.tiempos[key]; if (!t || !t.start) return "";
-  return '<div class="timer" id="timer" data-start="'+t.start+'" data-min="'+minutes+'"><span>Tiempo disponible: '+minutes+' minutos (orientativo; la profesora marca el ritmo)</span><b id="timerval">--:--</b></div>';
+  return '<div class="timer" id="timer" data-start="'+t.start+'" data-min="'+minutes+'"><span>'+(label||('Tiempo disponible: '+minutes+' minutos'))+' (orientativo; la profesora marca el ritmo)</span><b id="timerval">--:--</b></div>';
 }
 function tick(){
   var el = document.getElementById("timer"); if (!el) return;
@@ -209,10 +209,10 @@ function viewA(){
   if (!t.start) return '<div class="card"><h2>Tarea A — Condición MANUAL (sin IA)</h2>' +
     '<p>Lee el texto con atención, sin usar ningún asistente de IA ni corrector automático. Localiza y corrige todos los errores que encuentres (al menos 10). Para cada corrección, copia la frase con el error, corrígela y di brevemente a qué plano pertenece: ortográfico, ortotipográfico, morfosintáctico, léxico, discursivo o de puntuación.</p>' +
     rulesBox(['Sin IA, sin buscadores y sin apuntes. En esta tarea los cuadros no permiten pegar texto.']) +
-    '<p><b>Tiempo disponible: 25 minutos.</b> El texto aparecerá cuando pulses el botón; empieza cuando la profesora lo indique.</p>' +
+    '<p><b>Tiempo disponible: 20 minutos.</b> El texto aparecerá cuando pulses el botón; empieza cuando la profesora lo indique.</p>' +
     '<div class="btnrow"><button class="btn amar" data-start="a">Empezar la Tarea A</button></div></div>';
   var rows = S.a.rows.map(function(r,i){ return '<tr><td class="n">'+(i+1)+'</td><td>'+ta('a.rows.'+i+'.frase',r.frase,true)+'</td><td>'+ta('a.rows.'+i+'.correccion',r.correccion,true)+'</td><td>'+planoSelect('a.rows.'+i+'.plano',r.plano)+'</td></tr>'; }).join("");
-  return timerBar('a',25) +
+  return timerBar('a',20) +
     '<div class="split"><div class="left"><div class="card"><h2>Tarea A — Condición MANUAL (sin IA)</h2>' +
     '<div class="casebox zoomable" style="margin-bottom:0"><img src="img/texto-a.png" alt="Texto-caso A (imagen)"></div>' +
     '<p class="hintzoom">Pulsa sobre el texto para verlo más grande.</p></div></div>' +
@@ -227,13 +227,13 @@ function viewB(){
   if (!t.start) return '<div class="card"><h2>Tarea B — Condición CON IA</h2>' +
     '<p>Usa <b>Microsoft Copilot</b> (con tu cuenta de la universidad) para que te proponga correcciones del texto. Revisa cada corrección propuesta: acéptala, recházala o matízala, y justifica brevemente por qué (como harías en una posedición profesional). Para cada corrección aceptada, indica a qué plano pertenece. Al final, anota si hubo alguna corrección de la IA que consideraste incorrecta, excesiva o injustificada, y por qué.</p>' +
     rulesBox(['Usa solo Microsoft Copilot, con el modelo que viene por defecto y entrando con tu cuenta de la universidad.','No basta con aceptar lo que proponga: revisa y justifica cada corrección.']) +
-    '<p><b>Tiempo disponible: 25 minutos.</b></p><div class="btnrow"><button class="btn amar" data-start="b">Empezar la Tarea B</button></div></div>';
+    '<p><b>Tiempo disponible: 20 minutos.</b></p><div class="btnrow"><button class="btn amar" data-start="b">Empezar la Tarea B</button></div></div>';
   var rows = S.b.rows.map(function(r,i){ return '<div class="brow"><div class="n">'+(i+1)+'</div>' +
     '<div class="bf">'+ta('b.rows.'+i+'.propuesta',r.propuesta,false).replace('<textarea ','<textarea placeholder="Corrección propuesta por la IA" ')+'</div>' +
     '<div><select data-path="b.rows.'+i+'.decision"><option value="">Decisión…</option>'+['Aceptar','Rechazar','Matizar'].map(function(d){ return '<option'+(d===r.decision?' selected':'')+'>'+d+'</option>'; }).join("")+'</select></div>' +
     '<div>'+planoSelect('b.rows.'+i+'.plano',r.plano)+'</div>' +
     '<div class="bj">'+ta('b.rows.'+i+'.justificacion',r.justificacion,false).replace('<textarea ','<textarea placeholder="Tu justificación" ')+'</div></div>'; }).join("");
-  return timerBar('b',25) +
+  return timerBar('b',20) +
     '<div class="split"><div class="left"><div class="card"><h2>Tarea B — Condición CON IA</h2>' +
     '<div class="casebox zoomable" style="margin-bottom:0"><img src="img/texto-b.png" alt="Texto-caso B (imagen)"></div>' +
     '<p class="hintzoom">Pulsa sobre el texto para verlo más grande.</p>' +
@@ -259,15 +259,16 @@ function viewRecuerdo(){
   if (!t.start) return '<div class="card"><h2>Hoja de recuerdo inmediato</h2>' +
     '<p>Corrige cada frase e indica a qué plano de corrección pertenece el error. No tienes el texto-caso ni la IA disponibles. Las frases son nuevas: no aparecían en el texto que corregiste.</p>' +
     rulesBox(['Responde de memoria, sin ninguna ayuda (apuntes, buscadores, compañeros/as ni IA). En esta hoja los cuadros no permiten pegar texto.']) +
+    '<p><b>Tiempo disponible: 10 minutos</b> para esta hoja y el cuestionario de autoevaluación que viene a continuación.</p>' +
     '<div class="btnrow"><button class="btn amar" data-start="r">Empezar</button></div></div>';
   var rows = S.r.rows.map(function(r,i){ return '<div class="recrow"><div class="casebox" style="margin:0"><img src="img/rec-'+(i+1)+'.png" alt="Frase '+(i+1)+' (imagen)"></div>' +
     '<div class="recans">'+ta('r.rows.'+i+'.correccion',r.correccion,true)+planoSelect('r.rows.'+i+'.plano',r.plano)+'</div></div>'; }).join("");
-  return '<div class="card"><h2>Hoja de recuerdo inmediato</h2><p>Escribe la frase corregida y elige el plano al que pertenece el error.</p>' + rows +
+  return timerBar('r',10,'Recuerdo inmediato + autoevaluación: 10 minutos') + '<div class="card"><h2>Hoja de recuerdo inmediato</h2><p>Escribe la frase corregida y elige el plano al que pertenece el error.</p>' + rows +
     '<div class="btnrow"><span style="flex:1"></span><button class="btn amar" data-finish="r">Terminar y continuar →</button></div></div>';
 }
 
 function viewAuto(){
-  return '<div class="card"><h2>Cuestionario de autoevaluación</h2><p><b>Responde antes de conocer tu resultado en la hoja de recuerdo.</b></p>' +
+  return timerBar('r',10,'Recuerdo inmediato + autoevaluación: 10 minutos') + '<div class="card"><h2>Cuestionario de autoevaluación</h2><p><b>Responde antes de conocer tu resultado en la hoja de recuerdo.</b></p>' +
     '<h3>¿Cuántas de las 6 frases crees que has corregido correctamente?</h3><input type="number" min="0" max="6" step="1" inputmode="numeric" data-path="auto.n" data-nopaste="1" value="'+esc(S.auto.n)+'" style="max-width:120px" placeholder="0 a 6">' +
     '<h3>¿En qué condición (manual o con IA) crees que se te ha quedado mejor el criterio de corrección?</h3>' +
     '<select data-path="auto.cond" style="max-width:260px"><option value="">Elige…</option>'+['Manual','Con IA'].map(function(o){ return '<option'+(o===S.auto.cond?' selected':'')+'>'+o+'</option>'; }).join("")+'</select>' +
