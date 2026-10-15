@@ -23,6 +23,20 @@ header.top p{ margin:0; font-size:13px; color:#C9D6DD; }
 .stepper span.done{ background:rgba(255,255,255,.28); color:#fff; }
 .stepper span.now{ background:var(--amar); color:var(--azul-d); font-weight:bold; }
 main{ max-width:1100px; margin:0 auto; padding:22px 4vw 60px; }
+main.wide{ max-width:none; padding:14px 1.2vw 40px; }
+.split{ display:grid; grid-template-columns:1fr 1fr; gap:16px; align-items:start; }
+.split .left{ position:sticky; top:66px; }
+.split .card{ margin-bottom:0; padding:18px 20px; }
+.split .card h2{ font-size:19px; }
+.split .right .card > h3:first-child{ margin-top:0; }
+.hintzoom{ font-size:12px; color:#6b7c84; margin:6px 0 0; }
+.zoom{ position:fixed; inset:0; background:rgba(0,40,63,.92); z-index:60; display:flex; align-items:center; justify-content:center; padding:2vw; cursor:zoom-out; }
+.zoom img{ max-width:96vw; max-height:94vh; background:#fff; border-radius:8px; }
+.casebox.zoomable{ cursor:zoom-in; }
+.brow{ display:grid; grid-template-columns:34px 1fr 1fr; gap:6px 8px; padding:10px 0; border-bottom:1px dashed #D0D8DD; align-items:start; }
+.brow .n{ grid-row:1 / span 3; font-weight:bold; color:var(--azul); background:var(--claro); border-radius:8px; text-align:center; padding:8px 0; }
+.brow .bf, .brow .bj{ grid-column:2 / span 2; }
+@media (max-width:900px){ .split{ grid-template-columns:1fr; } .split .left{ position:static; } }
 .card{ background:#fff; border-radius:16px; padding:24px 26px; box-shadow:0 4px 18px rgba(0,40,63,.08); margin-bottom:18px; }
 .card h2{ margin:0 0 8px; color:var(--azul); font-size:22px; }
 .card h3{ margin:18px 0 6px; color:var(--azul); font-size:16px; }
@@ -199,11 +213,13 @@ function viewA(){
     '<div class="btnrow"><button class="btn amar" data-start="a">Empezar la Tarea A</button></div></div>';
   var rows = S.a.rows.map(function(r,i){ return '<tr><td class="n">'+(i+1)+'</td><td>'+ta('a.rows.'+i+'.frase',r.frase,true)+'</td><td>'+ta('a.rows.'+i+'.correccion',r.correccion,true)+'</td><td>'+planoSelect('a.rows.'+i+'.plano',r.plano)+'</td></tr>'; }).join("");
   return timerBar('a',25) +
-    '<div class="card"><h2>Tarea A — Condición MANUAL (sin IA)</h2>' +
-    '<div class="casebox"><img src="img/texto-a.png" alt="Texto-caso A (imagen)"></div>' +
+    '<div class="split"><div class="left"><div class="card"><h2>Tarea A — Condición MANUAL (sin IA)</h2>' +
+    '<div class="casebox zoomable" style="margin-bottom:0"><img src="img/texto-a.png" alt="Texto-caso A (imagen)"></div>' +
+    '<p class="hintzoom">Pulsa sobre el texto para verlo más grande.</p></div></div>' +
+    '<div class="right"><div class="card">' +
     '<h3>Tu corrección (al menos 10 errores)</h3><p>Escribe cada frase con error, su corrección y el plano al que pertenece.</p>' +
     '<table class="resp"><thead><tr><th></th><th>Frase con error</th><th>Corrección</th><th>Plano</th></tr></thead><tbody>'+rows+'</tbody></table>' +
-    '<div class="btnrow"><button class="btn alt small" data-addrow="a">+ Añadir fila</button><span style="flex:1"></span><button class="btn amar" data-finish="a">Terminar la Tarea A y continuar →</button></div></div>';
+    '<div class="btnrow"><button class="btn alt small" data-addrow="a">+ Añadir fila</button><span style="flex:1"></span><button class="btn amar" data-finish="a">Terminar la Tarea A y continuar →</button></div></div></div></div>';
 }
 
 function viewB(){
@@ -212,26 +228,30 @@ function viewB(){
     '<p>Usa <b>Microsoft Copilot</b> (con tu cuenta de la universidad) para que te proponga correcciones del texto. Revisa cada corrección propuesta: acéptala, recházala o matízala, y justifica brevemente por qué (como harías en una posedición profesional). Para cada corrección aceptada, indica a qué plano pertenece. Al final, anota si hubo alguna corrección de la IA que consideraste incorrecta, excesiva o injustificada, y por qué.</p>' +
     rulesBox(['Usa solo Microsoft Copilot, con el modelo que viene por defecto y entrando con tu cuenta de la universidad.','No basta con aceptar lo que proponga: revisa y justifica cada corrección.']) +
     '<p><b>Tiempo disponible: 25 minutos.</b></p><div class="btnrow"><button class="btn amar" data-start="b">Empezar la Tarea B</button></div></div>';
-  var rows = S.b.rows.map(function(r,i){ return '<tr><td class="n">'+(i+1)+'</td><td>'+ta('b.rows.'+i+'.propuesta',r.propuesta,false)+'</td>' +
-    '<td><select data-path="b.rows.'+i+'.decision"><option value="">Decisión…</option>'+['Aceptar','Rechazar','Matizar'].map(function(d){ return '<option'+(d===r.decision?' selected':'')+'>'+d+'</option>'; }).join("")+'</select></td>' +
-    '<td>'+planoSelect('b.rows.'+i+'.plano',r.plano)+'</td><td>'+ta('b.rows.'+i+'.justificacion',r.justificacion,false)+'</td></tr>'; }).join("");
+  var rows = S.b.rows.map(function(r,i){ return '<div class="brow"><div class="n">'+(i+1)+'</div>' +
+    '<div class="bf">'+ta('b.rows.'+i+'.propuesta',r.propuesta,false).replace('<textarea ','<textarea placeholder="Corrección propuesta por la IA" ')+'</div>' +
+    '<div><select data-path="b.rows.'+i+'.decision"><option value="">Decisión…</option>'+['Aceptar','Rechazar','Matizar'].map(function(d){ return '<option'+(d===r.decision?' selected':'')+'>'+d+'</option>'; }).join("")+'</select></div>' +
+    '<div>'+planoSelect('b.rows.'+i+'.plano',r.plano)+'</div>' +
+    '<div class="bj">'+ta('b.rows.'+i+'.justificacion',r.justificacion,false).replace('<textarea ','<textarea placeholder="Tu justificación" ')+'</div></div>'; }).join("");
   return timerBar('b',25) +
-    '<div class="card"><h2>Tarea B — Condición CON IA</h2>' +
-    '<div class="casebox"><img src="img/texto-b.png" alt="Texto-caso B (imagen)"></div>' +
-    '<div class="btnrow"><a class="btn" href="'+COPILOT+'" target="_blank" rel="noopener noreferrer">① Abrir Microsoft Copilot</a>' +
-    '<button class="btn alt" id="copyprompt">② Copiar el mensaje con el texto</button></div>' +
-    '<p style="font-size:13px">Abre Copilot con tu cuenta de la universidad, pega el mensaje (<b>Ctrl+V</b>) y envíalo. Después revisa cada corrección que te proponga.</p>' +
+    '<div class="split"><div class="left"><div class="card"><h2>Tarea B — Condición CON IA</h2>' +
+    '<div class="casebox zoomable" style="margin-bottom:0"><img src="img/texto-b.png" alt="Texto-caso B (imagen)"></div>' +
+    '<p class="hintzoom">Pulsa sobre el texto para verlo más grande.</p>' +
+    '<div class="btnrow"><button class="btn" id="copyprompt">① Copiar el mensaje con el texto</button>' +
+    '<a class="btn alt" href="'+COPILOT+'" target="_blank" rel="noopener noreferrer">② Abrir Microsoft Copilot</a></div></div></div>' +
+    '<div class="right"><div class="card">' +
+    '<p style="font-size:14px;margin-top:0">Copia el mensaje, abre Copilot con tu cuenta de la universidad, pégalo (<b>Ctrl+V</b>) y envíalo. Después revisa cada corrección que te proponga.</p>' +
     '<h3>Tu revisión de las propuestas de la IA</h3><p>Para cada propuesta de Copilot: qué corrige, tu decisión, el plano y tu justificación.</p>' +
-    '<table class="resp"><thead><tr><th></th><th>Corrección propuesta por la IA</th><th>Decisión</th><th>Plano</th><th>Justificación</th></tr></thead><tbody>'+rows+'</tbody></table>' +
+    rows +
     '<div class="btnrow"><button class="btn alt small" data-addrow="b">+ Añadir fila</button></div>' +
     '<h3>¿Hubo alguna corrección de la IA incorrecta, excesiva o injustificada? ¿Cuál y por qué?</h3>' + ta('b.incorrectas',S.b.incorrectas,false,'big') +
     '<h3>Pega aquí tu conversación completa con Copilot</h3><p style="font-size:13px">Se usa para el estudio (cómo revisas lo que propone la IA). Selecciona toda la conversación en Copilot, cópiala y pégala.</p>' + ta('b.conversacion',S.b.conversacion,false,'big') +
-    '<div class="btnrow"><span style="flex:1"></span><button class="btn amar" data-finish="b">Terminar la Tarea B y continuar →</button></div></div>';
+    '<div class="btnrow"><span style="flex:1"></span><button class="btn amar" data-finish="b">Terminar la Tarea B y continuar →</button></div></div></div></div>';
 }
 
 function viewPausa(){
-  return '<div class="card"><h2>Pausa</h2><p>Haz ahora la actividad breve que te indique la profesora. Cuando te diga, continúa con la siguiente hoja.</p>' +
-    '<p>En la siguiente hoja <b>no tendrás el texto-caso ni la IA disponibles</b>.</p><div class="btnrow"><button class="btn amar" data-finish="pausa">Continuar →</button></div></div>';
+  return '<div class="card"><h2>Pausa</h2><p>Si has llegado hasta aquí, espera a las nuevas indicaciones de la profesora, no pases todavía a la siguiente pantalla. Ella te avisará cuando puedas continuar.</p>' +
+    '<div class="btnrow"><button class="btn amar" data-finish="pausa">Pulsa aquí cuando la profesora os avise de que ya podéis continuar</button></div></div>';
 }
 
 function viewRecuerdo(){
@@ -262,17 +282,16 @@ function viewEntrega(){
   return '<div class="card"><h2>¡Has terminado! Descarga y entrega tus respuestas</h2>' +
     '<p class="ok">Tarea A: '+nA+' correcciones · Tarea B: '+nB+' propuestas revisadas · Recuerdo inmediato: '+nR+' de 6 frases</p>' +
     '<ol><li>Pulsa <b>Descargar mis respuestas</b>: se guardará un archivo con tus tres dígitos como nombre (por ejemplo, <b>'+esc(S.id||'274')+'.json</b>).</li>' +
-    '<li>Entrega ese archivo como se indique en clase (Moodle).</li>' +
-    '<li>Para la próxima sesión, recuerda la lectura del manual del Tema 4.</li></ol>' +
-    '<div class="btnrow"><button class="btn amar" id="dl">⬇ Descargar mis respuestas</button>' +
-    '<button class="btn alt" id="wipe">Borrar mis datos de este ordenador</button></div>' +
-    '<p style="font-size:13px;color:#5a6b72">Pulsa «Borrar mis datos» solo después de comprobar que el archivo se ha descargado y entregado. Si usas un ordenador compartido, hazlo siempre.</p></div>';
+    '<li>Entrega este archivo .json que has descargado a través de la tarea habilitada en el aula de Moodlerooms («Descarga cognitiva»).</li></ol>' +
+    '<div class="btnrow"><button class="btn amar" id="dl">⬇ Descargar mis respuestas</button></div></div>';
 }
 
 // ---------- Render ----------
 function render(){
   stepper();
   var views = [viewInicio, viewA, viewB, viewPausa, viewRecuerdo, viewAuto, viewEntrega];
+  var started = function(k){ return S.tiempos[k] && S.tiempos[k].start; };
+  document.getElementById("stage").classList.toggle("wide", (S.step === 1 && !!started("a")) || (S.step === 2 && !!started("b")));
   document.getElementById("stage").innerHTML = views[S.step]();
   window.scrollTo(0,0); tick(); wire();
 }
@@ -300,9 +319,12 @@ function finish(which){
 }
 
 function download(){
+  function dur(k){ var t = S.tiempos[k]; return t && t.start && t.end ? Math.round((t.end - t.start)/1000) : null; }
   var out = {
     actividad: "Descarga cognitiva e IA — TEE, Tema 3, Práctica 1 (Con copiloto o sin él)",
-    version_web: 1, codigo_alumno: S.id, inicio: S.inicio, fin: S.fin,
+    version_web: 2, codigo_alumno: S.id, inicio: S.inicio, fin: S.fin,
+    inicio_legible: S.inicio ? new Date(S.inicio).toISOString() : null, fin_legible: S.fin ? new Date(S.fin).toISOString() : null,
+    duracion_segundos: { tarea_a: dur("a"), tarea_b: dur("b"), recuerdo_inmediato: dur("r") },
     consentimiento: { leido_entendido: S.consent[0], voluntario: S.consent[1], autoriza_uso_investigacion: S.consent[2] },
     herramienta_ia: "Microsoft Copilot (" + COPILOT + ")",
     tiempos_ms: S.tiempos,
@@ -341,9 +363,11 @@ function wire(){
     save(); render(); }; });
   var cp = document.getElementById("copyprompt"); if (cp) cp.onclick = function(){ copyText(PROMPT_B, "Mensaje copiado. Pégalo en Copilot con Ctrl+V."); };
   var dl = document.getElementById("dl"); if (dl) dl.onclick = download;
-  var wp = document.getElementById("wipe"); if (wp) wp.onclick = function(){
-    if (confirm("¿Seguro? Se borrarán tus respuestas de este ordenador. Asegúrate de haber descargado y entregado el archivo.")){ try { sessionStorage.removeItem(KEY); } catch(e){} S = fresh(); render(); } };
+  st.querySelectorAll(".casebox.zoomable img").forEach(function(img){ img.onclick = function(){
+    var z = document.createElement("div"); z.className = "zoom"; z.innerHTML = '<img src="'+img.getAttribute("src")+'" alt="">';
+    z.onclick = function(){ z.remove(); }; document.body.appendChild(z); }; });
 }
+document.addEventListener("keydown", function(e){ if (e.key === "Escape"){ var z = document.querySelector(".zoom"); if (z) z.remove(); } });
 
 // Guardado de campos (delegado) y bloqueo de pegar en las hojas sin IA
 document.getElementById("stage").addEventListener("input", function(e){ var p = e.target.dataset && e.target.dataset.path; if (p){ setPath(p, e.target.value); save(); } });
