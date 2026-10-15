@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Retroalimentación · Datos Masivos (Big Data) · Descarga cognitiva</title>
+<style>
+:root{ --azul:#003B5C; --azul-d:#00283F; --amar:#F4C542; --gris:#34484F; --claro:#F3F3F4; --humo:#9FB1BA; --verde:#2E7D32; --rojo:#B00020; --cian:#0E7C86; }
+*{ box-sizing:border-box; }
+body{ margin:0; font-family:Arial,Helvetica,sans-serif; color:var(--gris); background:#EEF3F6; }
+#boot{ padding:40px 16px; text-align:center; color:var(--humo); font-size:14px; }
+#app{ display:none; min-height:100vh; }
+header.top{ background:linear-gradient(115deg,var(--azul-d),var(--azul) 55%,var(--cian)); color:#fff; padding:16px 4vw 0; }
+header.top .kicker{ color:var(--amar); font-size:12px; font-weight:bold; letter-spacing:2.5px; text-transform:uppercase; }
+header.top h1{ margin:4px 0 2px; font-size:clamp(20px,3vw,28px); }
+header.top p{ margin:0 0 12px; font-size:13px; color:#C9D6DD; }
+header.top a{ color:#C9D6DD; font-size:12px; }
+.tabs{ display:flex; gap:6px; flex-wrap:wrap; }
+.tabs button{ border:none; font-family:inherit; font-size:14px; font-weight:bold; padding:10px 20px; border-radius:10px 10px 0 0; background:rgba(255,255,255,.14); color:#E3ECF0; cursor:pointer; }
+.tabs button.on{ background:#EEF3F6; color:var(--azul); }
+main{ padding:16px 1.5vw 50px; }
+.pane{ display:none; } .pane.on{ display:block; }
+.intro{ background:#FFF8E1; border-left:6px solid var(--amar); border-radius:10px; padding:12px 16px; margin-bottom:14px; font-size:14px; line-height:1.5; }
+.split{ display:grid; grid-template-columns:1fr 1fr; gap:16px; align-items:start; }
+.split .left{ position:sticky; top:10px; }
+.card{ background:#fff; border-radius:16px; padding:18px 20px; box-shadow:0 4px 18px rgba(0,40,63,.08); margin-bottom:14px; }
+.card h2{ margin:0 0 10px; color:var(--azul); font-size:19px; }
+.card h3{ margin:16px 0 6px; color:var(--azul); font-size:15px; }
+.card p, .card li{ font-size:14px; line-height:1.55; }
+.casebox{ border:2px solid #D0D8DD; border-radius:12px; overflow:hidden; background:#fff; cursor:zoom-in; }
+.casebox img{ display:block; width:100%; height:auto; }
+.hintzoom{ font-size:12px; color:#6b7c84; margin:6px 0 0; }
+.ref{ border:1px solid #D8DEE1; border-left:6px solid var(--verde); border-radius:10px; padding:10px 14px; background:#F6FBF6; font-size:14px; line-height:1.55; }
+.src{ border:1px solid #D8DEE1; border-left:6px solid var(--humo); border-radius:10px; padding:10px 14px; background:#FAFCFD; font-size:13px; line-height:1.5; color:#4a5b62; font-style:italic; }
+table.terms{ width:100%; border-collapse:collapse; margin:8px 0; }
+table.terms th{ background:var(--azul); color:#fff; font-size:12px; text-align:left; padding:7px 9px; }
+table.terms td{ border:1px solid #D8DEE1; padding:7px 9px; vertical-align:top; font-size:13.5px; line-height:1.45; background:#fff; }
+table.terms td.o{ font-weight:bold; color:var(--azul); } table.terms td.d{ color:var(--verde); font-weight:bold; } table.terms td.n{ color:#5a6b72; }
+pre.code{ background:#0E2A3A; color:#EAF2F6; padding:14px 16px; border-radius:10px; overflow:auto; font-size:13px; line-height:1.5; margin:8px 0; }
+pre.code.bad{ background:#3A1A1A; }
+code{ background:#EEF3F6; padding:1px 5px; border-radius:4px; font-size:.92em; font-family:Menlo,Consolas,"Courier New",monospace; }
+.errs{ border-left:6px solid var(--rojo); background:#FDF5F6; border-radius:10px; padding:8px 14px 8px 14px; margin:8px 0; }
+.errs ul{ margin:4px 0; padding-left:20px; }
+.rec{ border-top:1px dashed #D0D8DD; padding-top:10px; margin-top:10px; } .rec:first-child{ border-top:none; margin-top:0; padding-top:0; }
+footer.copy{ text-align:center; padding:18px 4vw 34px; font-size:11px; color:var(--humo); font-style:italic; }
+@media (max-width:900px){ .split{ grid-template-columns:1fr; } .split .left{ position:static; } }
+</style>
+</head>
+<body>
+<div id="boot">Comprobando acceso…</div>
+<div id="app">
+  <header class="top">
+    <a href="../index.html">← Volver a Datos Masivos (Big Data)</a>
+    <div class="kicker">Descarga cognitiva e IA · Datos Masivos (Big Data)</div>
+    <h1>Retroalimentación de «Dato limpio, dato sospechoso»</h1>
+    <p>Revisa con calma, a tu ritmo, la corrección de cada parte de la actividad.</p>
+    <div class="tabs" id="tabs"><button class="on" data-k="a">Tarea A (sin IA)</button><button class="" data-k="b">Tarea B (con IA)</button><button class="" data-k="r">Recuerdo inmediato</button><button class="" data-k="d">Hoja diferida</button></div>
+  </header>
+  <main id="stage">
+<section class="pane on" data-k="a"><div class="intro">En la Tarea A implementabas, sin IA, la limpieza de una columna de texto. Hay varias implementaciones válidas; fíjate sobre todo en el <b>orden</b> de las operaciones.</div><div class="split"><div class="left"><div class="card"><h2>Tarea A · limpiar_columna(df, columna)</h2><p><b>Qué se pedía.</b> Una función <code>limpiar_columna(df, columna)</code> que devuelva un nuevo DataFrame con la columna sin espacios sobrantes, en minúsculas, con los vacíos/«NA» convertidos a NaN y sin filas duplicadas.</p></div></div><div class="right"><div class="card"><h2>Solución de referencia</h2><pre class="code">import pandas as pd
+
+def limpiar_columna(df, columna):
+    df = df.copy()
+    df[columna] = (df[columna]
+                   .astype(&quot;string&quot;)
+                   .str.strip()               # espacios sobrantes
+                   .str.lower()               # mayúsculas/minúsculas
+                   .replace([&quot;&quot;, &quot;na&quot;, &quot;n/a&quot;], pd.NA))  # vacíos y «NA» → nulo
+    return df.drop_duplicates()               # duplicados, al final</pre><p>Se limpia primero y se eliminan los duplicados al final. Como el texto ya está en minúsculas, los valores nulos se buscan en minúsculas («na», «n/a»).</p><h3>Errores frecuentes</h3><div class="errs"><ul><li>Aplicar <code>strip()</code> o <code>lower()</code> sin encadenar correctamente el accesor <code>.str</code> de Pandas.</li><li>Eliminar duplicados antes de limpiar: deja pasar duplicados «disfrazados» por espacios o mayúsculas distintas.</li><li>No gestionar el caso de que la columna ya contenga NaN reales.</li></ul></div></div></div></div></section>
+<section class="pane" data-k="b"><div class="intro">En la Tarea B revisabas y depurabas el código de Copilot. Fíjate en qué errores de la IA detectaste, cuáles <b>no</b> detectaste y si cambiaste algo que no hacía falta cambiar.</div><div class="split"><div class="left"><div class="card"><h2>Tarea B · detectar_atipicos(df, columna)</h2><p><b>Qué se pedía.</b> Una función <code>detectar_atipicos(df, columna)</code> que devuelva solo las filas cuyo valor en la columna sea atípico según el método IQR.</p></div></div><div class="right"><div class="card"><h2>Solución de referencia</h2><pre class="code">def detectar_atipicos(df, columna):
+    q1 = df[columna].quantile(0.25)
+    q3 = df[columna].quantile(0.75)
+    iqr = q3 - q1
+    limite_inf = q1 - 1.5 * iqr
+    limite_sup = q3 + 1.5 * iqr
+    mascara = (df[columna] &lt; limite_inf) | (df[columna] &gt; limite_sup)
+    return df[mascara].copy()</pre><h3>Errores frecuentes</h3><div class="errs"><ul><li>Invertir Q1 y Q3 al calcular el IQR (da un IQR negativo).</li><li>Usar <code>&amp;</code> en vez de <code>|</code> en la máscara: con <code>&amp;</code> la condición nunca se cumple, porque ningún valor puede ser a la vez menor que el límite inferior y mayor que el superior.</li><li>No copiar el DataFrame filtrado (<code>SettingWithCopyWarning</code> si se modifica después).</li></ul></div></div></div></div></section>
+<section class="pane" data-k="r"><div class="intro">La hoja de recuerdo inmediato te pedía explicar la lógica, encontrar un error en un pseudocódigo y recordar un caso límite.</div><div class="split"><div class="left"><div class="card"><h2>Pseudocódigo con error</h2><div class="casebox zoomable"><img src="../img/pseudocodigo.png" alt="Pseudocódigo con error"></div><p class="hintzoom">Pulsa sobre el texto para verlo más grande.</p></div></div><div class="right"><div class="card"><p><b>Dónde está el error.</b> La línea <code>IQR = Q1 - Q3</code> está invertida: debería ser <code>IQR = Q3 - Q1</code>. Con el orden del enunciado, el IQR sale negativo y los límites quedan invertidos (el «inferior» resulta mayor que el «superior»).</p><h3>Pseudocódigo corregido</h3><pre class="code">Q1 = percentil(columna, 25)
+Q3 = percentil(columna, 75)
+IQR = Q3 - Q1
+limite_sup = Q3 + 1.5 * IQR
+limite_inf = Q1 - 1.5 * IQR</pre><p><b>Casos especiales y límites</b> que se trabajaron: el método IQR es sensible al tamaño de la muestra y puede marcar como atípicos valores que en realidad son válidos en columnas con distribuciones muy asimétricas; y, en la limpieza de texto, los duplicados «disfrazados» por espacios o mayúsculas, y las columnas que ya contienen NaN reales.</p></div></div></div></section>
+<section class="pane" data-k="d"><div class="intro">La hoja diferida te pedía resolver, sin ayuda, un problema nuevo pero análogo.</div><div class="split"><div class="left"><div class="card"><h2>Transferencia · contar valores con más de n caracteres</h2><p><b>Enunciado.</b> Escribe la lógica de una función que, dado un DataFrame y una columna de texto, cuente cuántos valores de esa columna tienen más de un número determinado de caracteres.</p></div></div><div class="right"><div class="card"><h2>Solución de referencia</h2><pre class="code">def contar_largos(df, columna, n):
+    # .str.len() da la longitud de cada valor (NaN si el valor es nulo)
+    # y la comparación con n da una máscara booleana
+    return int((df[columna].str.len() &gt; n).sum())</pre><p>Idea clave que había que transferir de la tarea original: aplicar una operación elemento a elemento sobre la columna con el accesor <code>.str</code> (como en la limpieza) y filtrar o contar con una máscara booleana (como en la detección de atípicos). Los valores nulos no cuentan, porque NaN no supera ningún umbral.</p></div></div></div></section>
+  </main>
+  <footer class="copy">© Dra. Blanca Hernández Pardo · Datos Masivos · Descarga cognitiva e IA<br>
+  Queda prohibida la difusión, distribución o reproducción total o parcial de este material sin autorización expresa de la autora.</footer>
+</div>
+<script>
+(function(){
+  var DIR = "dm";
+  var s = ""; try { s = sessionStorage.getItem("dc_unlocked") || ""; } catch(e){}
+  if (!s) { location.replace("../../index.html"); return; }
+  function go(){ document.getElementById("boot").style.display = "none"; document.getElementById("app").style.display = "block"; start(); }
+  if (s === "teacher") { go(); return; }
+  if (s !== DIR) { location.replace("../../index.html"); return; }
+  fetch("../config.json?t=" + Date.now()).then(function(r){ return r.json(); }).then(function(c){
+    if (c.retro === true) go(); else location.replace("../index.html");
+  }).catch(function(){ document.getElementById("boot").textContent = "No se ha podido comprobar el acceso. Recarga la página."; });
+})();
+function start(){
+  document.querySelectorAll("#tabs button").forEach(function(b){ b.onclick = function(){
+    document.querySelectorAll("#tabs button").forEach(function(x){ x.classList.toggle("on", x === b); });
+    document.querySelectorAll(".pane").forEach(function(p){ p.classList.toggle("on", p.dataset.k === b.dataset.k); });
+    window.scrollTo(0,0); }; });
+  document.querySelectorAll(".casebox.zoomable img").forEach(function(img){ img.onclick = function(){
+    var z = document.createElement("div"); z.style.cssText = "position:fixed;inset:0;background:rgba(0,40,63,.92);z-index:60;display:flex;align-items:center;justify-content:center;padding:2vw;cursor:zoom-out";
+    z.innerHTML = '<img src="'+img.getAttribute("src")+'" style="max-width:96vw;max-height:94vh;background:#fff;border-radius:8px" alt="">'; z.onclick = function(){ z.remove(); }; document.body.appendChild(z); }; });
+  document.addEventListener("keydown", function(e){ if (e.key === "Escape"){ var z = document.querySelector("body > div[style*='z-index:60']"); if (z) z.remove(); } });
+}
+</script>
+</body>
+</html>

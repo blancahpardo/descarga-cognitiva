@@ -16,10 +16,10 @@ const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(
 // exists: la página de la actividad está construida. La visibilidad real vive en config.json.
 const ASIGNATURAS = [
   { dir: 'tee', label: 'TEE', title: 'Técnicas y estrategias de expresión escrita', exists: true },
-  { dir: 'pln', label: 'PLN', title: 'Programación para PLN', exists: false },
-  { dir: 'dm',  label: 'DM',  title: 'Datos Masivos', exists: false },
-  { dir: 'tj',  label: 'TJ',  title: 'Traducción Jurídica FR-ES', exists: false },
-  { dir: 'tm',  label: 'TM',  title: 'Traducción Médica EN-ES', exists: false },
+  { dir: 'pln', label: 'PLN', title: 'Programación para PLN', exists: true },
+  { dir: 'dm',  label: 'DM',  title: 'Datos Masivos', exists: true },
+  { dir: 'tj',  label: 'TJ',  title: 'Traducción Jurídica FR-ES', exists: true },
+  { dir: 'tm',  label: 'TM',  title: 'Traducción Médica EN-ES', exists: true },
 ];
 
 const CSS = `

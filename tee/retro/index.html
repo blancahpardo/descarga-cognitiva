@@ -106,6 +106,22 @@ var R = [
  ["No se sabe que solución","No se sabe qué solución","o","Falta la tilde diacrítica: «qué» es interrogativo (pregunta indirecta)."],
  ["En base a los resultados","Según los resultados (o: A partir de los resultados)","l","Calco: «según» o «a partir de» son más precisos que «en base a»."]
 ];
+var D = [
+ ["Me alegro que hayas terminado","Me alegro de que hayas terminado","m","Queísmo: «alegrarse» exige la preposición «de» ante la oración subordinada."],
+ ["La comisión, revisará","La comisión revisará","p","No se separa con coma el sujeto de su verbo."],
+ ["la Revista científica","la revista científica","t","Mayúscula indebida: «revista» es un sustantivo común."],
+ ["un grupo de ellos olvidaron","un grupo de ellos olvidó","m","Discordancia con el colectivo: el núcleo del sujeto es «grupo» (singular)."],
+ ["No entendí que quería decir","No entendí qué quería decir","o","Falta la tilde diacrítica: «qué» es interrogativo (pregunta indirecta)."],
+ ["A nivel de contenido","En cuanto al contenido","l","Calco: «a nivel de» es una muletilla; «en cuanto a» o «en lo que respecta a» son más precisos."]
+];
+var DP = [
+ ["la Universidad porque","la universidad porque","t","Mayúscula indebida: «universidad» en uso genérico es un sustantivo común."],
+ ["comprobar, no solo","comprobar no solo","p","No se separa con coma el verbo de su complemento."],
+ ["piensan de que este formato","piensan que este formato","m","Dequeísmo: «pensar» no lleva la preposición «de» ante la oración subordinada."],
+ ["Un grupo de profesores defienden","Un grupo de profesores defiende","m","Discordancia con el colectivo: el núcleo del sujeto es «grupo» (singular)."],
+ ["no saben que criterios","no saben qué criterios","o","Falta la tilde diacrítica: «qué» es interrogativo (pregunta indirecta)."],
+ ["A nivel de organización","En cuanto a la organización","l","Calco: «a nivel de» es una muletilla; «en cuanto a» es más preciso."]
+];
 function esc(x){ return String(x).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
 function fix(i, f){ var pl = PL[f[2]];
   return '<div class="fix"><div class="top"><span class="n">'+(i+1)+'</span><span class="err">'+esc(f[0])+'</span><span class="arrow">→</span><span class="ok">'+esc(f[1])+'</span><span class="chip '+pl[1]+'">'+pl[0]+'</span></div><p>'+esc(f[3])+'</p></div>'; }
@@ -120,7 +136,12 @@ var VIEWS = {
    '<div class="right"><div class="card"><h2>Las 10 correcciones</h2>'+B.map(function(f,i){ return fix(i,f); }).join("")+'</div></div></div>'; } },
  r: { tab:"Recuerdo inmediato", html:function(){
    return '<div class="intro">Seis frases nuevas, una por error. Esta hoja se hacía de memoria y sin IA: sirve para ver qué criterios se te habían quedado.</div>' +
-   '<div class="card"><h2>Las 6 frases del recuerdo inmediato</h2>'+R.map(function(f,i){ return '<div class="sent"><div class="casebox" style="cursor:default"><img src="../img/rec-'+(i+1)+'.png" alt="Frase '+(i+1)+'"></div><div>'+fix(i,f)+'</div></div>'; }).join("")+'</div>'; } }
+   '<div class="card"><h2>Las 6 frases del recuerdo inmediato</h2>'+R.map(function(f,i){ return '<div class="sent"><div class="casebox" style="cursor:default"><img src="../img/rec-'+(i+1)+'.png" alt="Frase '+(i+1)+'"></div><div>'+fix(i,f)+'</div></div>'; }).join("")+'</div>'; } },
+ d: { tab:"Hoja diferida", html:function(){
+   return '<div class="intro">La hoja diferida (una semana después) tenía seis frases nuevas y un párrafo de transferencia. Sirve para ver qué criterios se te habían quedado pasada una semana.</div>' +
+   '<div class="card"><h2>Las 6 frases de la hoja diferida</h2>'+D.map(function(f,i){ return '<div class="sent"><div class="casebox" style="cursor:default"><img src="../posterior/img/dif-'+(i+1)+'.png" alt="Frase '+(i+1)+'"></div><div>'+fix(i,f)+'</div></div>'; }).join("")+'</div>' +
+   '<div class="split" style="margin-top:16px"><div class="left"><div class="card"><h2>Párrafo de transferencia</h2><div class="casebox zoomable"><img src="../posterior/img/dif-parrafo.png" alt="Párrafo de transferencia"></div><p class="hintzoom">Pulsa sobre el texto para verlo más grande.</p></div></div>' +
+   '<div class="right"><div class="card"><h2>Los 6 errores del párrafo</h2>'+DP.map(function(f,i){ return fix(i,f); }).join("")+'</div></div></div>'; } }
 };
 var cur = "a";
 function render(){

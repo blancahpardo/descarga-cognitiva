@@ -1,9 +1,107 @@
 <!DOCTYPE html>
-<html lang="es"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="robots" content="noindex, nofollow">
-<title>Datos Masivos · Descarga cognitiva</title>
-<style>body{margin:0;font-family:Arial,Helvetica,sans-serif;background:#003B5C;color:#fff;min-height:100vh;display:flex;align-items:center;justify-content:center;text-align:center;padding:24px}
-.k{color:#F4C542;font-size:12px;font-weight:bold;letter-spacing:2.5px;text-transform:uppercase}h1{margin:10px 0}p{color:#9FB1BA}a{color:#F4C542}</style></head>
-<body><div id="b" style="visibility:hidden"><div class="k">Descarga cognitiva e IA</div><h1>Datos Masivos</h1>
-<p>Esta actividad todavía no está disponible.</p><p><a href="../index.html">← Volver</a></p></div>
-<script>(function(){var s="";try{s=sessionStorage.getItem("dc_unlocked")||"";}catch(e){}
-if(s==="teacher"||s==="dm"){document.getElementById("b").style.visibility="visible";}else{location.replace("../index.html");}})();</script></body></html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Datos Masivos (Big Data) · Descarga cognitiva</title>
+<style>
+:root{ --azul:#003B5C; --azul-d:#00283F; --amar:#F4C542; --gris:#34484F; --claro:#F3F3F4; --humo:#9FB1BA; --verde:#2E7D32; --rojo:#B00020; }
+*{ box-sizing:border-box; }
+body{ margin:0; font-family:Arial,Helvetica,sans-serif; color:var(--gris); background:var(--azul); min-height:100vh; display:flex; flex-direction:column; }
+#boot{ padding:40px 16px; text-align:center; color:var(--humo); font-size:14px; }
+#page{ display:none; flex:1; flex-direction:column; }
+.back{ padding:18px 6vw 0; }
+.back a{ color:var(--humo); font-size:13px; text-decoration:underline; }
+header{ padding:30px 6vw 10px; text-align:center; }
+.kicker{ color:var(--amar); font-size:12px; font-weight:bold; letter-spacing:2.5px; text-transform:uppercase; margin-bottom:10px; }
+header h1{ color:#fff; font-size:clamp(26px,4.2vw,40px); margin:0 0 6px; }
+header p{ color:var(--humo); font-size:14px; margin:0; }
+main{ flex:1; max-width:1000px; width:100%; margin:0 auto; padding:30px 6vw 50px; display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:22px; align-content:start; }
+.opt{ position:relative; display:flex; flex-direction:column; align-items:flex-start; gap:8px; background:#fff; border-radius:14px; padding:28px 24px; text-decoration:none; box-shadow:0 4px 16px rgba(0,0,0,.18); transition:transform .15s ease; }
+.opt:hover{ transform:translateY(-3px); }
+.opt .num{ font-size:13px; font-weight:bold; color:var(--amar); background:var(--azul); padding:4px 12px; border-radius:20px; letter-spacing:1px; }
+.opt .ttl{ font-size:19px; font-weight:bold; color:var(--azul); margin-top:4px; }
+.opt .dsc{ font-size:13px; color:var(--gris); line-height:1.45; }
+.hint{ position:absolute; top:12px; right:14px; font-size:10px; font-weight:bold; padding:2px 8px; border-radius:10px; }
+.hint.on{ background:#DFF3E0; color:var(--verde); } .hint.off{ background:#FBEAEC; color:var(--rojo); }
+.empty{ grid-column:1/-1; text-align:center; color:var(--humo); font-size:15px; padding:30px 0; }
+footer{ text-align:center; padding:20px 6vw 34px; font-size:11px; color:var(--humo); font-style:italic; }
+.teacher-link{ display:block; margin:0 auto 18px; background:none; border:none; color:var(--humo); font-size:12px; cursor:pointer; font-family:inherit; text-decoration:underline; }
+.teacher-wrap{ max-width:1000px; width:100%; margin:0 auto; padding:0 6vw; }
+.teacher-banner{ background:var(--azul-d); color:#fff; border-radius:12px; padding:18px 22px; margin:0 0 10px; }
+.teacher-banner strong{ color:var(--amar); } .teacher-banner p{ font-size:13px; margin:6px 0 0; color:var(--humo); }
+.teacher-token-row{ display:flex; gap:10px; margin-top:14px; flex-wrap:wrap; }
+.teacher-token-row input{ flex:1; min-width:220px; padding:9px 12px; border-radius:8px; border:none; font-size:13px; font-family:inherit; }
+.teacher-token-row button{ background:var(--amar); color:var(--azul-d); border:none; border-radius:8px; padding:9px 16px; font-size:13px; font-weight:bold; cursor:pointer; font-family:inherit; }
+.teacher-status{ font-size:12px; margin-top:10px; min-height:16px; }
+.teacher-toggle-list{ list-style:none; padding:0; margin:16px 0 0; display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:10px; }
+.teacher-toggle-list li{ background:rgba(255,255,255,.08); border-radius:8px; padding:10px 14px; display:flex; align-items:center; gap:10px; font-size:13px; }
+.teacher-toggle-list input{ width:18px; height:18px; }
+</style>
+</head>
+<body>
+<div id="boot">Comprobando acceso…</div>
+<div id="page">
+  <div class="back"><a href="../index.html">← Volver a las asignaturas</a></div>
+  <header>
+    <div class="kicker">Descarga cognitiva e IA</div>
+    <h1>Datos Masivos (Big Data)</h1>
+    <p>Elige una opción</p>
+  </header>
+  <div class="teacher-wrap"><div id="teacher-panel" class="teacher-banner" hidden>
+    <strong>⚙ Modo profesora</strong>
+    <p>Pega aquí tu token de GitHub (solo para esta sesión de navegador; se pierde al cerrar la pestaña) y marca qué opciones de Datos Masivos (Big Data) ve el alumnado. Los cambios se publican en 1-2 minutos.</p>
+    <div class="teacher-token-row"><input type="password" id="gh-token" placeholder="Token de GitHub (github_pat_...)"><button id="gh-token-save">Guardar token de esta sesión</button></div>
+    <div class="teacher-status" id="teacher-status"></div>
+    <ul class="teacher-toggle-list">
+      <li><input type="checkbox" id="chk-principal" data-k="principal"><label for="chk-principal">1 · Actividad principal</label></li>
+      <li><input type="checkbox" id="chk-retro" data-k="retro"><label for="chk-retro">2 · Retroalimentación en diferido</label></li>
+      <li><input type="checkbox" id="chk-posterior" data-k="posterior"><label for="chk-posterior">3 · Actividad posterior</label></li>
+    </ul>
+  </div></div>
+  <main>
+    <a class="opt" data-k="principal" href="principal/index.html" style="display:none"><span class="hint" data-hint="principal"></span><span class="num">1</span><span class="ttl">Actividad principal</span><span class="dsc">Dato limpio, dato sospechoso: limpieza y valores atípicos con Pandas, con y sin IA.</span></a>
+    <a class="opt" data-k="retro" href="retro/index.html" style="display:none"><span class="hint" data-hint="retro"></span><span class="num">2</span><span class="ttl">Retroalimentación en diferido</span><span class="dsc">Revisa con calma la corrección de toda la actividad: solucionario, errores frecuentes y hoja diferida.</span></a>
+    <a class="opt" data-k="posterior" href="posterior/index.html" style="display:none"><span class="hint" data-hint="posterior"></span><span class="num">3</span><span class="ttl">Actividad posterior</span><span class="dsc">Hoja de seguimiento de la actividad.</span></a>
+    <div class="empty" id="empty" hidden>De momento no hay ninguna opción abierta. Tu profesora la abrirá cuando corresponda.</div>
+  </main>
+  <button class="teacher-link" id="teacher-toggle-link" style="display:none">⚙ Modo profesora</button>
+  <footer>© Dra. Blanca Hernández Pardo · Datos Masivos · Descarga cognitiva e IA<br>Queda prohibida la difusión, distribución o reproducción total o parcial de este material sin autorización expresa de la autora.</footer>
+</div>
+<script>
+(function(){
+  var REPO="blancahpardo/descarga-cognitiva", PATH="dm/config.json", sha=null, isTeacher=false;
+  var s=""; try{ s=sessionStorage.getItem("dc_unlocked")||""; }catch(e){}
+  if(!s){ location.replace("../index.html"); return; }
+  function fetchJson(u){ return fetch(u+"?t="+Date.now()).then(function(r){ return r.json(); }); }
+  function hdr(t){ return {"Authorization":"Bearer "+t,"Accept":"application/vnd.github+json"}; }
+  function ghGet(t){ return fetch("https://api.github.com/repos/"+REPO+"/contents/"+PATH,{headers:hdr(t)}).then(function(r){ if(!r.ok) throw new Error("No se pudo leer el fichero ("+r.status+")"); return r.json(); }).then(function(d){ sha=d.sha; return JSON.parse(decodeURIComponent(escape(atob(d.content.replace(/\n/g,""))))); }); }
+  function ghPut(t,obj){ return fetch("https://api.github.com/repos/"+REPO+"/contents/"+PATH,{method:"PUT",headers:Object.assign({"Content-Type":"application/json"},hdr(t)),body:JSON.stringify({message:"Modo profesora: actualizar visibilidad de opciones de Datos Masivos (Big Data) (dm/config.json)",content:btoa(unescape(encodeURIComponent(JSON.stringify(obj,null,2)+"\n"))),sha:sha})}).then(function(r){ if(!r.ok) return r.text().then(function(x){ throw new Error("Error al guardar ("+r.status+"): "+x); }); return r.json(); }).then(function(d){ sha=d.content.sha; }); }
+  function tok(){ try{ return sessionStorage.getItem("gh_pat")||""; }catch(e){ return ""; } }
+  function status(m,err){ var e=document.getElementById("teacher-status"); e.textContent=m; e.style.color=err?"#FFB3B3":"#9FE6A0"; }
+  function apply(c){ var any=false; document.querySelectorAll(".opt[data-k]").forEach(function(a){ var on=c[a.dataset.k]===true; a.style.display=(isTeacher||on)?"":"none"; if(isTeacher||on) any=true; }); document.getElementById("empty").hidden=any; }
+  function hints(c){
+    document.querySelectorAll(".hint[data-hint]").forEach(function(x){ var on=c[x.dataset.hint]===true; x.textContent=on?"visible":"oculta"; x.className="hint "+(on?"on":"off"); });
+    document.querySelectorAll("#teacher-panel input[data-k]").forEach(function(k){ k.checked=c[k.dataset.k]===true; });
+  }
+  function initTeacher(){
+    document.getElementById("teacher-panel").hidden=false;
+    var inp=document.getElementById("gh-token"); inp.value=tok();
+    function refresh(){ var t=tok(); if(!t){ fetchJson("config.json").then(function(c){ apply(c); hints(c); }); return; } status("Cargando estado actual..."); ghGet(t).then(function(c){ apply(c); hints(c); status("Conectado. Puedes abrir o cerrar opciones."); }).catch(function(e){ status(e.message,true); fetchJson("config.json").then(function(c){ apply(c); hints(c); }); }); }
+    document.getElementById("gh-token-save").onclick=function(){ try{ sessionStorage.setItem("gh_pat",inp.value.trim()); }catch(e){} status(inp.value.trim()?"Token guardado para esta sesión.":"Token borrado."); refresh(); };
+    document.querySelectorAll("#teacher-panel input[data-k]").forEach(function(k){ k.addEventListener("change",function(){
+      var t=tok(); if(!t){ status("Pega primero tu token de GitHub.",true); k.checked=!k.checked; return; }
+      status("Guardando...");
+      ghGet(t).then(function(c){ c[k.dataset.k]=k.checked; return ghPut(t,c).then(function(){ return c; }); }).then(function(c){ hints(c); apply(c); status("Guardado ✓ — el alumnado lo verá en 1-2 minutos."); }).catch(function(e){ k.checked=!k.checked; status(e.message,true); });
+    }); });
+    refresh();
+  }
+  function show(){ document.getElementById("boot").style.display="none"; document.getElementById("page").style.display="flex"; }
+  if(s==="teacher"){ isTeacher=true; show(); document.getElementById("teacher-toggle-link").style.display="none"; initTeacher(); return; }
+  if(s!=="dm"){ location.replace("../index.html"); return; }
+  fetchJson("config.json").then(function(c){ show(); apply(c); }).catch(function(){ document.getElementById("boot").textContent="No se ha podido comprobar el acceso. Recarga la página."; });
+})();
+</script>
+</body>
+</html>

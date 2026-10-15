@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Retroalimentación · Traducción Médica EN-ES · Descarga cognitiva</title>
+<style>
+:root{ --azul:#003B5C; --azul-d:#00283F; --amar:#F4C542; --gris:#34484F; --claro:#F3F3F4; --humo:#9FB1BA; --verde:#2E7D32; --rojo:#B00020; --cian:#0E7C86; }
+*{ box-sizing:border-box; }
+body{ margin:0; font-family:Arial,Helvetica,sans-serif; color:var(--gris); background:#EEF3F6; }
+#boot{ padding:40px 16px; text-align:center; color:var(--humo); font-size:14px; }
+#app{ display:none; min-height:100vh; }
+header.top{ background:linear-gradient(115deg,var(--azul-d),var(--azul) 55%,var(--cian)); color:#fff; padding:16px 4vw 0; }
+header.top .kicker{ color:var(--amar); font-size:12px; font-weight:bold; letter-spacing:2.5px; text-transform:uppercase; }
+header.top h1{ margin:4px 0 2px; font-size:clamp(20px,3vw,28px); }
+header.top p{ margin:0 0 12px; font-size:13px; color:#C9D6DD; }
+header.top a{ color:#C9D6DD; font-size:12px; }
+.tabs{ display:flex; gap:6px; flex-wrap:wrap; }
+.tabs button{ border:none; font-family:inherit; font-size:14px; font-weight:bold; padding:10px 20px; border-radius:10px 10px 0 0; background:rgba(255,255,255,.14); color:#E3ECF0; cursor:pointer; }
+.tabs button.on{ background:#EEF3F6; color:var(--azul); }
+main{ padding:16px 1.5vw 50px; }
+.pane{ display:none; } .pane.on{ display:block; }
+.intro{ background:#FFF8E1; border-left:6px solid var(--amar); border-radius:10px; padding:12px 16px; margin-bottom:14px; font-size:14px; line-height:1.5; }
+.split{ display:grid; grid-template-columns:1fr 1fr; gap:16px; align-items:start; }
+.split .left{ position:sticky; top:10px; }
+.card{ background:#fff; border-radius:16px; padding:18px 20px; box-shadow:0 4px 18px rgba(0,40,63,.08); margin-bottom:14px; }
+.card h2{ margin:0 0 10px; color:var(--azul); font-size:19px; }
+.card h3{ margin:16px 0 6px; color:var(--azul); font-size:15px; }
+.card p, .card li{ font-size:14px; line-height:1.55; }
+.casebox{ border:2px solid #D0D8DD; border-radius:12px; overflow:hidden; background:#fff; cursor:zoom-in; }
+.casebox img{ display:block; width:100%; height:auto; }
+.hintzoom{ font-size:12px; color:#6b7c84; margin:6px 0 0; }
+.ref{ border:1px solid #D8DEE1; border-left:6px solid var(--verde); border-radius:10px; padding:10px 14px; background:#F6FBF6; font-size:14px; line-height:1.55; }
+.src{ border:1px solid #D8DEE1; border-left:6px solid var(--humo); border-radius:10px; padding:10px 14px; background:#FAFCFD; font-size:13px; line-height:1.5; color:#4a5b62; font-style:italic; }
+table.terms{ width:100%; border-collapse:collapse; margin:8px 0; }
+table.terms th{ background:var(--azul); color:#fff; font-size:12px; text-align:left; padding:7px 9px; }
+table.terms td{ border:1px solid #D8DEE1; padding:7px 9px; vertical-align:top; font-size:13.5px; line-height:1.45; background:#fff; }
+table.terms td.o{ font-weight:bold; color:var(--azul); } table.terms td.d{ color:var(--verde); font-weight:bold; } table.terms td.n{ color:#5a6b72; }
+pre.code{ background:#0E2A3A; color:#EAF2F6; padding:14px 16px; border-radius:10px; overflow:auto; font-size:13px; line-height:1.5; margin:8px 0; }
+pre.code.bad{ background:#3A1A1A; }
+code{ background:#EEF3F6; padding:1px 5px; border-radius:4px; font-size:.92em; font-family:Menlo,Consolas,"Courier New",monospace; }
+.errs{ border-left:6px solid var(--rojo); background:#FDF5F6; border-radius:10px; padding:8px 14px 8px 14px; margin:8px 0; }
+.errs ul{ margin:4px 0; padding-left:20px; }
+.rec{ border-top:1px dashed #D0D8DD; padding-top:10px; margin-top:10px; } .rec:first-child{ border-top:none; margin-top:0; padding-top:0; }
+footer.copy{ text-align:center; padding:18px 4vw 34px; font-size:11px; color:var(--humo); font-style:italic; }
+@media (max-width:900px){ .split{ grid-template-columns:1fr; } .split .left{ position:static; } }
+</style>
+</head>
+<body>
+<div id="boot">Comprobando acceso…</div>
+<div id="app">
+  <header class="top">
+    <a href="../index.html">← Volver a Traducción Médica EN-ES</a>
+    <div class="kicker">Descarga cognitiva e IA · Traducción Médica EN-ES</div>
+    <h1>Retroalimentación de «Con segunda opinión (de IA)»</h1>
+    <p>Revisa con calma, a tu ritmo, la corrección de cada parte de la actividad.</p>
+    <div class="tabs" id="tabs"><button class="on" data-k="a">Tarea A (sin IA)</button><button class="" data-k="b">Tarea B (con IA)</button><button class="" data-k="r">Recuerdo inmediato</button><button class="" data-k="d">Hoja diferida</button></div>
+  </header>
+  <main id="stage">
+<section class="pane on" data-k="a"><div class="intro">En la Tarea A traducías, sin IA, el fragmento resaltado del artículo sobre la enfermedad de Parkinson. Tu traducción no tiene por qué coincidir palabra por palabra con la de referencia: hay varias soluciones válidas. Compara sobre todo la <b>terminología médica</b> y el <b>registro divulgativo</b>.</div><div class="split"><div class="left"><div class="card"><h2>Texto A · Párkinson</h2><div class="casebox zoomable"><img src="../img/texto-a.png" alt="Texto A · Párkinson"></div><p class="hintzoom">Pulsa sobre el texto para verlo más grande.</p></div></div><div class="right"><div class="card"><h2>Traducción de referencia</h2><div class="ref">Aunque la enfermedad de Parkinson se asocia principalmente con síntomas motores, los investigadores reconocen cada vez más que los síntomas no motores pueden ser igual de incapacitantes. Entre ellos se incluyen los trastornos del sueño, la depresión, la ansiedad, el estreñimiento y, en fases más avanzadas, el deterioro cognitivo. Dado que estos síntomas suelen preceder a los signos motores clásicos en varios años, algunos especialistas consideran hoy la enfermedad de Parkinson un trastorno de todo el organismo y no una afección puramente motora. Este cambio de perspectiva tiene implicaciones importantes para el diagnóstico precoz: una combinación de síntomas no motores sutiles, más que el temblor por sí solo, podría ayudar en el futuro a los clínicos a identificar la enfermedad en una fase más temprana y con más posibilidades de tratamiento.</div><h3>Texto original del fragmento</h3><div class="src" lang="en">Although Parkinson's disease is most commonly associated with motor symptoms, researchers increasingly recognise that non-motor symptoms can be just as disabling. These include sleep disturbances, depression, anxiety, constipation and, in later stages, cognitive decline. Because these symptoms often precede the classic motor signs by several years, some specialists now consider Parkinson's disease a whole-body disorder rather than a purely motor condition. This shift in understanding has important implications for early diagnosis: a combination of subtle non-motor symptoms, rather than tremor alone, may eventually help clinicians identify the disease at an earlier, more treatable stage.</div><h3>Términos que suelen plantear dudas</h3><table class="terms"><thead><tr><th>Original</th><th>Propuesta</th><th>Matiz</th></tr></thead><tbody><tr><td class="o">non-motor symptoms</td><td class="d">síntomas no motores</td><td class="n">Sin guion.</td></tr><tr><td class="o">disabling</td><td class="d">incapacitante</td><td class="n">Cuidado con el falso amigo «deshabilitante».</td></tr><tr><td class="o">whole-body disorder</td><td class="d">trastorno de todo el organismo</td><td class="n">También «trastorno sistémico».</td></tr><tr><td class="o">tremor</td><td class="d">temblor</td><td class="n"></td></tr><tr><td class="o">clinicians</td><td class="d">clínicos</td><td class="n"></td></tr></tbody></table></div></div></div></section>
+<section class="pane" data-k="b"><div class="intro">En la Tarea B posditabas el borrador de Copilot del fragmento sobre sensores de glucosa. Fíjate en tres cosas al comparar con tu revisión: qué errores de la traducción automática detectaste, cuáles <b>no</b> detectaste y si cambiaste algo que no hacía falta cambiar.</div><div class="split"><div class="left"><div class="card"><h2>Texto B · Sensores de glucosa</h2><div class="casebox zoomable"><img src="../img/texto-b.png" alt="Texto B · Sensores de glucosa"></div><p class="hintzoom">Pulsa sobre el texto para verlo más grande.</p></div></div><div class="right"><div class="card"><h2>Traducción de referencia</h2><div class="ref">Una de las principales ventajas de la monitorización continua de glucosa es su capacidad para revelar patrones que una única prueba de punción digital pasaría completamente por alto, como caídas nocturnas de la glucosa o picos pronunciados tras determinadas comidas. Muchos dispositivos incluyen ahora alertas personalizables que avisan al usuario antes de que sus niveles de glucosa alcancen valores peligrosamente altos o bajos, lo que puede resultar especialmente valioso para las personas que experimentan hipoglucemia asintomática (o inadvertida), una afección en la que los síntomas de alerta habituales de la glucemia baja no llegan a manifestarse. Los estudios clínicos han asociado el uso de estos sensores con un mejor control glucémico y una reducción de los episodios de hipoglucemia grave, aunque los resultados varían en función de la constancia con la que se utilice el dispositivo.</div><h3>Texto original del fragmento</h3><div class="src" lang="en">One of the main advantages of continuous glucose monitoring is its ability to reveal patterns that a single finger-prick test would miss entirely, such as overnight drops in glucose or sharp spikes after specific meals. Many devices now include customisable alerts that warn users before their glucose levels become dangerously high or low, which can be particularly valuable for people who experience hypoglycaemia unawareness, a condition in which the usual warning symptoms of low blood sugar fail to appear. Clinical studies have associated the use of these sensors with improved glycaemic control and a reduction in severe hypoglycaemic episodes, although outcomes vary depending on how consistently the device is used.</div><h3>Errores frecuentes de la traducción automática</h3><table class="terms"><thead><tr><th>Original</th><th>Propuesta</th><th>Matiz</th></tr></thead><tbody><tr><td class="o">finger-prick test</td><td class="d">prueba de punción digital</td><td class="n">Evita versiones demasiado literales o coloquiales como «prueba de pinchazo en el dedo».</td></tr><tr><td class="o">hypoglycaemia unawareness</td><td class="d">hipoglucemia asintomática / inadvertida</td><td class="n">Es un concepto clínico establecido; no «desconocimiento de la hipoglucemia».</td></tr><tr><td class="o">glycaemic control</td><td class="d">control glucémico</td><td class="n"></td></tr><tr><td class="o">customisable alerts</td><td class="d">alertas personalizables</td><td class="n">No pierdas el matiz de personalización.</td></tr></tbody></table></div></div></div></section>
+<section class="pane" data-k="r"><div class="intro">La hoja de recuerdo inmediato te pedía la idea principal del fragmento, un dato médico concreto y tres términos clave. Revisa lo que corresponde a la tarea que hiciste.</div><div class="card"><div class="rec"><h3>Si respondiste sobre la Tarea A (Párkinson)</h3><p><b>Idea principal:</b> los síntomas no motores (trastornos del sueño, depresión, ansiedad, estreñimiento y, más tarde, deterioro cognitivo) pueden ser tan incapacitantes como los motores y suelen aparecer años antes; por eso algunos especialistas consideran el párkinson un trastorno de todo el organismo.</p><p><b>Matiz clave:</b> esto tiene implicaciones para el diagnóstico precoz: una combinación de síntomas no motores sutiles, y no solo el temblor, podría ayudar a identificar la enfermedad antes.</p><table class="terms"><thead><tr><th>Término original</th><th>Propuesta de referencia</th></tr></thead><tbody><tr><td class="o">non-motor symptoms</td><td class="d">síntomas no motores</td></tr><tr><td class="o">disabling</td><td class="d">incapacitante</td></tr><tr><td class="o">whole-body disorder</td><td class="d">trastorno de todo el organismo</td></tr></tbody></table></div><div class="rec"><h3>Si respondiste sobre la Tarea B (sensores de glucosa)</h3><p><b>Idea principal:</b> la monitorización continua de glucosa revela patrones que una única punción digital no ve (caídas nocturnas, picos tras las comidas) y permite alertas personalizables antes de que la glucosa llegue a valores peligrosos.</p><p><b>Matiz clave:</b> es especialmente valiosa en la hipoglucemia asintomática; los estudios la asocian con mejor control glucémico y menos hipoglucemias graves, aunque el resultado depende de la constancia de uso.</p><table class="terms"><thead><tr><th>Término original</th><th>Propuesta de referencia</th></tr></thead><tbody><tr><td class="o">finger-prick test</td><td class="d">prueba de punción digital</td></tr><tr><td class="o">hypoglycaemia unawareness</td><td class="d">hipoglucemia asintomática / inadvertida</td></tr><tr><td class="o">glycaemic control</td><td class="d">control glucémico</td></tr></tbody></table></div></div></section>
+<section class="pane" data-k="d"><div class="intro">La hoja diferida te pedía traducir, sin ayuda, un fragmento nuevo emparentado con los anteriores. Compara sobre todo qué términos reconociste.</div><div class="split"><div class="left"><div class="card"><h2>Fragmento nuevo · Análisis de sangre para el Alzheimer</h2><div class="casebox zoomable"><img src="../posterior/img/transferencia.png" alt="Fragmento nuevo · Análisis de sangre para el Alzheimer"></div><p class="hintzoom">Pulsa sobre el texto para verlo más grande.</p></div></div><div class="right"><div class="card"><h2>Traducción de referencia</h2><div class="ref">Un nuevo análisis de sangre podría ayudar a detectar antes la enfermedad de Alzheimer. Los investigadores han desarrollado un análisis de sangre que mide proteínas específicas asociadas a las placas amiloides, uno de los rasgos característicos de la enfermedad de Alzheimer. A diferencia de los métodos diagnósticos tradicionales, que a menudo recurren a costosas pruebas de neuroimagen o a punciones lumbares invasivas, este enfoque basado en sangre podría hacer que el cribado precoz fuera más accesible en atención primaria. Los estudios de validación preliminares sugieren que la prueba puede identificar a pacientes con mayor riesgo de deterioro cognitivo varios años antes de que aparezcan síntomas clínicos, aunque son necesarias más investigaciones para confirmar su precisión en poblaciones diversas.</div><h3>Texto original del fragmento</h3><div class="src" lang="en">New blood test may help detect Alzheimer's disease earlier. Researchers have developed a blood test that measures specific proteins associated with amyloid plaques, one of the hallmark features of Alzheimer's disease. Unlike traditional diagnostic methods, which often rely on expensive brain scans or invasive lumbar punctures, this blood-based approach could make early screening more accessible in primary care settings. Early validation studies suggest the test can identify patients at higher risk of cognitive decline several years before clinical symptoms become apparent, although further research is needed to confirm its accuracy across diverse populations.</div><h3>Términos clave de este fragmento</h3><table class="terms"><thead><tr><th>Original</th><th>Propuesta</th><th>Matiz</th></tr></thead><tbody><tr><td class="o">amyloid plaques</td><td class="d">placas amiloides</td><td class="n"></td></tr><tr><td class="o">hallmark features</td><td class="d">rasgos característicos / distintivos</td><td class="n"></td></tr><tr><td class="o">lumbar punctures</td><td class="d">punciones lumbares</td><td class="n"></td></tr><tr><td class="o">primary care</td><td class="d">atención primaria</td><td class="n"></td></tr><tr><td class="o">cognitive decline</td><td class="d">deterioro cognitivo</td><td class="n">Ya aparecía en el texto sobre el párkinson.</td></tr></tbody></table></div></div></div></section>
+  </main>
+  <footer class="copy">© Dra. Blanca Hernández Pardo · Traducción Médica Inglés-Español · Descarga cognitiva e IA<br>
+  Queda prohibida la difusión, distribución o reproducción total o parcial de este material sin autorización expresa de la autora.</footer>
+</div>
+<script>
+(function(){
+  var DIR = "tm";
+  var s = ""; try { s = sessionStorage.getItem("dc_unlocked") || ""; } catch(e){}
+  if (!s) { location.replace("../../index.html"); return; }
+  function go(){ document.getElementById("boot").style.display = "none"; document.getElementById("app").style.display = "block"; start(); }
+  if (s === "teacher") { go(); return; }
+  if (s !== DIR) { location.replace("../../index.html"); return; }
+  fetch("../config.json?t=" + Date.now()).then(function(r){ return r.json(); }).then(function(c){
+    if (c.retro === true) go(); else location.replace("../index.html");
+  }).catch(function(){ document.getElementById("boot").textContent = "No se ha podido comprobar el acceso. Recarga la página."; });
+})();
+function start(){
+  document.querySelectorAll("#tabs button").forEach(function(b){ b.onclick = function(){
+    document.querySelectorAll("#tabs button").forEach(function(x){ x.classList.toggle("on", x === b); });
+    document.querySelectorAll(".pane").forEach(function(p){ p.classList.toggle("on", p.dataset.k === b.dataset.k); });
+    window.scrollTo(0,0); }; });
+  document.querySelectorAll(".casebox.zoomable img").forEach(function(img){ img.onclick = function(){
+    var z = document.createElement("div"); z.style.cssText = "position:fixed;inset:0;background:rgba(0,40,63,.92);z-index:60;display:flex;align-items:center;justify-content:center;padding:2vw;cursor:zoom-out";
+    z.innerHTML = '<img src="'+img.getAttribute("src")+'" style="max-width:96vw;max-height:94vh;background:#fff;border-radius:8px" alt="">'; z.onclick = function(){ z.remove(); }; document.body.appendChild(z); }; });
+  document.addEventListener("keydown", function(e){ if (e.key === "Escape"){ var z = document.querySelector("body > div[style*='z-index:60']"); if (z) z.remove(); } });
+}
+</script>
+</body>
+</html>

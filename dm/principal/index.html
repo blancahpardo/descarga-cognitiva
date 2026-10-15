@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Dato limpio, dato sospechoso · Datos Masivos (Big Data)</title>
+<style>
+:root{
+  --azul:#003B5C; --azul-d:#00283F; --amar:#F4C542; --gris:#34484F; --claro:#F3F3F4; --humo:#9FB1BA;
+  --verde:#2E7D32; --rojo:#B00020; --cian:#0E7C86;
+}
+*{ box-sizing:border-box; }
+body{ margin:0; font-family:Arial, Helvetica, sans-serif; color:var(--gris); background:#EEF3F6; }
+#boot{ padding:40px 16px; text-align:center; color:var(--humo); font-size:14px; }
+#app{ display:none; min-height:100vh; }
+header.top{ background:linear-gradient(115deg,var(--azul-d),var(--azul) 55%,var(--cian)); color:#fff; padding:18px 4vw 14px; }
+header.top .kicker{ color:var(--amar); font-size:12px; font-weight:bold; letter-spacing:2.5px; text-transform:uppercase; }
+header.top h1{ margin:4px 0 2px; font-size:clamp(20px,3vw,28px); }
+header.top p{ margin:0; font-size:13px; color:#C9D6DD; }
+.stepper{ display:flex; gap:6px; margin-top:14px; flex-wrap:wrap; }
+.stepper span{ font-size:12px; padding:5px 12px; border-radius:999px; background:rgba(255,255,255,.14); color:#C9D6DD; }
+.stepper span.done{ background:rgba(255,255,255,.28); color:#fff; }
+.stepper span.now{ background:var(--amar); color:var(--azul-d); font-weight:bold; }
+main{ max-width:1100px; margin:0 auto; padding:22px 4vw 60px; }
+main.wide{ max-width:none; padding:14px 1.2vw 40px; }
+.split{ display:grid; grid-template-columns:1fr 1fr; gap:16px; align-items:start; }
+.split .left{ position:sticky; top:66px; }
+.split .card{ margin-bottom:0; padding:18px 20px; }
+.split .card h2{ font-size:19px; }
+.split .right .card > h3:first-child{ margin-top:0; }
+.headsplit{ display:flex; gap:20px; align-items:flex-start; justify-content:space-between; flex-wrap:wrap; margin-bottom:6px; }
+.headsplit > div:first-child{ flex:1 1 320px; }
+.alert-red{ flex:0 1 430px; background:#FDECEC; border:3px solid var(--rojo); color:var(--rojo); border-radius:12px; padding:12px 18px; font-weight:bold; font-size:19px; line-height:1.35; }
+.alert-red small{ display:block; font-size:15px; margin-top:4px; }
+.hintzoom{ font-size:12px; color:#6b7c84; margin:6px 0 0; }
+.zoom{ position:fixed; inset:0; background:rgba(0,40,63,.92); z-index:60; display:flex; align-items:center; justify-content:center; padding:2vw; cursor:zoom-out; }
+.zoom img{ max-width:96vw; max-height:94vh; background:#fff; border-radius:8px; }
+.casebox.zoomable{ cursor:zoom-in; }
+.brow{ display:grid; grid-template-columns:34px 1fr 1fr; gap:6px 8px; padding:10px 0; border-bottom:1px dashed #D0D8DD; align-items:start; }
+.brow .n{ grid-row:1 / span 3; font-weight:bold; color:var(--azul); background:var(--claro); border-radius:8px; text-align:center; padding:8px 0; }
+.brow .bf, .brow .bj{ grid-column:2 / span 2; }
+@media (max-width:900px){ .split{ grid-template-columns:1fr; } .split .left{ position:static; } }
+.card{ background:#fff; border-radius:16px; padding:24px 26px; box-shadow:0 4px 18px rgba(0,40,63,.08); margin-bottom:18px; }
+.card h2{ margin:0 0 8px; color:var(--azul); font-size:22px; }
+.card h3{ margin:18px 0 6px; color:var(--azul); font-size:16px; }
+.card p, .card li{ font-size:15px; line-height:1.55; }
+.rules{ background:#FFF8E1; border-left:6px solid var(--amar); border-radius:10px; padding:12px 16px; margin:14px 0; font-size:14px; }
+.rules ul{ margin:6px 0 0; padding-left:20px; }
+.rules li{ font-size:14px; margin-bottom:3px; }
+.btn{ background:var(--azul); color:#fff; border:none; border-radius:999px; padding:13px 26px; font-size:15px; font-weight:bold; cursor:pointer; font-family:inherit; text-decoration:none; display:inline-block; }
+.btn:hover{ filter:brightness(1.12); }
+.btn.amar{ background:var(--amar); color:var(--azul-d); }
+.btn.alt{ background:var(--claro); color:var(--azul); border:1px solid #D0D8DD; }
+.btn.small{ padding:8px 16px; font-size:13px; }
+.btn:disabled{ opacity:.45; cursor:not-allowed; }
+.btnrow{ display:flex; gap:10px; flex-wrap:wrap; margin-top:16px; align-items:center; }
+.timer{ position:sticky; top:0; z-index:5; background:var(--azul-d); color:#fff; border-radius:12px; padding:10px 18px; display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; font-size:14px; }
+.timer b{ font-size:22px; font-variant-numeric:tabular-nums; color:var(--amar); }
+.timer.warn b{ color:#FF8A80; }
+.casebox{ border:2px solid #D0D8DD; border-radius:12px; overflow:hidden; background:#fff; margin:10px 0 18px; }
+.casebox img{ display:block; width:100%; height:auto; }
+table.resp{ width:100%; border-collapse:collapse; margin:10px 0; }
+table.resp th{ background:var(--azul); color:#fff; font-size:13px; text-align:left; padding:8px 10px; }
+table.resp td{ border:1px solid #D8DEE1; padding:6px; vertical-align:top; background:#fff; }
+table.resp td.n{ width:34px; text-align:center; font-weight:bold; color:var(--azul); background:var(--claro); }
+textarea, input[type=text], input[type=number], select{
+  width:100%; font-family:inherit; font-size:15px; color:var(--gris); padding:8px 10px; border:1px solid #C5CED3; border-radius:8px; background:#FAFCFD;
+}
+textarea{ resize:vertical; min-height:52px; }
+textarea.big{ min-height:130px; }
+textarea:focus, input:focus, select:focus{ outline:2px solid var(--amar); border-color:var(--amar); }
+textarea[readonly]{ background:#EEF1F3; }
+.recrow{ display:grid; grid-template-columns:1fr; gap:8px; margin-bottom:16px; padding-bottom:16px; border-bottom:1px dashed #D0D8DD; }
+.recrow:last-child{ border-bottom:none; }
+.recans{ display:grid; grid-template-columns:2fr 1fr; gap:10px; }
+.consent-text{ max-height:320px; overflow:auto; border:1px solid #D0D8DD; border-radius:10px; padding:14px 18px; background:#FAFCFD; margin:10px 0; }
+.consent-text h3{ margin:12px 0 4px; font-size:14px; }
+.consent-text p{ margin:0 0 6px; font-size:14px; }
+label.chk{ display:flex; gap:10px; align-items:flex-start; margin:10px 0; font-size:15px; line-height:1.45; }
+label.chk input{ width:20px; height:20px; margin-top:2px; flex:none; }
+.idrow{ display:flex; gap:14px; align-items:center; flex-wrap:wrap; margin-top:10px; }
+.idrow input{ width:110px; font-size:22px; text-align:center; letter-spacing:6px; font-weight:bold; }
+.toast{ position:fixed; bottom:20px; left:50%; transform:translateX(-50%); background:var(--azul-d); color:#fff; padding:12px 20px; border-radius:10px; font-size:14px; z-index:50; display:none; max-width:90vw; box-shadow:0 6px 20px rgba(0,0,0,.3); }
+.ok{ color:var(--verde); font-weight:bold; }
+footer.copy{ text-align:center; padding:18px 4vw 34px; font-size:11px; color:var(--humo); font-style:italic; }
+@media (max-width:700px){
+  .card{ padding:18px 16px; }
+  table.resp, table.resp tbody, table.resp tr, table.resp td{ display:block; width:100%; }
+  table.resp thead{ display:none; }
+  table.resp tr{ border:1px solid #D8DEE1; border-radius:10px; margin-bottom:10px; padding:4px; background:#fff; }
+  table.resp td{ border:none; padding:4px; }
+  table.resp td.n{ width:auto; text-align:left; background:none; }
+  .recans{ grid-template-columns:1fr; }
+}
+
+textarea.code{ font-family:Menlo,Consolas,"Courier New",monospace; font-size:14px; white-space:pre; overflow:auto; tab-size:4; }
+textarea.tall{ min-height:260px; }
+textarea.big.code{ min-height:200px; } textarea.big.code.tall{ min-height:320px; }
+.explain h3{ margin:14px 0 6px; color:var(--azul); font-size:16px; } .explain h3:first-child{ margin-top:0; }
+.explain p, .explain li{ font-size:14px; line-height:1.55; } .explain ol{ padding-left:20px; margin:6px 0; }
+code{ background:#EEF3F6; padding:1px 5px; border-radius:4px; font-size:.92em; font-family:Menlo,Consolas,"Courier New",monospace; }
+table.likert{ width:100%; border-collapse:collapse; margin:10px 0; }
+table.likert th{ background:var(--azul); color:#fff; font-size:13px; text-align:center; padding:8px 6px; } table.likert th:first-child{ text-align:left; }
+table.likert td{ border:1px solid #D8DEE1; padding:8px 6px; text-align:center; background:#fff; } table.likert td.s{ text-align:left; width:52%; font-size:14px; line-height:1.4; }
+table.likert input{ width:20px; height:20px; }
+@media (max-width:700px){ table.likert td.s{ width:auto; } }
+</style>
+</head>
+<body>
+<div id="boot">Comprobando acceso…</div>
+<div id="app">
+  <header class="top">
+    <div class="kicker">Descarga cognitiva e IA · Datos Masivos (Big Data)</div>
+    <h1>Dato limpio, dato sospechoso</h1>
+    <p>Limpieza de datos y detección de valores atípicos con y sin IA — un experimento sobre lo que de verdad se te queda en Pandas</p>
+    <div class="stepper" id="stepper"></div>
+  </header>
+  <main id="stage"></main>
+  <footer class="copy">© Dra. Blanca Hernández Pardo · Datos Masivos · Descarga cognitiva e IA<br>
+  Queda prohibida la difusión, distribución o reproducción total o parcial de este material sin autorización expresa de la autora.</footer>
+</div>
+<div class="toast" id="toast"></div>
+<script>
+var CFG = {"dir":"dm","kind":"code","asig":"Datos Masivos (Big Data)","asigLarga":"Datos Masivos","titulo":"Dato limpio, dato sospechoso","subtitulo":"Limpieza de datos y detección de valores atípicos con y sin IA — un experimento sobre lo que de verdad se te queda en Pandas","desc1":"Dato limpio, dato sospechoso: limpieza y valores atípicos con Pandas, con y sin IA.","actividadJson":"Descarga cognitiva e IA — Datos Masivos, Práctica 1 (Dato limpio, dato sospechoso)","minA":35,"minB":35,"minPost":15,"objetivo":["Vas a implementar dos funciones de tratamiento de datos con Pandas, de complejidad equivalente: una programándola tú desde cero, sin ningún asistente de IA, y otra con ayuda de un asistente de generación de código. El objetivo no es qué código funciona mejor, sino observar qué diferencia produce cada forma de trabajar en tu comprensión real de la lógica del proceso.","\u003cb>Importante:\u003c/b> en la condición con IA, tu criterio para aceptar el código sigue siendo el mismo que en cualquier revisión profesional: debes poder explicar cada línea como si la hubieras escrito tú."],"aLeft":"\u003ch3>Limpieza y normalización de una columna de texto en un DataFrame\u003c/h3>\u003cp>Antes de analizar datos textuales dentro de un DataFrame, hay que homogeneizar el contenido de cada celda para que valores equivalentes no se traten como distintos. Un proceso de limpieza básico sigue estos pasos:\u003c/p>\u003col>\u003cli>Se recorren los valores de la columna uno a uno.\u003c/li>\u003cli>Se eliminan espacios en blanco sobrantes al principio y al final (\u003ccode>strip\u003c/code>).\u003c/li>\u003cli>Se homogeneiza el uso de mayúsculas/minúsculas (por ejemplo, todo a minúsculas).\u003c/li>\u003cli>Se sustituyen los valores vacíos o equivalentes a «nulo» (cadenas vacías, «NA», «n/a»…) por un valor nulo reconocido por Pandas (\u003ccode>NaN\u003c/code>).\u003c/li>\u003cli>Se eliminan las filas duplicadas resultantes tras la limpieza.\u003c/li>\u003cli>El resultado es una columna homogénea, lista para el análisis posterior.\u003c/li>\u003c/ol>\u003ch3>Tarea de implementación\u003c/h3>\u003cp>Implementa en Python una función \u003ccode>limpiar_columna(df, columna)\u003c/code> que reciba un DataFrame y el nombre de una columna de texto, y devuelva un nuevo DataFrame con esa columna limpia (sin espacios sobrantes, en minúsculas, con los valores vacíos/«NA» convertidos a NaN) y sin filas duplicadas.\u003c/p>","aIntro":"\u003cp>Vas a implementar en Python, con Pandas, una función de limpieza de una columna de texto. El enunciado y la explicación del proceso aparecerán cuando pulses el botón.\u003c/p>\u003ch3>Instrucciones\u003c/h3>\u003col>\u003cli>Programa la función completamente por tu cuenta, sin usar ningún asistente de IA ni buscar la solución ya hecha en internet.\u003c/li>\u003cli>Pruébala con un DataFrame de ejemplo de al menos 6 filas que incluya espacios sobrantes, mayúsculas inconsistentes, al menos un valor vacío/«NA» y una fila duplicada.\u003c/li>\u003cli>Añade un comentario breve explicando la lógica de cada bloque de código.\u003c/li>\u003c/ol>","aRules":["Sin IA ni buscar la solución en internet. Puedes escribir y probar tu código en tu entorno habitual de Python y pegarlo aquí; en este cuadro sí se permite pegar."],"bLeft":"\u003ch3>Detección de valores atípicos mediante el rango intercuartílico (IQR)\u003c/h3>\u003cp>Un valor atípico (\u003ci>outlier\u003c/i>) es un dato que se aleja mucho del resto de valores de una columna y puede distorsionar un análisis posterior. Un método sencillo y muy usado para detectarlos es el rango intercuartílico:\u003c/p>\u003col>\u003cli>Se calculan el primer cuartil (Q1, percentil 25) y el tercer cuartil (Q3, percentil 75) de la columna.\u003c/li>\u003cli>Se calcula el rango intercuartílico: \u003ccode>IQR = Q3 − Q1\u003c/code>.\u003c/li>\u003cli>Se definen los límites inferior y superior: \u003ccode>límite_inf = Q1 − 1,5·IQR\u003c/code>; \u003ccode>límite_sup = Q3 + 1,5·IQR\u003c/code>.\u003c/li>\u003cli>Cualquier valor por debajo del límite inferior o por encima del límite superior se considera atípico.\u003c/li>\u003cli>Este método es rápido y no requiere asumir una distribución concreta, pero es sensible al tamaño de la muestra y puede marcar como atípicos valores que en realidad son válidos en columnas con distribuciones muy asimétricas.\u003c/li>\u003c/ol>\u003ch3>Tarea de implementación\u003c/h3>\u003cp>Implementa en Python una función \u003ccode>detectar_atipicos(df, columna)\u003c/code> que reciba un DataFrame y el nombre de una columna numérica, y devuelva un DataFrame solo con las filas cuyo valor en esa columna se considere atípico según el método IQR.\u003c/p>","bIntro":"\u003cp>Vas a implementar una función de detección de valores atípicos con el método IQR, esta vez con ayuda de \u003cb>Microsoft Copilot\u003c/b> (con tu cuenta de la universidad). El enunciado y la explicación aparecerán cuando pulses el botón.\u003c/p>\u003ch3>Instrucciones\u003c/h3>\u003col>\u003cli>Usa un asistente de IA para generar un primer borrador de la función.\u003c/li>\u003cli>Revisa y depura el código: pruébalo con un DataFrame de ejemplo de al menos 8 filas que incluya al menos 2 valores claramente atípicos, y corrige cualquier error o comportamiento inesperado.\u003c/li>\u003cli>Añade un comentario breve explicando la lógica de cada bloque de código, escrito por ti (no copiado de la explicación de la IA).\u003c/li>\u003cli>Anota brevemente qué tuviste que corregir o pedir de nuevo a la IA para llegar a la versión final.\u003c/li>\u003c/ol>","bRules":["Usa solo Microsoft Copilot, con el modelo que viene por defecto y entrando con tu cuenta de la universidad.","Debes poder explicar cada línea del código como si la hubieras escrito tú."],"promptB":"Escribe en Python, con Pandas, una función detectar_atipicos(df, columna) que reciba un DataFrame y el nombre de una columna numérica, y devuelva un DataFrame solo con las filas cuyo valor en esa columna se considere atípico según el método del rango intercuartílico (IQR).","recIntro":"Responde de memoria. No tienes tu código, la explicación ni la IA disponibles.","recQs":["Explica por escrito, paso a paso, la lógica del algoritmo que implementaste (sin ver tu código).","Detecta el error en este fragmento de pseudocódigo relacionado con la misma lógica. Escribe qué está mal y cómo lo corregirías.","¿Qué caso especial o límite del algoritmo recuerdas que fuera más complicado de resolver?"],"recImg":{"q":1,"src":"img/pseudocodigo.png"},"likert":["Estoy seguro/a de que podré explicar esta lógica dentro de una semana.","Entiendo en profundidad por qué el código funciona, no solo que funciona.","El esfuerzo mental que me ha exigido la tarea ha sido alto.","Podría escribir una función similar desde cero, sin volver a consultar esta."],"post":{"min":15,"q1":{"title":"La lógica del algoritmo","prompt":"Explica de nuevo, de memoria, la lógica del algoritmo que implementaste hace una semana."},"q2":{"title":"Transferencia","html":"\u003cp>Sin usar IA, resuelve a mano (en pseudocódigo o Python) este problema nuevo pero análogo:\u003c/p>\u003cp>\u003cb>Escribe la lógica de una función que, dado un DataFrame y una columna de texto, cuente cuántos valores de esa columna tienen más de un número determinado de caracteres.\u003c/b>\u003c/p>","prompt":"Resuelve a mano este problema nuevo pero análogo, sin ayuda de IA.","answerHint":"Escribe tu solución en pseudocódigo o en Python."},"q3":{"title":"Qué te ha servido","prompt":"¿Qué parte de la lógica de la tarea original te ha resultado útil para resolver este problema nuevo?"}},"footer":"Datos Masivos · Descarga cognitiva e IA"};
+
+(function(){
+  var s = ""; try { s = sessionStorage.getItem("dc_unlocked") || ""; } catch(e){}
+  if (!s) { location.replace("../../index.html"); return; }
+  function go(){ document.getElementById("boot").style.display = "none"; document.getElementById("app").style.display = "block"; startApp(); }
+  if (s === "teacher") { go(); return; }
+  if (s !== CFG.dir) { location.replace("../../index.html"); return; }
+  fetch("../config.json?t=" + Date.now()).then(function(r){ return r.json(); }).then(function(c){
+    if (c.principal === true) go(); else location.replace("../index.html");
+  }).catch(function(){ document.getElementById("boot").textContent = "No se ha podido comprobar el acceso. Recarga la página."; });
+})();
+
+function startApp(){
+var KEY = "dc_" + CFG.dir + "_v1";
+
+var COPILOT = "https://m365.cloud.microsoft/chat";
+var ISCODE = CFG.kind === "code";
+var ATTR = 'spellcheck="false" autocorrect="off" autocapitalize="off" autocomplete="off" translate="no" lang="es" ' +
+           'data-gramm="false" data-gramm_editor="false" data-enable-grammarly="false" data-lt-active="false" data-ms-editor="false"';
+function esc(s){ return String(s==null?"":s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
+function toast(msg){ var t = document.getElementById("toast"); t.textContent = msg; t.style.display = "block"; clearTimeout(toast._t); toast._t = setTimeout(function(){ t.style.display = "none"; }, 3500); }
+function setPath(p,v){ var ks = p.split("."), last = ks.pop(); var o = ks.reduce(function(o,k){ return o[k]; }, S); o[last] = v; }
+function ta(path, val, nopaste, cls, ph){ return '<textarea '+ATTR+' data-path="'+path+'"'+(nopaste?' data-nopaste="1"':'')+(cls?' class="'+cls+'"':'')+(ph?' placeholder="'+esc(ph)+'"':'')+'>'+esc(val)+'</textarea>'; }
+function rulesBox(items){ return '<div class="rules"><b>Condiciones de realización</b><ul>' + items.map(function(i){ return '<li>'+i+'</li>'; }).join("") + '</ul></div>'; }
+function olist(items){ return '<ol>' + items.map(function(i){ return '<li>'+i+'</li>'; }).join("") + '</ol>'; }
+function mkRows(n, keys){ var a = []; for (var i=0;i<n;i++){ var o = {}; keys.forEach(function(k){ o[k]=""; }); a.push(o); } return a; }
+var ALERT = '<div class="alert-red">⚠ Esta parte se hace SIN IA de ningún tipo.<small>Tranquilo/a: no te preocupes, no penaliza.</small></div>';
+function stepper(){
+  document.getElementById("stepper").innerHTML = STEPS.map(function(n,i){
+    return '<span class="'+(i<S.step?'done':i===S.step?'now':'')+'">'+(i<S.step?'✓ ':'')+n+'</span>';
+  }).join("");
+}
+function copyText(txt, okMsg){
+  function fallback(){ var t = document.createElement("textarea"); t.value = txt; document.body.appendChild(t); t.select(); try { document.execCommand("copy"); toast(okMsg); } catch(e){ toast("No se pudo copiar. Selecciona el texto manualmente."); } t.remove(); }
+  if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(txt).then(function(){ toast(okMsg); }, fallback); else fallback();
+}
+var noTab = false;
+function commonListeners(){
+  document.addEventListener("keydown", function(e){
+    if (e.key === "Escape"){ var z = document.querySelector(".zoom"); if (z) z.remove(); noTab = true; return; }
+    if (e.key === "Tab" && e.target && e.target.classList && e.target.classList.contains("code")){
+      if (noTab){ noTab = false; return; }
+      e.preventDefault(); var t = e.target, a = t.selectionStart, b = t.selectionEnd;
+      t.value = t.value.slice(0,a) + "    " + t.value.slice(b); t.selectionStart = t.selectionEnd = a + 4;
+      t.dispatchEvent(new Event("input", {bubbles:true}));
+    } else if (e.key !== "Shift") { noTab = false; }
+  });
+  var st = document.getElementById("stage");
+  st.addEventListener("input", function(e){ var p = e.target.dataset && e.target.dataset.path; if (p){ setPath(p, e.target.value); save(); } });
+  st.addEventListener("change", function(e){ var p = e.target.dataset && e.target.dataset.path; if (p){ setPath(p, e.target.value); save(); } });
+  ["paste","drop"].forEach(function(ev){
+    st.addEventListener(ev, function(e){
+      if (e.target.dataset && e.target.dataset.nopaste){ e.preventDefault(); toast("En esta hoja no se puede pegar texto: escribe tu respuesta."); }
+    });
+  });
+}
+function wireZoom(st){
+  st.querySelectorAll(".casebox.zoomable img").forEach(function(img){ img.onclick = function(){
+    var z = document.createElement("div"); z.className = "zoom"; z.innerHTML = '<img src="'+img.getAttribute("src")+'" alt="">';
+    z.onclick = function(){ z.remove(); }; document.body.appendChild(z); }; });
+}
+function dlJson(obj, name){
+  var blob = new Blob([JSON.stringify(obj, null, 2)], { type: "application/json" });
+  var a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = name;
+  document.body.appendChild(a); a.click(); setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); }, 500);
+  toast("Archivo " + name + " descargado. Revisa tu carpeta de descargas.");
+}
+
+var STEPS = ["Inicio","Tarea A","Tarea B","Pausa","Recuerdo","Autoevaluación","Entrega"];
+var PROMPT_B = CFG.promptB;
+function fresh(){
+  var a = ISCODE ? { codigo:"", pruebas:"" } : { trad:"", rows:mkRows(4,["termino","solucion"]) };
+  var b = ISCODE ? { codigo:"", pruebas:"", correcciones:"", conversacion:"" } : { borrador:"", trad:"", rows:mkRows(4,["ia","correccion","porque"]), conversacion:"" };
+  return { v:1, step:0, id:"", consent:[false,false,false], inicio:null, fin:null, tiempos:{}, a:a, b:b,
+           r:{ tarea:"", resp:CFG.recQs.map(function(){ return ""; }) }, auto:CFG.likert.map(function(){ return ""; }) };
+}
+var S;
+try { S = JSON.parse(sessionStorage.getItem(KEY) || "null"); } catch(e){ S = null; }
+if (!S || S.v !== 1) S = fresh();
+function save(){ try { sessionStorage.setItem(KEY, JSON.stringify(S)); } catch(e){} }
+var COMMON_RULES = [
+  'Trabaja de forma individual, en este ordenador y sin ayuda externa (apuntes, buscadores, compañeros/as), salvo la que la tarea permita expresamente.',
+  'Los cuadros de respuesta de esta página no subrayan errores ni corrigen automáticamente lo que escribes. Si ves algún subrayado o cambio automático, avisa a la profesora.',
+  'Tu trabajo se guarda en esta pestaña mientras no la cierres. Al final descargarás un archivo con tus respuestas.'
+];
+function timerBar(key, minutes, label){
+  var t = S.tiempos[key]; if (!t || !t.start) return "";
+  return '<div class="timer" id="timer" data-start="'+t.start+'" data-min="'+minutes+'"><span>'+(label||('Tiempo disponible: '+minutes+' minutos'))+' (orientativo; la profesora marca el ritmo)</span><b id="timerval">--:--</b></div>';
+}
+function tick(){
+  var el = document.getElementById("timer"); if (!el) return;
+  var left = Math.round(+el.dataset.min*60 - (Date.now()-(+el.dataset.start))/1000);
+  var neg = left < 0, a = Math.abs(left);
+  document.getElementById("timerval").textContent = (neg?"+":"") + String(Math.floor(a/60)).padStart(2,"0") + ":" + String(a%60).padStart(2,"0");
+  el.classList.toggle("warn", left <= 300);
+}
+setInterval(tick, 1000);
+
+function viewInicio(){
+  return '<div class="card"><h2>Consentimiento informado para participar en una actividad docente de investigación</h2>' +
+  '<p>Antes de comenzar la actividad, lee atentamente la siguiente información.</p>' +
+'<div class="consent-text">' +
+  '<h3>1. Objetivo de la actividad</h3><p>Esta actividad forma parte de un estudio docente sobre cómo distintas formas de trabajar (con o sin apoyo de herramientas de inteligencia artificial) influyen en el aprendizaje y la retención de conocimientos en el aula universitaria. Los resultados se utilizarán con fines de investigación y mejora docente.</p>' +
+  '<h3>2. En qué consiste tu participación</h3><p>Se te pedirá que realices una tarea de la asignatura en dos condiciones diferentes (con y sin apoyo de IA) y que respondas más adelante a unas breves preguntas de seguimiento, algunas el mismo día y otras aproximadamente una semana después. También se te pedirá que rellenes un breve cuestionario de autoevaluación.</p>' +
+  '<h3>3. Identificación de tus respuestas</h3><p>Para poder relacionar tus distintas respuestas a lo largo de la actividad sin necesidad de recoger tu nombre, utiliza como único identificador los tres últimos dígitos de tu clave académica. No se recogerá tu nombre, apellidos ni ningún otro dato identificativo en los materiales de la actividad.</p>' +
+  '<h3>4. Tratamiento de los datos</h3><p>Los datos recogidos se tratarán de forma confidencial y se emplearán exclusivamente con fines docentes y de investigación educativa. Los resultados podrán presentarse de forma agregada, sin que sea posible identificarte individualmente.</p>' +
+  '<h3>5. Participación voluntaria</h3><p>La realización de la tarea forma parte de la actividad ordinaria de la asignatura, pero el uso de tus datos con fines de investigación es voluntario: puedes autorizarlo o no sin que ello afecte a tu evaluación.</p>' +
+  '<h3>6. Posibilidad de retirarte</h3><p>Puedes retirar tu consentimiento en cualquier momento, sin necesidad de justificación, poniéndote en contacto con el profesorado de la asignatura.</p>' +
+  '<h3>7. Riesgos y beneficios</h3><p>Esta actividad no implica riesgos más allá de los propios de cualquier tarea académica ordinaria. Contribuirás a mejorar el diseño de futuras actividades docentes.</p>' +
+  '<h3>8. Contacto</h3><p>Para cualquier duda, puedes contactar con el profesorado responsable de la asignatura: Dra. Blanca Hernández Pardo.</p>' +
+  '</div>' +
+  '<h3>Declaración de consentimiento</h3>' +
+  '<label class="chk"><input type="checkbox" data-consent="0"'+(S.consent[0]?' checked':'')+'><span>He leído y entendido la información anterior.</span></label>' +
+  '<label class="chk"><input type="checkbox" data-consent="1"'+(S.consent[1]?' checked':'')+'><span>Entiendo que mi participación es voluntaria y que puedo retirarme en cualquier momento sin consecuencias.</span></label>' +
+  '<label class="chk"><input type="checkbox" data-consent="2"'+(S.consent[2]?' checked':'')+'><span>Autorizo el uso de mis respuestas (identificadas únicamente por los tres últimos dígitos de mi clave académica) con fines de investigación docente, en los términos descritos.</span></label>' +
+  '<p style="font-size:13px;color:#5a6b72">No es necesaria firma manuscrita: marcar las casillas y entregar tu archivo al final equivale a la aceptación. Si no autorizas el uso de tus datos, haces la actividad igualmente y tus respuestas no entran en el estudio.</p>' +
+  '<h3>Tu identificador</h3><p>Los tres últimos dígitos de tu clave académica. No escribas tu nombre en ningún sitio.</p>' +
+  '<div class="idrow"><input type="text" inputmode="numeric" maxlength="3" pattern="[0-9]{3}" autocomplete="off" spellcheck="false" placeholder="000" id="idfield" value="'+esc(S.id)+'"></div>' +
+  '</div>' +
+  '<div class="card"><h2>Objetivo y cómo funciona</h2>' + CFG.objetivo.map(function(p){ return '<p>'+p+'</p>'; }).join("") +
+  rulesBox(COMMON_RULES) +
+  '<div class="btnrow"><button class="btn amar" id="go0">Empezar →</button></div></div>';
+}
+
+function leftPane(which){
+  var img = which === "a" ? CFG.aImg : CFG.bImg, html = which === "a" ? CFG.aLeft : CFG.bLeft, title = which === "a" ? "Tarea A — Condición MANUAL (sin IA)" : "Tarea B — Condición CON IA";
+  if (img) return '<h2>'+title+'</h2><div class="casebox zoomable" style="margin-bottom:0"><img src="../'+img+'" alt="Texto-caso (imagen)"></div><p class="hintzoom">Pulsa sobre el texto para verlo más grande.</p>';
+  return '<h2>'+title+'</h2><div class="explain">'+html+'</div>';
+}
+
+function viewA(){
+  var t = S.tiempos.a || {};
+  if (!t.start) return '<div class="card"><h2>Tarea A — Condición MANUAL (sin IA)</h2>' + CFG.aIntro +
+    rulesBox(CFG.aRules) +
+    '<p><b>Tiempo disponible: '+CFG.minA+' minutos.</b> El material aparecerá cuando pulses el botón; empieza cuando la profesora lo indique.</p>' +
+    '<div class="btnrow"><button class="btn amar" data-start="a">Empezar la Tarea A</button></div></div>';
+  var right;
+  if (ISCODE){
+    right = '<h3>Tu función</h3><p>Escribe tu código en Python, con un comentario breve que explique la lógica de cada bloque.</p>' + ta('a.codigo',S.a.codigo,false,'big code tall') +
+      '<h3>Tus pruebas</h3><p>Anota con qué ejemplos has probado tu función y qué ha devuelto en cada caso.</p>' + ta('a.pruebas',S.a.pruebas,false,'big code');
+  } else {
+    var rows = S.a.rows.map(function(r,i){ return '<tr><td class="n">'+(i+1)+'</td><td>'+ta('a.rows.'+i+'.termino',r.termino,true)+'</td><td>'+ta('a.rows.'+i+'.solucion',r.solucion,true)+'</td></tr>'; }).join("");
+    right = '<h3>Tu traducción</h3><p>Escribe aquí tu traducción al español del fragmento resaltado.</p>' + ta('a.trad',S.a.trad,true,'big tall') +
+      '<h3>Términos u opciones de traducción que te han planteado más dudas (3-4)</h3><p>Anota cada término y justifica brevemente la solución que has elegido.</p>' +
+      '<table class="resp"><thead><tr><th></th><th>Término u opción dudosa</th><th>Solución elegida y justificación</th></tr></thead><tbody>'+rows+'</tbody></table>';
+  }
+  return timerBar('a',CFG.minA) +
+    '<div class="split"><div class="left"><div class="card">' + leftPane("a") + '</div></div>' +
+    '<div class="right"><div class="card">' + right +
+    '<div class="btnrow"><span style="flex:1"></span><button class="btn amar" data-finish="a">Terminar la Tarea A y continuar →</button></div></div></div></div>';
+}
+
+function viewB(){
+  var t = S.tiempos.b || {};
+  if (!t.start) return '<div class="card"><h2>Tarea B — Condición CON IA</h2>' + CFG.bIntro +
+    rulesBox(CFG.bRules) +
+    '<p><b>Tiempo disponible: '+CFG.minB+' minutos.</b></p><div class="btnrow"><button class="btn amar" data-start="b">Empezar la Tarea B</button></div></div>';
+  var right;
+  if (ISCODE){
+    right = '<h3>Tu código final</h3><p>Pega o escribe aquí la versión final de la función, después de revisarla y depurarla. Añade tus propios comentarios (no copiados de la explicación de la IA).</p>' + ta('b.codigo',S.b.codigo,false,'big code tall') +
+      '<h3>Tus pruebas</h3><p>Anota con qué ejemplos has probado la función y qué ha devuelto en cada caso.</p>' + ta('b.pruebas',S.b.pruebas,false,'big code') +
+      '<h3>¿Qué tuviste que corregir o pedir de nuevo a la IA para llegar a la versión final?</h3>' + ta('b.correcciones',S.b.correcciones,false,'big');
+  } else {
+    var rows = S.b.rows.map(function(r,i){ return '<div class="brow"><div class="n">'+(i+1)+'</div>' +
+      '<div class="bf">'+ta('b.rows.'+i+'.ia',r.ia,false,null,'Qué proponía la IA')+'</div>' +
+      '<div class="bj">'+ta('b.rows.'+i+'.correccion',r.correccion,false,null,'Qué corregiste o matizaste tú')+'</div>' +
+      '<div class="bj">'+ta('b.rows.'+i+'.porque',r.porque,false,null,'Por qué')+'</div></div>'; }).join("");
+    right = '<h3>Borrador de la IA</h3><p>Pega aquí la traducción que te ha dado Copilot.</p>' + ta('b.borrador',S.b.borrador,false,'big') +
+      '<h3>Tu traducción final (posedición)</h3><p>Escribe aquí tu versión revisada y corregida.</p>' + ta('b.trad',S.b.trad,false,'big tall') +
+      '<h3>Los 3-4 puntos en los que corregiste o matizaste la propuesta de la IA, y por qué</h3>' + rows;
+  }
+  right += '<h3>Pega aquí tu conversación completa con Copilot</h3><p style="font-size:13px">Se usa para el estudio (cómo revisas lo que propone la IA). Selecciona toda la conversación en Copilot, cópiala y pégala.</p>' + ta('b.conversacion',S.b.conversacion,false,'big');
+  return timerBar('b',CFG.minB) +
+    '<div class="split"><div class="left"><div class="card">' + leftPane("b") +
+    '<div class="btnrow"><button class="btn" id="copyprompt">① Copiar el mensaje para Copilot</button>' +
+    '<a class="btn alt" href="'+COPILOT+'" target="_blank" rel="noopener noreferrer">② Abrir Microsoft Copilot</a></div></div></div>' +
+    '<div class="right"><div class="card">' +
+    '<p style="font-size:14px;margin-top:0">Copia el mensaje, abre Copilot con tu cuenta de la universidad, pégalo (<b>Ctrl+V</b>) y envíalo. Después revisa con criterio lo que te proponga.</p>' +
+    right +
+    '<div class="btnrow"><span style="flex:1"></span><button class="btn amar" data-finish="b">Terminar la Tarea B y continuar →</button></div></div></div></div>';
+}
+
+function viewPausa(){
+  return '<div class="card"><h2>Pausa</h2><p>Si has llegado hasta aquí, espera a las nuevas indicaciones de la profesora, no pases todavía a la siguiente pantalla. Ella te avisará cuando puedas continuar.</p>' +
+    '<div class="btnrow"><button class="btn amar" data-finish="pausa">Pulsa aquí cuando la profesora os avise de que ya podéis continuar</button></div></div>';
+}
+
+function recBody(){
+  var sel = '<div class="idrow" style="margin:6px 0 14px"><label for="tareasel"><b>Tarea sobre la que respondes:</b></label><select id="tareasel" data-path="r.tarea" style="max-width:300px"><option value="">Elige…</option>' +
+    ['A — manual (sin IA)','B — con IA'].map(function(o){ return '<option'+(o===S.r.tarea?' selected':'')+'>'+o+'</option>'; }).join("") + '</select></div>';
+  var qs = CFG.recQs.map(function(q,i){
+    var img = (CFG.recImg && CFG.recImg.q === i) ? '<div class="casebox" style="margin:6px 0 10px"><img src="../'+CFG.recImg.src+'" alt="Pseudocódigo (imagen)"></div>' : '';
+    return '<div class="recrow"><h3 style="margin-top:0">'+(i+1)+'. '+q+'</h3>' + img + ta('r.resp.'+i,S.r.resp[i],true,'big') + '</div>'; }).join("");
+  return sel + qs;
+}
+function viewRecuerdo(){
+  var t = S.tiempos.r || {};
+  if (!t.start) return '<div class="card"><div class="headsplit"><div><h2>Hoja de recuerdo inmediato</h2></div>' + ALERT + '</div>' +
+    '<p>'+CFG.recIntro+'</p>' +
+    rulesBox(['Responde de memoria, sin ninguna ayuda (apuntes, buscadores, compañeros/as ni IA). En esta hoja los cuadros no permiten pegar texto.']) +
+    '<p><b>Tiempo disponible: 10 minutos</b> para esta hoja y el cuestionario de autoevaluación que viene a continuación.</p>' +
+    '<div class="btnrow"><button class="btn amar" data-start="r">Empezar</button></div></div>';
+  return timerBar('r',10,'Recuerdo inmediato + autoevaluación: 10 minutos') + '<div class="card"><div class="headsplit"><div><h2>Hoja de recuerdo inmediato</h2><p>Responde de memoria a cada pregunta.</p></div>' + ALERT + '</div>' + recBody() +
+    '<div class="btnrow"><span style="flex:1"></span><button class="btn amar" data-finish="r">Terminar y continuar →</button></div></div>';
+}
+
+function viewAuto(){
+  var rows = CFG.likert.map(function(q,i){
+    return '<tr><td class="s">'+q+'</td>' + [1,2,3,4,5].map(function(v){ return '<td><input type="radio" name="lk'+i+'" value="'+v+'" data-path="auto.'+i+'"'+(String(S.auto[i])===String(v)?' checked':'')+' aria-label="'+v+'"></td>'; }).join("") + '</tr>'; }).join("");
+  return timerBar('r',10,'Recuerdo inmediato + autoevaluación: 10 minutos') + '<div class="card"><h2>Cuestionario de autoevaluación</h2>' +
+    '<p>Responde antes de conocer tu resultado en la hoja de recuerdo. Valora de 1 a 5 (1 = totalmente en desacuerdo · 5 = totalmente de acuerdo).</p>' +
+    '<table class="likert"><thead><tr><th>Afirmación</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th></tr></thead><tbody>'+rows+'</tbody></table>' +
+    '<div class="btnrow"><span style="flex:1"></span><button class="btn amar" data-finish="auto">Terminar →</button></div></div>';
+}
+
+function viewEntrega(){
+  var nR = S.r.resp.filter(function(x){ return String(x).trim(); }).length;
+  var main = ISCODE ? (S.a.codigo.trim()?'código entregado':'sin código') : (S.a.trad.trim()?'traducción entregada':'sin traducción');
+  var mainB = ISCODE ? (S.b.codigo.trim()?'código entregado':'sin código') : (S.b.trad.trim()?'traducción entregada':'sin traducción');
+  return '<div class="card"><h2>¡Has terminado! Descarga y entrega tus respuestas</h2>' +
+    '<p class="ok">Tarea A: '+main+' · Tarea B: '+mainB+' · Recuerdo inmediato: '+nR+' de '+CFG.recQs.length+' preguntas</p>' +
+    '<ol><li>Pulsa <b>Descargar mis respuestas</b>: se guardará un archivo con tus tres dígitos como nombre (por ejemplo, <b>'+esc(S.id||'274')+'.json</b>).</li>' +
+    '<li>Entrega este archivo .json que has descargado en el aula de Moodlerooms de la asignatura: sección «Descarga cognitiva» → tarea «Descarga cognitiva».</li></ol>' +
+    '<div class="btnrow"><button class="btn amar" id="dl">⬇ Descargar mis respuestas</button></div></div>';
+}
+
+function render(){
+  stepper();
+  var views = [viewInicio, viewA, viewB, viewPausa, viewRecuerdo, viewAuto, viewEntrega];
+  var started = function(k){ return S.tiempos[k] && S.tiempos[k].start; };
+  document.getElementById("stage").classList.toggle("wide", (S.step === 1 && !!started("a")) || (S.step === 2 && !!started("b")));
+  document.getElementById("stage").innerHTML = views[S.step]();
+  window.scrollTo(0,0); tick(); wire();
+}
+
+function finish(which){
+  if (which === "a"){
+    var empty = ISCODE ? !S.a.codigo.trim() : !S.a.trad.trim();
+    if (!confirm(empty ? "Todavía no has escrito nada en el cuadro principal. ¿Terminar la Tarea A de todas formas? Después no podrás volver a ella." : "¿Terminar la Tarea A? Después no podrás volver a ella.")) return;
+    S.tiempos.a.end = Date.now(); S.step = 2;
+  } else if (which === "b"){
+    if (!confirm("¿Terminar la Tarea B? Después no podrás volver a ella.")) return;
+    S.tiempos.b.end = Date.now(); S.step = 3;
+  } else if (which === "pausa"){ S.step = 4; }
+  else if (which === "r"){
+    var m = S.r.resp.filter(function(x){ return String(x).trim(); }).length;
+    if (!S.r.tarea && !confirm("No has indicado sobre qué tarea (A o B) respondes. ¿Terminar de todas formas?")) return;
+    if (!confirm(m < CFG.recQs.length ? "Has respondido "+m+" de "+CFG.recQs.length+" preguntas. ¿Terminar de todas formas?" : "¿Terminar la hoja de recuerdo?")) return;
+    S.tiempos.r.end = Date.now(); S.step = 5;
+  } else if (which === "auto"){
+    if (S.auto.some(function(x){ return x === ""; }) && !confirm("Faltan afirmaciones por valorar. ¿Terminar de todas formas?")) return;
+    S.fin = Date.now(); S.step = 6;
+  }
+  save(); render();
+}
+
+function download(){
+  function dur(k){ var t = S.tiempos[k]; return t && t.start && t.end ? Math.round((t.end - t.start)/1000) : null; }
+  var out = {
+    actividad: CFG.actividadJson,
+    version_web: 1, codigo_alumno: S.id, inicio: S.inicio, fin: S.fin,
+    inicio_legible: S.inicio ? new Date(S.inicio).toISOString() : null, fin_legible: S.fin ? new Date(S.fin).toISOString() : null,
+    duracion_segundos: { tarea_a: dur("a"), tarea_b: dur("b"), recuerdo_inmediato: dur("r") },
+    consentimiento: { leido_entendido: S.consent[0], voluntario: S.consent[1], autoriza_uso_investigacion: S.consent[2] },
+    herramienta_ia: "Microsoft Copilot (" + COPILOT + ")",
+    tiempos_ms: S.tiempos,
+    tarea_a_manual: S.a,
+    tarea_b_con_ia: S.b,
+    recuerdo_inmediato: { tarea_sobre_la_que_responde: S.r.tarea, respuestas: CFG.recQs.map(function(q,i){ return { pregunta: i+1, respuesta: S.r.resp[i] }; }) },
+    autoevaluacion_1_a_5: CFG.likert.map(function(q,i){ return { afirmacion: q, valor: S.auto[i] }; })
+  };
+  dlJson(out, S.id + ".json");
+}
+
+function wire(){
+  var st = document.getElementById("stage");
+  var go0 = document.getElementById("go0");
+  if (go0) go0.onclick = function(){
+    var id = document.getElementById("idfield").value.trim();
+    if (!/^\d{3}$/.test(id)){ alert("Escribe los tres últimos dígitos de tu clave académica (solo tres números)."); return; }
+    S.id = id; if (!S.inicio) S.inicio = Date.now(); S.step = 1; save(); render();
+  };
+  var idf = document.getElementById("idfield");
+  if (idf) idf.addEventListener("input", function(){ S.id = idf.value.replace(/\D/g,"").slice(0,3); idf.value = S.id; save(); });
+  st.querySelectorAll("[data-consent]").forEach(function(c){ c.onchange = function(){ S.consent[+c.dataset.consent] = c.checked; save(); }; });
+  st.querySelectorAll("[data-start]").forEach(function(b){ b.onclick = function(){ S.tiempos[b.dataset.start] = { start: Date.now() }; save(); render(); }; });
+  st.querySelectorAll("[data-finish]").forEach(function(b){ b.onclick = function(){ finish(b.dataset.finish); }; });
+  var cp = document.getElementById("copyprompt"); if (cp) cp.onclick = function(){ copyText(PROMPT_B, "Mensaje copiado. Pégalo en Copilot con Ctrl+V."); };
+  var dl = document.getElementById("dl"); if (dl) dl.onclick = download;
+  wireZoom(st);
+}
+commonListeners();
+render();
+}
+
+</script>
+</body>
+</html>

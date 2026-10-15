@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Retroalimentación · Programación orientada al PLN · Descarga cognitiva</title>
+<style>
+:root{ --azul:#003B5C; --azul-d:#00283F; --amar:#F4C542; --gris:#34484F; --claro:#F3F3F4; --humo:#9FB1BA; --verde:#2E7D32; --rojo:#B00020; --cian:#0E7C86; }
+*{ box-sizing:border-box; }
+body{ margin:0; font-family:Arial,Helvetica,sans-serif; color:var(--gris); background:#EEF3F6; }
+#boot{ padding:40px 16px; text-align:center; color:var(--humo); font-size:14px; }
+#app{ display:none; min-height:100vh; }
+header.top{ background:linear-gradient(115deg,var(--azul-d),var(--azul) 55%,var(--cian)); color:#fff; padding:16px 4vw 0; }
+header.top .kicker{ color:var(--amar); font-size:12px; font-weight:bold; letter-spacing:2.5px; text-transform:uppercase; }
+header.top h1{ margin:4px 0 2px; font-size:clamp(20px,3vw,28px); }
+header.top p{ margin:0 0 12px; font-size:13px; color:#C9D6DD; }
+header.top a{ color:#C9D6DD; font-size:12px; }
+.tabs{ display:flex; gap:6px; flex-wrap:wrap; }
+.tabs button{ border:none; font-family:inherit; font-size:14px; font-weight:bold; padding:10px 20px; border-radius:10px 10px 0 0; background:rgba(255,255,255,.14); color:#E3ECF0; cursor:pointer; }
+.tabs button.on{ background:#EEF3F6; color:var(--azul); }
+main{ padding:16px 1.5vw 50px; }
+.pane{ display:none; } .pane.on{ display:block; }
+.intro{ background:#FFF8E1; border-left:6px solid var(--amar); border-radius:10px; padding:12px 16px; margin-bottom:14px; font-size:14px; line-height:1.5; }
+.split{ display:grid; grid-template-columns:1fr 1fr; gap:16px; align-items:start; }
+.split .left{ position:sticky; top:10px; }
+.card{ background:#fff; border-radius:16px; padding:18px 20px; box-shadow:0 4px 18px rgba(0,40,63,.08); margin-bottom:14px; }
+.card h2{ margin:0 0 10px; color:var(--azul); font-size:19px; }
+.card h3{ margin:16px 0 6px; color:var(--azul); font-size:15px; }
+.card p, .card li{ font-size:14px; line-height:1.55; }
+.casebox{ border:2px solid #D0D8DD; border-radius:12px; overflow:hidden; background:#fff; cursor:zoom-in; }
+.casebox img{ display:block; width:100%; height:auto; }
+.hintzoom{ font-size:12px; color:#6b7c84; margin:6px 0 0; }
+.ref{ border:1px solid #D8DEE1; border-left:6px solid var(--verde); border-radius:10px; padding:10px 14px; background:#F6FBF6; font-size:14px; line-height:1.55; }
+.src{ border:1px solid #D8DEE1; border-left:6px solid var(--humo); border-radius:10px; padding:10px 14px; background:#FAFCFD; font-size:13px; line-height:1.5; color:#4a5b62; font-style:italic; }
+table.terms{ width:100%; border-collapse:collapse; margin:8px 0; }
+table.terms th{ background:var(--azul); color:#fff; font-size:12px; text-align:left; padding:7px 9px; }
+table.terms td{ border:1px solid #D8DEE1; padding:7px 9px; vertical-align:top; font-size:13.5px; line-height:1.45; background:#fff; }
+table.terms td.o{ font-weight:bold; color:var(--azul); } table.terms td.d{ color:var(--verde); font-weight:bold; } table.terms td.n{ color:#5a6b72; }
+pre.code{ background:#0E2A3A; color:#EAF2F6; padding:14px 16px; border-radius:10px; overflow:auto; font-size:13px; line-height:1.5; margin:8px 0; }
+pre.code.bad{ background:#3A1A1A; }
+code{ background:#EEF3F6; padding:1px 5px; border-radius:4px; font-size:.92em; font-family:Menlo,Consolas,"Courier New",monospace; }
+.errs{ border-left:6px solid var(--rojo); background:#FDF5F6; border-radius:10px; padding:8px 14px 8px 14px; margin:8px 0; }
+.errs ul{ margin:4px 0; padding-left:20px; }
+.rec{ border-top:1px dashed #D0D8DD; padding-top:10px; margin-top:10px; } .rec:first-child{ border-top:none; margin-top:0; padding-top:0; }
+footer.copy{ text-align:center; padding:18px 4vw 34px; font-size:11px; color:var(--humo); font-style:italic; }
+@media (max-width:900px){ .split{ grid-template-columns:1fr; } .split .left{ position:static; } }
+</style>
+</head>
+<body>
+<div id="boot">Comprobando acceso…</div>
+<div id="app">
+  <header class="top">
+    <a href="../index.html">← Volver a Programación orientada al PLN</a>
+    <div class="kicker">Descarga cognitiva e IA · Programación orientada al PLN</div>
+    <h1>Retroalimentación de «Con copiloto o a pelo»</h1>
+    <p>Revisa con calma, a tu ritmo, la corrección de cada parte de la actividad.</p>
+    <div class="tabs" id="tabs"><button class="on" data-k="a">Tarea A (sin IA)</button><button class="" data-k="b">Tarea B (con IA)</button><button class="" data-k="r">Recuerdo inmediato</button><button class="" data-k="d">Hoja diferida</button></div>
+  </header>
+  <main id="stage">
+<section class="pane on" data-k="a"><div class="intro">En la Tarea A implementabas, sin IA, un tokenizador basado en reglas. Hay varias implementaciones válidas: lo importante es que tu función trate los signos de puntuación como tokens independientes y cubra al menos un caso especial (como los números decimales).</div><div class="split"><div class="left"><div class="card"><h2>Tarea A · tokenizar(texto)</h2><p><b>Qué se pedía.</b> Una función <code>tokenizar(texto)</code> que devuelva una lista de tokens: palabras y signos de puntuación separados, y un caso especial bien tratado.</p></div></div><div class="right"><div class="card"><h2>Solución de referencia</h2><pre class="code">import re
+
+def tokenizar(texto):
+    # Palabras (incluye tildes y ñ), números decimales como un solo token
+    # y signos de puntuación sueltos
+    patron = r&quot;\d+\.\d+|[A-Za-zÁÉÍÓÚÑáéíóúñ]+|[.,;:!?]&quot;
+    return re.findall(patron, texto)</pre><p>También es válida una implementación carácter a carácter con una bandera para detectar si el punto está entre dos dígitos (caso especial de número decimal) antes de tratarlo como separador.</p><h3>Errores frecuentes</h3><div class="errs"><ul><li>Separar los números decimales por el punto (p. ej. «3.14» se convierte en «3», «.», «14» en vez de un solo token «3.14»).</li><li>No tratar los signos de puntuación como tokens independientes (quedan pegados a la palabra anterior).</li><li>No volcar el último token acumulado al final del bucle si el texto no termina en un separador.</li><li>No contemplar mayúsculas ni tildes en la clase de caracteres de «letra».</li></ul></div></div></div></div></section>
+<section class="pane" data-k="b"><div class="intro">En la Tarea B revisabas y depurabas el código de Copilot. Fíjate en qué errores de la IA detectaste, cuáles <b>no</b> detectaste y si cambiaste algo que no hacía falta cambiar.</div><div class="split"><div class="left"><div class="card"><h2>Tarea B · extraer_fechas(texto)</h2><p><b>Qué se pedía.</b> Una función <code>extraer_fechas(texto)</code> que devuelva todas las fechas con formato dd/mm/aaaa, usando expresiones regulares.</p></div></div><div class="right"><div class="card"><h2>Solución de referencia</h2><pre class="code">import re
+
+def extraer_fechas(texto):
+    patron = r&quot;\b\d{2}/\d{2}/\d{4}\b&quot;
+    return re.findall(patron, texto)</pre><h3>Errores frecuentes</h3><div class="errs"><ul><li>Un patrón demasiado permisivo como <code>\d+/\d+/\d+</code>, que también captura fracciones o números mal formateados (por ejemplo «5/6/78», con menos dígitos de los que pide el enunciado).</li><li>Olvidar los delimitadores de palabra (<code>\b</code>), lo que puede capturar fragmentos de una cadena de dígitos más larga.</li><li>Usar <code>re.search</code> (solo devuelve la primera coincidencia) en vez de <code>re.findall</code> (devuelve todas).</li><li>No probar el caso de una fecha al principio o al final de la frase.</li></ul></div></div></div></div></section>
+<section class="pane" data-k="r"><div class="intro">La hoja de recuerdo inmediato te pedía explicar la lógica, encontrar un error en un pseudocódigo y recordar un caso límite.</div><div class="split"><div class="left"><div class="card"><h2>Pseudocódigo con error</h2><div class="casebox zoomable"><img src="../img/pseudocodigo.png" alt="Pseudocódigo con error"></div><p class="hintzoom">Pulsa sobre el texto para verlo más grande.</p></div></div><div class="right"><div class="card"><p><b>Dónde está el error.</b> La lógica está invertida. Cuando el carácter <b>es</b> un espacio hay que <b>cerrar</b> el token actual (añadirlo a la lista y reiniciarlo); cuando <b>no</b> lo es, hay que <b>seguir acumulando</b> caracteres. Tal como está escrito, el código añade el espacio al token en vez de usarlo como separador, y vuelca el token a la lista cada vez que encuentra una letra normal, lo que trocea las palabras letra a letra en vez de por espacios.</p><h3>Pseudocódigo corregido</h3><pre class="code">PARA cada caracter EN texto:
+  SI caracter ES espacio:
+    SI token_actual NO ES vacío:
+      anadir token_actual a lista_tokens
+      token_actual = &quot;&quot;
+  SI_NO:
+    token_actual = token_actual + caracter</pre><p><b>Casos especiales y límites</b> que se trabajaron: los números decimales («3.14» no debe partirse por el punto), las contracciones y las abreviaturas, que un separador simple rompería de forma incorrecta; y, en la extracción de fechas, que las expresiones regulares solo detectan los formatos que el patrón contempla (p. ej. «5 de marzo de 2024» no se detecta con un patrón dd/mm/aaaa).</p></div></div></div></section>
+<section class="pane" data-k="d"><div class="intro">La hoja diferida te pedía resolver, sin ayuda, un problema nuevo pero análogo.</div><div class="split"><div class="left"><div class="card"><h2>Transferencia · contar palabras que empiezan por mayúscula</h2><p><b>Enunciado.</b> Escribe la lógica de una función que cuente cuántas palabras de un texto empiezan por mayúscula.</p></div></div><div class="right"><div class="card"><h2>Solución de referencia</h2><pre class="code">def contar_mayusculas(texto):
+    palabras = texto.split()
+    contador = 0
+    for palabra in palabras:
+        if palabra and palabra[0].isupper():
+            contador += 1
+    return contador</pre><p>Idea clave que había que transferir de la tarea original: dividir el texto en unidades (palabras) recorriéndolo y aplicar una condición carácter a carácter o token a token; es el mismo patrón general que en <code>tokenizar()</code>.</p></div></div></div></section>
+  </main>
+  <footer class="copy">© Dra. Blanca Hernández Pardo · Programación orientada al PLN · Descarga cognitiva e IA<br>
+  Queda prohibida la difusión, distribución o reproducción total o parcial de este material sin autorización expresa de la autora.</footer>
+</div>
+<script>
+(function(){
+  var DIR = "pln";
+  var s = ""; try { s = sessionStorage.getItem("dc_unlocked") || ""; } catch(e){}
+  if (!s) { location.replace("../../index.html"); return; }
+  function go(){ document.getElementById("boot").style.display = "none"; document.getElementById("app").style.display = "block"; start(); }
+  if (s === "teacher") { go(); return; }
+  if (s !== DIR) { location.replace("../../index.html"); return; }
+  fetch("../config.json?t=" + Date.now()).then(function(r){ return r.json(); }).then(function(c){
+    if (c.retro === true) go(); else location.replace("../index.html");
+  }).catch(function(){ document.getElementById("boot").textContent = "No se ha podido comprobar el acceso. Recarga la página."; });
+})();
+function start(){
+  document.querySelectorAll("#tabs button").forEach(function(b){ b.onclick = function(){
+    document.querySelectorAll("#tabs button").forEach(function(x){ x.classList.toggle("on", x === b); });
+    document.querySelectorAll(".pane").forEach(function(p){ p.classList.toggle("on", p.dataset.k === b.dataset.k); });
+    window.scrollTo(0,0); }; });
+  document.querySelectorAll(".casebox.zoomable img").forEach(function(img){ img.onclick = function(){
+    var z = document.createElement("div"); z.style.cssText = "position:fixed;inset:0;background:rgba(0,40,63,.92);z-index:60;display:flex;align-items:center;justify-content:center;padding:2vw;cursor:zoom-out";
+    z.innerHTML = '<img src="'+img.getAttribute("src")+'" style="max-width:96vw;max-height:94vh;background:#fff;border-radius:8px" alt="">'; z.onclick = function(){ z.remove(); }; document.body.appendChild(z); }; });
+  document.addEventListener("keydown", function(e){ if (e.key === "Escape"){ var z = document.querySelector("body > div[style*='z-index:60']"); if (z) z.remove(); } });
+}
+</script>
+</body>
+</html>

@@ -11,9 +11,13 @@ La contraseña de profesora (`TEACHER_PASSWORD`) muestra todas las asignaturas.
 - Las respuestas del alumnado no se envían a ningún servidor: se guardan en la pestaña (sessionStorage) y el alumnado
   descarga un archivo `NNN.json` (o `NNN_diferido.json`) que entrega por Moodle.
 
-## Añadir otra asignatura
-Construir su actividad en `<dir>/index.html` (con el mismo control de acceso: `sessionStorage.dc_unlocked === '<dir>'`
-o `'teacher'`) y poner `exists: true` en `ASIGNATURAS` de `build.js`.
+## Asignaturas TJ, TM, PLN y DM
+Se generan con `node gen-asignaturas.js` (datos en `gen/subjects.js`, motor en `gen/engine.js`); copian el patrón de TEE
+(el CSS y el consentimiento se leen de `tee/principal`). Cada una tiene `index.html` (menú), `principal`, `retro` (retroalimentación
+completa: tarea A, tarea B, recuerdo inmediato y hoja diferida) y `posterior`, más su `config.json`
+(`principal`/`retro`/`posterior`; el generador solo lo crea si no existe). **No editar a mano esas páginas: editar el generador y volver a generar.**
+`tee/` sigue editándose a mano. Entrega en Moodlerooms: sección «Descarga cognitiva» → tarea «Descarga cognitiva» (parte principal) y
+«Descarga cognitiva - segunda parte» (hoja diferida).
 
 ## Avisos
 Todo lo que se sube es técnicamente accesible desde el código fuente (la contraseña es solo una barrera ligera).
