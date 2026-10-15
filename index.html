@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="es"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow"><title>Descarga cognitiva</title><style>
+:root{ --azul:#003B5C; --azul-d:#00283F; --amar:#F4C542; --gris:#34484F; --claro:#F3F3F4; --humo:#9FB1BA; --verde:#2E7D32; --rojo:#B00020; }
+*{ box-sizing:border-box; }
+body{ margin:0; font-family:Arial,Helvetica,sans-serif; color:var(--gris); background:var(--azul); min-height:100vh; display:flex; flex-direction:column; }
+#gate{ position:fixed; inset:0; background:var(--azul); display:flex; align-items:center; justify-content:center; padding:24px; z-index:999; }
+#gate .box{ max-width:380px; width:100%; text-align:center; }
+.kicker{ color:var(--amar); font-size:12px; font-weight:bold; letter-spacing:2.5px; text-transform:uppercase; margin-bottom:10px; }
+#gate h1{ color:#fff; font-size:26px; margin:0 0 10px; }
+#gate p{ color:var(--humo); font-size:14px; margin:0 0 26px; }
+#gate input{ width:100%; padding:13px 16px; border-radius:8px; border:none; font-size:15px; font-family:inherit; margin-bottom:14px; outline:2px solid transparent; }
+#gate input:focus{ outline:2px solid var(--amar); }
+#gate button.submit{ width:100%; padding:13px 16px; border-radius:8px; border:none; background:var(--amar); color:var(--azul-d); font-size:15px; font-weight:bold; font-family:inherit; cursor:pointer; }
+#gate .error{ color:#FFB3B3; font-size:13px; margin-top:12px; min-height:18px; }
+#page{ display:none; flex:1; flex-direction:column; }
+header{ padding:60px 6vw 20px; text-align:center; }
+header h1{ color:#fff; font-size:clamp(26px,4.2vw,40px); margin:0 0 6px; }
+header .author{ color:var(--amar); font-size:14px; font-weight:bold; margin:0 0 12px; }
+header p{ color:var(--humo); font-size:14px; margin:0; }
+main{ flex:1; max-width:1000px; width:100%; margin:0 auto; padding:40px 6vw 60px; display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:22px; align-content:start; }
+.tema-btn{ position:relative; display:flex; flex-direction:column; align-items:flex-start; gap:8px; background:#fff; border-radius:14px; padding:28px 24px; text-decoration:none; box-shadow:0 4px 16px rgba(0,0,0,.18); transition:transform .15s ease; }
+.tema-btn:hover{ transform:translateY(-3px); }
+.tema-num{ font-size:13px; font-weight:bold; color:var(--amar); background:var(--azul); padding:4px 12px; border-radius:20px; letter-spacing:1px; }
+.tema-title{ font-size:19px; font-weight:bold; color:var(--azul); margin-top:4px; }
+.teacher-hint{ position:absolute; top:12px; right:14px; font-size:10px; font-weight:bold; padding:2px 8px; border-radius:10px; }
+.teacher-hint.on{ background:#DFF3E0; color:var(--verde); } .teacher-hint.off{ background:#FBEAEC; color:var(--rojo); }
+.empty{ grid-column:1/-1; text-align:center; color:var(--humo); font-size:15px; padding:30px 0; }
+footer{ text-align:center; padding:20px 6vw 34px; font-size:11px; color:var(--humo); font-style:italic; }
+.teacher-link{ display:block; margin:0 auto 18px; background:none; border:none; color:var(--humo); font-size:12px; cursor:pointer; font-family:inherit; text-decoration:underline; }
+.teacher-link:hover{ color:#fff; }
+.teacher-wrap{ max-width:1000px; width:100%; margin:0 auto; padding:0 6vw; }
+.teacher-banner{ background:var(--azul-d); color:#fff; border-radius:12px; padding:18px 22px; margin:0 0 10px; }
+.teacher-banner strong{ color:var(--amar); } .teacher-banner p{ font-size:13px; margin:6px 0 0; color:var(--humo); }
+.teacher-token-row{ display:flex; gap:10px; margin-top:14px; flex-wrap:wrap; }
+.teacher-token-row input{ flex:1; min-width:220px; padding:9px 12px; border-radius:8px; border:none; font-size:13px; font-family:inherit; }
+.teacher-token-row button{ background:var(--amar); color:var(--azul-d); border:none; border-radius:8px; padding:9px 16px; font-size:13px; font-weight:bold; cursor:pointer; font-family:inherit; }
+.teacher-status{ font-size:12px; margin-top:10px; min-height:16px; }
+.teacher-toggle-list{ list-style:none; padding:0; margin:16px 0 0; display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:10px; }
+.teacher-toggle-list li{ background:rgba(255,255,255,.08); border-radius:8px; padding:10px 14px; display:flex; align-items:center; gap:10px; font-size:13px; }
+.teacher-toggle-list input{ width:18px; height:18px; }
+</style></head>
+<body>
+<div id="gate"><div class="box">
+  <div class="kicker">Estudio docente 2026-27</div><h1>Descarga cognitiva</h1>
+  <p>Contenido protegido. Introduce la contraseña facilitada en clase.</p>
+  <input type="password" id="pw" placeholder="Contraseña" autofocus>
+  <button class="submit" id="enter">Acceder</button><div class="error" id="err"></div>
+</div></div>
+<div id="page">
+<header><div class="kicker">Estudio docente 2026-27</div><h1>Descarga cognitiva e IA</h1>
+  <p class="author">Dra. Blanca Hernández Pardo</p><p>Elige tu asignatura</p></header>
+<div class="teacher-wrap"><div id="teacher-panel" class="teacher-banner" hidden>
+  <strong>⚙ Modo profesora</strong>
+  <p>Pega aquí tu token de GitHub (solo para esta sesión de navegador; se pierde al cerrar la pestaña) y marca qué asignaturas ve el alumnado. Los cambios se publican en 1-2 minutos.</p>
+  <div class="teacher-token-row"><input type="password" id="gh-token" placeholder="Token de GitHub (github_pat_...)"><button id="gh-token-save">Guardar token de esta sesión</button></div>
+  <div class="teacher-status" id="teacher-status"></div>
+  <ul class="teacher-toggle-list">
+      <li><input type="checkbox" id="chk-tee" data-tema="tee"><label for="chk-tee">TEE · Técnicas y estrategias de expresión escrita</label></li>
+      <li><input type="checkbox" id="chk-pln" data-tema="pln"><label for="chk-pln">PLN · Programación para PLN (actividad aún sin construir)</label></li>
+      <li><input type="checkbox" id="chk-dm" data-tema="dm"><label for="chk-dm">DM · Datos Masivos (actividad aún sin construir)</label></li>
+      <li><input type="checkbox" id="chk-tj" data-tema="tj"><label for="chk-tj">TJ · Traducción Jurídica FR-ES (actividad aún sin construir)</label></li>
+      <li><input type="checkbox" id="chk-tm" data-tema="tm"><label for="chk-tm">TM · Traducción Médica EN-ES (actividad aún sin construir)</label></li>
+  </ul></div></div>
+<main id="cards">
+  <a class="tema-btn" data-tema="tee" href="tee/index.html" style="display:none">
+    <span class="teacher-hint" data-hint="tee"></span>
+    <span class="tema-num">TEE</span>
+    <span class="tema-title">Técnicas y estrategias de expresión escrita</span>
+  </a>
+  <a class="tema-btn" data-tema="pln" href="pln/index.html" style="display:none">
+    <span class="teacher-hint" data-hint="pln"></span>
+    <span class="tema-num">PLN</span>
+    <span class="tema-title">Programación para PLN</span>
+  </a>
+  <a class="tema-btn" data-tema="dm" href="dm/index.html" style="display:none">
+    <span class="teacher-hint" data-hint="dm"></span>
+    <span class="tema-num">DM</span>
+    <span class="tema-title">Datos Masivos</span>
+  </a>
+  <a class="tema-btn" data-tema="tj" href="tj/index.html" style="display:none">
+    <span class="teacher-hint" data-hint="tj"></span>
+    <span class="tema-num">TJ</span>
+    <span class="tema-title">Traducción Jurídica FR-ES</span>
+  </a>
+  <a class="tema-btn" data-tema="tm" href="tm/index.html" style="display:none">
+    <span class="teacher-hint" data-hint="tm"></span>
+    <span class="tema-num">TM</span>
+    <span class="tema-title">Traducción Médica EN-ES</span>
+  </a>
+  <div class="empty" id="empty" hidden>De momento no hay ninguna actividad abierta. Tu profesora la abrirá cuando corresponda.</div>
+</main>
+<button class="teacher-link" id="teacher-toggle-link">⚙ Modo profesora</button>
+<footer>© Dra. Blanca Hernández Pardo · Descarga cognitiva e IA · Estudio docente 2026-27<br>Queda prohibida la difusión, distribución o reproducción total o parcial de este material sin autorización expresa de la autora.</footer>
+</div>
+<script>
+(function(){
+  var HASH="823e291431cff346861d254b6919a7f81aae326620bcab48baf225b77521cfc8", TEACHER_HASH="7678a7bd09af823e88f67cda81c986a38bb5a603c47b1c85398c7032942f8575", SESSION_KEY="dc_unlocked", REPO="blancahpardo/descarga-cognitiva", PATH="config.json";
+  var sha=null, isTeacher=false;
+  function sha256Hex(t){ return crypto.subtle.digest("SHA-256", new TextEncoder().encode(t)).then(function(b){ return Array.prototype.map.call(new Uint8Array(b),function(x){return x.toString(16).padStart(2,"0");}).join(""); }); }
+  function fetchConfig(){ return fetch("config.json?t="+Date.now()).then(function(r){ return r.json(); }); }
+  function hdr(t){ return {"Authorization":"Bearer "+t,"Accept":"application/vnd.github+json"}; }
+  function ghGet(t){ return fetch("https://api.github.com/repos/"+REPO+"/contents/"+PATH,{headers:hdr(t)}).then(function(r){ if(!r.ok) throw new Error("No se pudo leer el fichero ("+r.status+")"); return r.json(); }).then(function(d){ sha=d.sha; return JSON.parse(decodeURIComponent(escape(atob(d.content.replace(/\n/g,""))))); }); }
+  function ghPut(t,obj){ return fetch("https://api.github.com/repos/"+REPO+"/contents/"+PATH,{method:"PUT",headers:Object.assign({"Content-Type":"application/json"},hdr(t)),body:JSON.stringify({message:"Modo profesora: actualizar visibilidad de asignaturas (config.json)",content:btoa(unescape(encodeURIComponent(JSON.stringify(obj,null,2)+"\n"))),sha:sha})}).then(function(r){ if(!r.ok) return r.text().then(function(x){ throw new Error("Error al guardar ("+r.status+"): "+x); }); return r.json(); }).then(function(d){ sha=d.content.sha; }); }
+  function tok(){ try{ return sessionStorage.getItem("gh_pat")||""; }catch(e){ return ""; } }
+  function status(m,err){ var e=document.getElementById("teacher-status"); e.textContent=m; e.style.color=err?"#FFB3B3":"#9FE6A0"; }
+  function apply(c){
+    var any=false;
+    document.querySelectorAll(".tema-btn[data-tema]").forEach(function(b){ var on=c[b.dataset.tema]===true; b.style.display=(isTeacher||on)?"":"none"; if(isTeacher||on) any=true; });
+    document.getElementById("empty").hidden = any;
+  }
+  function hints(c){
+    document.querySelectorAll(".teacher-hint[data-hint]").forEach(function(s){ var on=c[s.dataset.hint]===true; s.textContent=on?"visible":"oculto"; s.className="teacher-hint "+(on?"on":"off"); });
+    document.querySelectorAll("#teacher-panel input[data-tema]").forEach(function(k){ k.checked=c[k.dataset.tema]===true; });
+  }
+  function initTeacher(){
+    document.getElementById("teacher-panel").hidden=false;
+    var inp=document.getElementById("gh-token"); inp.value=tok();
+    function refresh(){ var t=tok(); if(!t){ fetchConfig().then(function(c){ apply(c); hints(c); }); return; } status("Cargando estado actual..."); ghGet(t).then(function(c){ apply(c); hints(c); status("Conectado. Puedes abrir o cerrar asignaturas."); }).catch(function(e){ status(e.message,true); fetchConfig().then(function(c){ apply(c); hints(c); }); }); }
+    document.getElementById("gh-token-save").onclick=function(){ try{ sessionStorage.setItem("gh_pat",inp.value.trim()); }catch(e){} status(inp.value.trim()?"Token guardado para esta sesión.":"Token borrado."); refresh(); };
+    document.querySelectorAll("#teacher-panel input[data-tema]").forEach(function(k){ k.addEventListener("change",function(){
+      var t=tok(); if(!t){ status("Pega primero tu token de GitHub.",true); k.checked=!k.checked; return; }
+      status("Guardando...");
+      ghGet(t).then(function(c){ c[k.dataset.tema]=k.checked; return ghPut(t,c).then(function(){ return c; }); }).then(function(c){ hints(c); apply(c); status("Guardado ✓ — el alumnado lo verá en 1-2 minutos."); }).catch(function(e){ k.checked=!k.checked; status(e.message,true); });
+    }); });
+    refresh();
+  }
+  function reveal(teacher){
+    isTeacher=teacher; document.getElementById("gate").style.display="none"; document.getElementById("page").style.display="flex";
+    if(teacher) initTeacher(); else fetchConfig().then(apply).catch(function(){});
+    try{ sessionStorage.setItem(SESSION_KEY, teacher?"teacher":"1"); }catch(e){}
+  }
+  function tryUnlock(){ sha256Hex(document.getElementById("pw").value).then(function(h){ if(h===TEACHER_HASH) reveal(true); else if(h===HASH) reveal(false); else document.getElementById("err").textContent="Contraseña incorrecta."; }); }
+  document.getElementById("enter").onclick=tryUnlock;
+  document.getElementById("pw").addEventListener("keydown",function(e){ if(e.key==="Enter") tryUnlock(); });
+  document.getElementById("teacher-toggle-link").onclick=function(){ var v=prompt("Contraseña de profesora:"); if(v===null) return; sha256Hex(v).then(function(h){ if(h===TEACHER_HASH) reveal(true); else alert("Contraseña incorrecta."); }); };
+  try{ var s=sessionStorage.getItem(SESSION_KEY); if(s==="teacher") reveal(true); else if(s==="1") reveal(false); }catch(e){}
+})();
+</script></body></html>

@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Con copiloto o sin él · TEE</title>
+<style>
+:root{
+  --azul:#003B5C; --azul-d:#00283F; --amar:#F4C542; --gris:#34484F; --claro:#F3F3F4; --humo:#9FB1BA;
+  --verde:#2E7D32; --rojo:#B00020; --cian:#0E7C86;
+}
+*{ box-sizing:border-box; }
+body{ margin:0; font-family:Arial, Helvetica, sans-serif; color:var(--gris); background:#EEF3F6; }
+#boot{ padding:40px 16px; text-align:center; color:var(--humo); font-size:14px; }
+#app{ display:none; min-height:100vh; }
+header.top{ background:linear-gradient(115deg,var(--azul-d),var(--azul) 55%,var(--cian)); color:#fff; padding:18px 4vw 14px; }
+header.top .kicker{ color:var(--amar); font-size:12px; font-weight:bold; letter-spacing:2.5px; text-transform:uppercase; }
+header.top h1{ margin:4px 0 2px; font-size:clamp(20px,3vw,28px); }
+header.top p{ margin:0; font-size:13px; color:#C9D6DD; }
+.stepper{ display:flex; gap:6px; margin-top:14px; flex-wrap:wrap; }
+.stepper span{ font-size:12px; padding:5px 12px; border-radius:999px; background:rgba(255,255,255,.14); color:#C9D6DD; }
+.stepper span.done{ background:rgba(255,255,255,.28); color:#fff; }
+.stepper span.now{ background:var(--amar); color:var(--azul-d); font-weight:bold; }
+main{ max-width:1100px; margin:0 auto; padding:22px 4vw 60px; }
+.card{ background:#fff; border-radius:16px; padding:24px 26px; box-shadow:0 4px 18px rgba(0,40,63,.08); margin-bottom:18px; }
+.card h2{ margin:0 0 8px; color:var(--azul); font-size:22px; }
+.card h3{ margin:18px 0 6px; color:var(--azul); font-size:16px; }
+.card p, .card li{ font-size:15px; line-height:1.55; }
+.rules{ background:#FFF8E1; border-left:6px solid var(--amar); border-radius:10px; padding:12px 16px; margin:14px 0; font-size:14px; }
+.rules ul{ margin:6px 0 0; padding-left:20px; }
+.rules li{ font-size:14px; margin-bottom:3px; }
+.btn{ background:var(--azul); color:#fff; border:none; border-radius:999px; padding:13px 26px; font-size:15px; font-weight:bold; cursor:pointer; font-family:inherit; text-decoration:none; display:inline-block; }
+.btn:hover{ filter:brightness(1.12); }
+.btn.amar{ background:var(--amar); color:var(--azul-d); }
+.btn.alt{ background:var(--claro); color:var(--azul); border:1px solid #D0D8DD; }
+.btn.small{ padding:8px 16px; font-size:13px; }
+.btn:disabled{ opacity:.45; cursor:not-allowed; }
+.btnrow{ display:flex; gap:10px; flex-wrap:wrap; margin-top:16px; align-items:center; }
+.timer{ position:sticky; top:0; z-index:5; background:var(--azul-d); color:#fff; border-radius:12px; padding:10px 18px; display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; font-size:14px; }
+.timer b{ font-size:22px; font-variant-numeric:tabular-nums; color:var(--amar); }
+.timer.warn b{ color:#FF8A80; }
+.casebox{ border:2px solid #D0D8DD; border-radius:12px; overflow:hidden; background:#fff; margin:10px 0 18px; }
+.casebox img{ display:block; width:100%; height:auto; }
+table.resp{ width:100%; border-collapse:collapse; margin:10px 0; }
+table.resp th{ background:var(--azul); color:#fff; font-size:13px; text-align:left; padding:8px 10px; }
+table.resp td{ border:1px solid #D8DEE1; padding:6px; vertical-align:top; background:#fff; }
+table.resp td.n{ width:34px; text-align:center; font-weight:bold; color:var(--azul); background:var(--claro); }
+textarea, input[type=text], input[type=number], select{
+  width:100%; font-family:inherit; font-size:15px; color:var(--gris); padding:8px 10px; border:1px solid #C5CED3; border-radius:8px; background:#FAFCFD;
+}
+textarea{ resize:vertical; min-height:52px; }
+textarea.big{ min-height:130px; }
+textarea:focus, input:focus, select:focus{ outline:2px solid var(--amar); border-color:var(--amar); }
+textarea[readonly]{ background:#EEF1F3; }
+.recrow{ display:grid; grid-template-columns:1fr; gap:8px; margin-bottom:16px; padding-bottom:16px; border-bottom:1px dashed #D0D8DD; }
+.recrow:last-child{ border-bottom:none; }
+.recans{ display:grid; grid-template-columns:2fr 1fr; gap:10px; }
+.consent-text{ max-height:320px; overflow:auto; border:1px solid #D0D8DD; border-radius:10px; padding:14px 18px; background:#FAFCFD; margin:10px 0; }
+.consent-text h3{ margin:12px 0 4px; font-size:14px; }
+.consent-text p{ margin:0 0 6px; font-size:14px; }
+label.chk{ display:flex; gap:10px; align-items:flex-start; margin:10px 0; font-size:15px; line-height:1.45; }
+label.chk input{ width:20px; height:20px; margin-top:2px; flex:none; }
+.idrow{ display:flex; gap:14px; align-items:center; flex-wrap:wrap; margin-top:10px; }
+.idrow input{ width:110px; font-size:22px; text-align:center; letter-spacing:6px; font-weight:bold; }
+.toast{ position:fixed; bottom:20px; left:50%; transform:translateX(-50%); background:var(--azul-d); color:#fff; padding:12px 20px; border-radius:10px; font-size:14px; z-index:50; display:none; max-width:90vw; box-shadow:0 6px 20px rgba(0,0,0,.3); }
+.ok{ color:var(--verde); font-weight:bold; }
+footer.copy{ text-align:center; padding:18px 4vw 34px; font-size:11px; color:var(--humo); font-style:italic; }
+@media (max-width:700px){
+  .card{ padding:18px 16px; }
+  table.resp, table.resp tbody, table.resp tr, table.resp td{ display:block; width:100%; }
+  table.resp thead{ display:none; }
+  table.resp tr{ border:1px solid #D8DEE1; border-radius:10px; margin-bottom:10px; padding:4px; background:#fff; }
+  table.resp td{ border:none; padding:4px; }
+  table.resp td.n{ width:auto; text-align:left; background:none; }
+  .recans{ grid-template-columns:1fr; }
+}
+</style>
+</head>
+<body>
+<div id="boot">Comprobando acceso…</div>
+
+<div id="app">
+  <header class="top">
+    <div class="kicker">Descarga cognitiva e IA · Técnicas y estrategias de expresión escrita</div>
+    <h1>Con copiloto o sin él</h1>
+    <p>Corrección de estilo con y sin IA — un experimento sobre lo que de verdad se te queda</p>
+    <div class="stepper" id="stepper"></div>
+  </header>
+  <main id="stage"></main>
+  <footer class="copy">© Dra. Blanca Hernández Pardo · Técnicas y estrategias de comunicación escrita en español · Tema 3: La corrección de estilo<br>
+  Queda prohibida la difusión, distribución o reproducción total o parcial de este material sin autorización expresa de la autora.</footer>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+// ---------- Control de acceso: sesión abierta desde la portada y asignatura visible ----------
+(function(){
+  var s = ""; try { s = sessionStorage.getItem("dc_unlocked") || ""; } catch(e){}
+  if (!s) { location.replace("../index.html"); return; }
+  function go(){ document.getElementById("boot").style.display = "none"; document.getElementById("app").style.display = "block"; startApp(); }
+  if (s === "teacher") { go(); return; }
+  fetch("../config.json?t=" + Date.now()).then(function(r){ return r.json(); }).then(function(c){
+    if (c.tee === true) go(); else location.replace("../index.html");
+  }).catch(function(){ document.getElementById("boot").textContent = "No se ha podido comprobar el acceso. Recarga la página."; });
+})();
+
+function startApp(){
+// ---------- Datos fijos de la actividad ----------
+var KEY = "dc_tee_v1";
+var COPILOT = "https://m365.cloud.microsoft/chat";
+var PLANOS = ["Ortográfico","Ortotipográfico","Morfosintáctico","Léxico","Discursivo","De puntuación"];
+var STEPS = ["Inicio","Tarea A","Tarea B","Pausa","Recuerdo","Autoevaluación","Entrega"];
+var TEXTO_B = "El uso del teléfono móvil en las Aulas universitarias genera opiniones muy distintas entre el profesorado. Hay profesores que piensan de que el móvil distrae al alumnado y perjudica la concentración durante la clase. Otros, sin embargo, creen que el móvil, puede convertirse en una herramienta útil si se usa con criterio. Muchos estudiantes se quejan que las normas sobre el móvil cambian mucho según la asignatura, lo que genera cierta confusión. A nivel de organización, cada profesor decide si permite el móvil para consultar apuntes o buscar información puntual. Un grupo de estudiantes defienden que prohibir totalmente el móvil no soluciona el problema de fondo, porque la falta de atención tiene otras causas. Por otro lado, hay quien piensa que \"el problema\" no está en el dispositivo sino en el hábito, y que sería más útil enseñar un uso responsable y consciente del móvil desde el principio. En cualquier caso, no está claro que hacer con este tema dentro de la Facultad, y cada centro suele aplicar su propio criterio.";
+var PROMPT_B = "Corrige el estilo de este texto y explica cada corrección que propongas:\n\n" + TEXTO_B;
+
+function emptyRows(n, keys){ var a = []; for (var i=0;i<n;i++){ var o = {}; keys.forEach(function(k){ o[k]=""; }); a.push(o); } return a; }
+function fresh(){ return {
+  v:1, step:0, id:"", consent:[false,false,false], inicio:null, fin:null, tiempos:{},
+  a:{ rows:emptyRows(10,["frase","correccion","plano"]) },
+  b:{ rows:emptyRows(6,["propuesta","decision","plano","justificacion"]), incorrectas:"", conversacion:"" },
+  r:{ rows:emptyRows(6,["correccion","plano"]) },
+  auto:{ n:"", cond:"", porque:"" }
+}; }
+var S;
+try { S = JSON.parse(sessionStorage.getItem(KEY) || "null"); } catch(e){ S = null; }
+if (!S || S.v !== 1) S = fresh();
+function save(){ try { sessionStorage.setItem(KEY, JSON.stringify(S)); } catch(e){} }
+
+// ---------- Utilidades ----------
+var ATTR = 'spellcheck="false" autocorrect="off" autocapitalize="off" autocomplete="off" translate="no" lang="es" ' +
+           'data-gramm="false" data-gramm_editor="false" data-enable-grammarly="false" data-lt-active="false" data-ms-editor="false"';
+function esc(s){ return String(s==null?"":s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
+function toast(msg){ var t = document.getElementById("toast"); t.textContent = msg; t.style.display = "block"; clearTimeout(toast._t); toast._t = setTimeout(function(){ t.style.display = "none"; }, 3500); }
+function getPath(p){ return p.split(".").reduce(function(o,k){ return o[k]; }, S); }
+function setPath(p,v){ var ks = p.split("."), last = ks.pop(); var o = ks.reduce(function(o,k){ return o[k]; }, S); o[last] = v; }
+function planoSelect(path, val){ return '<select data-path="'+path+'"><option value="">Elige plano…</option>' + PLANOS.map(function(p){ return '<option'+(p===val?' selected':'')+'>'+p+'</option>'; }).join("") + '</select>'; }
+function ta(path, val, nopaste, cls){ return '<textarea '+ATTR+' data-path="'+path+'"'+(nopaste?' data-nopaste="1"':'')+(cls?' class="'+cls+'"':'')+'>'+esc(val)+'</textarea>'; }
+function rulesBox(items){ return '<div class="rules"><b>Condiciones de realización</b><ul>' + items.map(function(i){ return '<li>'+i+'</li>'; }).join("") + '</ul></div>'; }
+var COMMON_RULES = [
+  'Trabaja de forma individual, en este ordenador y sin ayuda externa (apuntes, buscadores, compañeros/as), salvo la que la tarea permita expresamente.',
+  'Los cuadros de respuesta de esta página no subrayan errores ni corrigen automáticamente lo que escribes. Si ves algún subrayado o cambio automático, avisa a la profesora.',
+  'Tu trabajo se guarda en esta pestaña mientras no la cierres. Al final descargarás un archivo con tus respuestas.'
+];
+
+// ---------- Pasos ----------
+function stepper(){
+  document.getElementById("stepper").innerHTML = STEPS.map(function(n,i){
+    return '<span class="'+(i<S.step?'done':i===S.step?'now':'')+'">'+(i<S.step?'✓ ':'')+n+'</span>';
+  }).join("");
+}
+function timerBar(key, minutes){
+  var t = S.tiempos[key]; if (!t || !t.start) return "";
+  return '<div class="timer" id="timer" data-start="'+t.start+'" data-min="'+minutes+'"><span>Tiempo disponible: '+minutes+' minutos (orientativo; la profesora marca el ritmo)</span><b id="timerval">--:--</b></div>';
+}
+function tick(){
+  var el = document.getElementById("timer"); if (!el) return;
+  var left = Math.round(+el.dataset.min*60 - (Date.now()-(+el.dataset.start))/1000);
+  var neg = left < 0, a = Math.abs(left);
+  document.getElementById("timerval").textContent = (neg?"+":"") + String(Math.floor(a/60)).padStart(2,"0") + ":" + String(a%60).padStart(2,"0");
+  el.classList.toggle("warn", left <= 300);
+}
+setInterval(tick, 1000);
+
+function viewInicio(){
+  return '<div class="card"><h2>Consentimiento informado para participar en una actividad docente de investigación</h2>' +
+  '<p>Antes de comenzar la actividad, lee atentamente la siguiente información.</p>' +
+  '<div class="consent-text">' +
+  '<h3>1. Objetivo de la actividad</h3><p>Esta actividad forma parte de un estudio docente sobre cómo distintas formas de trabajar (con o sin apoyo de herramientas de inteligencia artificial) influyen en el aprendizaje y la retención de conocimientos en el aula universitaria. Los resultados se utilizarán con fines de investigación y mejora docente.</p>' +
+  '<h3>2. En qué consiste tu participación</h3><p>Se te pedirá que realices una tarea de la asignatura en dos condiciones diferentes (con y sin apoyo de IA) y que respondas más adelante a unas breves preguntas de seguimiento, algunas el mismo día y otras aproximadamente una semana después. También se te pedirá que rellenes un breve cuestionario de autoevaluación.</p>' +
+  '<h3>3. Identificación de tus respuestas</h3><p>Para poder relacionar tus distintas respuestas a lo largo de la actividad sin necesidad de recoger tu nombre, utiliza como único identificador los tres últimos dígitos de tu clave académica. No se recogerá tu nombre, apellidos ni ningún otro dato identificativo en los materiales de la actividad.</p>' +
+  '<h3>4. Tratamiento de los datos</h3><p>Los datos recogidos se tratarán de forma confidencial y se emplearán exclusivamente con fines docentes y de investigación educativa. Los resultados podrán presentarse de forma agregada, sin que sea posible identificarte individualmente.</p>' +
+  '<h3>5. Participación voluntaria</h3><p>La realización de la tarea forma parte de la actividad ordinaria de la asignatura, pero el uso de tus datos con fines de investigación es voluntario: puedes autorizarlo o no sin que ello afecte a tu evaluación.</p>' +
+  '<h3>6. Posibilidad de retirarte</h3><p>Puedes retirar tu consentimiento en cualquier momento, sin necesidad de justificación, poniéndote en contacto con el profesorado de la asignatura.</p>' +
+  '<h3>7. Riesgos y beneficios</h3><p>Esta actividad no implica riesgos más allá de los propios de cualquier tarea académica ordinaria. Contribuirás a mejorar el diseño de futuras actividades docentes.</p>' +
+  '<h3>8. Contacto</h3><p>Para cualquier duda, puedes contactar con el profesorado responsable de la asignatura: Dra. Blanca Hernández Pardo.</p>' +
+  '</div>' +
+  '<h3>Declaración de consentimiento</h3>' +
+  '<label class="chk"><input type="checkbox" data-consent="0"'+(S.consent[0]?' checked':'')+'><span>He leído y entendido la información anterior.</span></label>' +
+  '<label class="chk"><input type="checkbox" data-consent="1"'+(S.consent[1]?' checked':'')+'><span>Entiendo que mi participación es voluntaria y que puedo retirarme en cualquier momento sin consecuencias.</span></label>' +
+  '<label class="chk"><input type="checkbox" data-consent="2"'+(S.consent[2]?' checked':'')+'><span>Autorizo el uso de mis respuestas (identificadas únicamente por los tres últimos dígitos de mi clave académica) con fines de investigación docente, en los términos descritos.</span></label>' +
+  '<p style="font-size:13px;color:#5a6b72">No es necesaria firma manuscrita: marcar las casillas y entregar tu archivo al final equivale a la aceptación. Si no autorizas el uso de tus datos, haces la actividad igualmente y tus respuestas no entran en el estudio.</p>' +
+  '<h3>Tu identificador</h3><p>Los tres últimos dígitos de tu clave académica. No escribas tu nombre en ningún sitio.</p>' +
+  '<div class="idrow"><input type="text" inputmode="numeric" maxlength="3" pattern="[0-9]{3}" autocomplete="off" spellcheck="false" placeholder="000" id="idfield" value="'+esc(S.id)+'"></div>' +
+  '</div>' +
+  '<div class="card"><h2>Objetivo y cómo funciona</h2>' +
+  '<p>Vas a corregir un texto-caso que contiene errores de distintos planos (ortográfico, ortotipográfico, morfosintáctico, léxico, discursivo y de puntuación), aplicando los criterios del Tema 3. Lo harás una vez sin ayuda de IA y otra vez con apoyo de un asistente de IA. El objetivo no es qué corrección «gana», sino comparar qué se te queda en cada condición.</p>' +
+  '<p><b>Importante:</b> en la condición con IA, el asistente puede proponer correcciones, pero tú debes revisar y justificar cada una, igual que en un encargo profesional de corrección de estilo. No basta con aceptar sin más lo que sugiera.</p>' +
+  rulesBox(COMMON_RULES) +
+  '<div class="btnrow"><button class="btn amar" id="go0">Empezar →</button></div></div>';
+}
+
+function viewA(){
+  var t = S.tiempos.a || {};
+  if (!t.start) return '<div class="card"><h2>Tarea A — Condición MANUAL (sin IA)</h2>' +
+    '<p>Lee el texto con atención, sin usar ningún asistente de IA ni corrector automático. Localiza y corrige todos los errores que encuentres (al menos 10). Para cada corrección, copia la frase con el error, corrígela y di brevemente a qué plano pertenece: ortográfico, ortotipográfico, morfosintáctico, léxico, discursivo o de puntuación.</p>' +
+    rulesBox(['Sin IA, sin buscadores y sin apuntes. En esta tarea los cuadros no permiten pegar texto.']) +
+    '<p><b>Tiempo disponible: 25 minutos.</b> El texto aparecerá cuando pulses el botón; empieza cuando la profesora lo indique.</p>' +
+    '<div class="btnrow"><button class="btn amar" data-start="a">Empezar la Tarea A</button></div></div>';
+  var rows = S.a.rows.map(function(r,i){ return '<tr><td class="n">'+(i+1)+'</td><td>'+ta('a.rows.'+i+'.frase',r.frase,true)+'</td><td>'+ta('a.rows.'+i+'.correccion',r.correccion,true)+'</td><td>'+planoSelect('a.rows.'+i+'.plano',r.plano)+'</td></tr>'; }).join("");
+  return timerBar('a',25) +
+    '<div class="card"><h2>Tarea A — Condición MANUAL (sin IA)</h2>' +
+    '<div class="casebox"><img src="img/texto-a.png" alt="Texto-caso A (imagen)"></div>' +
+    '<h3>Tu corrección (al menos 10 errores)</h3><p>Escribe cada frase con error, su corrección y el plano al que pertenece.</p>' +
+    '<table class="resp"><thead><tr><th></th><th>Frase con error</th><th>Corrección</th><th>Plano</th></tr></thead><tbody>'+rows+'</tbody></table>' +
+    '<div class="btnrow"><button class="btn alt small" data-addrow="a">+ Añadir fila</button><span style="flex:1"></span><button class="btn amar" data-finish="a">Terminar la Tarea A y continuar →</button></div></div>';
+}
+
+function viewB(){
+  var t = S.tiempos.b || {};
+  if (!t.start) return '<div class="card"><h2>Tarea B — Condición CON IA</h2>' +
+    '<p>Usa <b>Microsoft Copilot</b> (con tu cuenta de la universidad) para que te proponga correcciones del texto. Revisa cada corrección propuesta: acéptala, recházala o matízala, y justifica brevemente por qué (como harías en una posedición profesional). Para cada corrección aceptada, indica a qué plano pertenece. Al final, anota si hubo alguna corrección de la IA que consideraste incorrecta, excesiva o injustificada, y por qué.</p>' +
+    rulesBox(['Usa solo Microsoft Copilot, con el modelo que viene por defecto y entrando con tu cuenta de la universidad.','No basta con aceptar lo que proponga: revisa y justifica cada corrección.']) +
+    '<p><b>Tiempo disponible: 25 minutos.</b></p><div class="btnrow"><button class="btn amar" data-start="b">Empezar la Tarea B</button></div></div>';
+  var rows = S.b.rows.map(function(r,i){ return '<tr><td class="n">'+(i+1)+'</td><td>'+ta('b.rows.'+i+'.propuesta',r.propuesta,false)+'</td>' +
+    '<td><select data-path="b.rows.'+i+'.decision"><option value="">Decisión…</option>'+['Aceptar','Rechazar','Matizar'].map(function(d){ return '<option'+(d===r.decision?' selected':'')+'>'+d+'</option>'; }).join("")+'</select></td>' +
+    '<td>'+planoSelect('b.rows.'+i+'.plano',r.plano)+'</td><td>'+ta('b.rows.'+i+'.justificacion',r.justificacion,false)+'</td></tr>'; }).join("");
+  return timerBar('b',25) +
+    '<div class="card"><h2>Tarea B — Condición CON IA</h2>' +
+    '<div class="casebox"><img src="img/texto-b.png" alt="Texto-caso B (imagen)"></div>' +
+    '<div class="btnrow"><a class="btn" href="'+COPILOT+'" target="_blank" rel="noopener noreferrer">① Abrir Microsoft Copilot</a>' +
+    '<button class="btn alt" id="copyprompt">② Copiar el mensaje con el texto</button></div>' +
+    '<p style="font-size:13px">Abre Copilot con tu cuenta de la universidad, pega el mensaje (<b>Ctrl+V</b>) y envíalo. Después revisa cada corrección que te proponga.</p>' +
+    '<h3>Tu revisión de las propuestas de la IA</h3><p>Para cada propuesta de Copilot: qué corrige, tu decisión, el plano y tu justificación.</p>' +
+    '<table class="resp"><thead><tr><th></th><th>Corrección propuesta por la IA</th><th>Decisión</th><th>Plano</th><th>Justificación</th></tr></thead><tbody>'+rows+'</tbody></table>' +
+    '<div class="btnrow"><button class="btn alt small" data-addrow="b">+ Añadir fila</button></div>' +
+    '<h3>¿Hubo alguna corrección de la IA incorrecta, excesiva o injustificada? ¿Cuál y por qué?</h3>' + ta('b.incorrectas',S.b.incorrectas,false,'big') +
+    '<h3>Pega aquí tu conversación completa con Copilot</h3><p style="font-size:13px">Se usa para el estudio (cómo revisas lo que propone la IA). Selecciona toda la conversación en Copilot, cópiala y pégala.</p>' + ta('b.conversacion',S.b.conversacion,false,'big') +
+    '<div class="btnrow"><span style="flex:1"></span><button class="btn amar" data-finish="b">Terminar la Tarea B y continuar →</button></div></div>';
+}
+
+function viewPausa(){
+  return '<div class="card"><h2>Pausa</h2><p>Haz ahora la actividad breve que te indique la profesora. Cuando te diga, continúa con la siguiente hoja.</p>' +
+    '<p>En la siguiente hoja <b>no tendrás el texto-caso ni la IA disponibles</b>.</p><div class="btnrow"><button class="btn amar" data-finish="pausa">Continuar →</button></div></div>';
+}
+
+function viewRecuerdo(){
+  var t = S.tiempos.r || {};
+  if (!t.start) return '<div class="card"><h2>Hoja de recuerdo inmediato</h2>' +
+    '<p>Corrige cada frase e indica a qué plano de corrección pertenece el error. No tienes el texto-caso ni la IA disponibles. Las frases son nuevas: no aparecían en el texto que corregiste.</p>' +
+    rulesBox(['Responde de memoria, sin ninguna ayuda (apuntes, buscadores, compañeros/as ni IA). En esta hoja los cuadros no permiten pegar texto.']) +
+    '<div class="btnrow"><button class="btn amar" data-start="r">Empezar</button></div></div>';
+  var rows = S.r.rows.map(function(r,i){ return '<div class="recrow"><div class="casebox" style="margin:0"><img src="img/rec-'+(i+1)+'.png" alt="Frase '+(i+1)+' (imagen)"></div>' +
+    '<div class="recans">'+ta('r.rows.'+i+'.correccion',r.correccion,true)+planoSelect('r.rows.'+i+'.plano',r.plano)+'</div></div>'; }).join("");
+  return '<div class="card"><h2>Hoja de recuerdo inmediato</h2><p>Escribe la frase corregida y elige el plano al que pertenece el error.</p>' + rows +
+    '<div class="btnrow"><span style="flex:1"></span><button class="btn amar" data-finish="r">Terminar y continuar →</button></div></div>';
+}
+
+function viewAuto(){
+  return '<div class="card"><h2>Cuestionario de autoevaluación</h2><p><b>Responde antes de conocer tu resultado en la hoja de recuerdo.</b></p>' +
+    '<h3>¿Cuántas de las 6 frases crees que has corregido correctamente?</h3><input type="number" min="0" max="6" step="1" inputmode="numeric" data-path="auto.n" data-nopaste="1" value="'+esc(S.auto.n)+'" style="max-width:120px" placeholder="0 a 6">' +
+    '<h3>¿En qué condición (manual o con IA) crees que se te ha quedado mejor el criterio de corrección?</h3>' +
+    '<select data-path="auto.cond" style="max-width:260px"><option value="">Elige…</option>'+['Manual','Con IA'].map(function(o){ return '<option'+(o===S.auto.cond?' selected':'')+'>'+o+'</option>'; }).join("")+'</select>' +
+    '<h3>¿Por qué?</h3>' + ta('auto.porque',S.auto.porque,true,'big') +
+    '<div class="btnrow"><span style="flex:1"></span><button class="btn amar" data-finish="auto">Terminar →</button></div></div>';
+}
+
+function viewEntrega(){
+  var nA = S.a.rows.filter(function(r){ return r.frase.trim() && r.correccion.trim(); }).length;
+  var nB = S.b.rows.filter(function(r){ return r.propuesta.trim(); }).length;
+  var nR = S.r.rows.filter(function(r){ return r.correccion.trim(); }).length;
+  return '<div class="card"><h2>¡Has terminado! Descarga y entrega tus respuestas</h2>' +
+    '<p class="ok">Tarea A: '+nA+' correcciones · Tarea B: '+nB+' propuestas revisadas · Recuerdo inmediato: '+nR+' de 6 frases</p>' +
+    '<ol><li>Pulsa <b>Descargar mis respuestas</b>: se guardará un archivo con tus tres dígitos como nombre (por ejemplo, <b>'+esc(S.id||'274')+'.json</b>).</li>' +
+    '<li>Entrega ese archivo como se indique en clase (Moodle).</li>' +
+    '<li>Para la próxima sesión, recuerda la lectura del manual del Tema 4.</li></ol>' +
+    '<div class="btnrow"><button class="btn amar" id="dl">⬇ Descargar mis respuestas</button>' +
+    '<button class="btn alt" id="wipe">Borrar mis datos de este ordenador</button></div>' +
+    '<p style="font-size:13px;color:#5a6b72">Pulsa «Borrar mis datos» solo después de comprobar que el archivo se ha descargado y entregado. Si usas un ordenador compartido, hazlo siempre.</p></div>';
+}
+
+// ---------- Render ----------
+function render(){
+  stepper();
+  var views = [viewInicio, viewA, viewB, viewPausa, viewRecuerdo, viewAuto, viewEntrega];
+  document.getElementById("stage").innerHTML = views[S.step]();
+  window.scrollTo(0,0); tick(); wire();
+}
+
+function countRows(rows, keys){ return rows.filter(function(r){ return keys.every(function(k){ return String(r[k]).trim(); }); }).length; }
+function finish(which){
+  if (which === "a"){
+    var n = countRows(S.a.rows, ["frase","correccion"]);
+    if (n < 10 && !confirm("Has completado "+n+" correcciones y se pedían al menos 10. ¿Terminar la Tarea A de todas formas? Después no podrás volver a ella.")) return;
+    if (n >= 10 && !confirm("¿Terminar la Tarea A? Después no podrás volver a ella.")) return;
+    S.tiempos.a.end = Date.now(); S.step = 2;
+  } else if (which === "b"){
+    if (!confirm("¿Terminar la Tarea B? Después no podrás volver a ella.")) return;
+    S.tiempos.b.end = Date.now(); S.step = 3;
+  } else if (which === "pausa"){ S.step = 4; }
+  else if (which === "r"){
+    var m = countRows(S.r.rows, ["correccion"]);
+    if (!confirm(m < 6 ? "Has respondido "+m+" de 6 frases. ¿Terminar de todas formas?" : "¿Terminar la hoja de recuerdo?")) return;
+    S.tiempos.r.end = Date.now(); S.step = 5;
+  } else if (which === "auto"){
+    if ((S.auto.n === "" || !S.auto.cond) && !confirm("Faltan respuestas del cuestionario. ¿Terminar de todas formas?")) return;
+    S.fin = Date.now(); S.step = 6;
+  }
+  save(); render();
+}
+
+function download(){
+  var out = {
+    actividad: "Descarga cognitiva e IA — TEE, Tema 3, Práctica 1 (Con copiloto o sin él)",
+    version_web: 1, codigo_alumno: S.id, inicio: S.inicio, fin: S.fin,
+    consentimiento: { leido_entendido: S.consent[0], voluntario: S.consent[1], autoriza_uso_investigacion: S.consent[2] },
+    herramienta_ia: "Microsoft Copilot (" + COPILOT + ")",
+    tiempos_ms: S.tiempos,
+    tarea_a_manual: S.a.rows.filter(function(r){ return r.frase.trim() || r.correccion.trim(); }),
+    tarea_b_con_ia: { revision: S.b.rows.filter(function(r){ return r.propuesta.trim() || r.justificacion.trim(); }), incorrectas_excesivas_o_injustificadas: S.b.incorrectas, conversacion_copilot: S.b.conversacion },
+    recuerdo_inmediato: S.r.rows.map(function(r,i){ return { frase: i+1, correccion: r.correccion, plano: r.plano }; }),
+    autoevaluacion: { frases_corregidas_correctamente_0_a_6: S.auto.n, condicion_mejor_retencion: S.auto.cond, por_que: S.auto.porque }
+  };
+  var blob = new Blob([JSON.stringify(out, null, 2)], { type: "application/json" });
+  var a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = S.id + ".json";
+  document.body.appendChild(a); a.click(); setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); }, 500);
+  toast("Archivo " + S.id + ".json descargado. Revisa tu carpeta de descargas.");
+}
+
+function copyText(txt, okMsg){
+  function fallback(){ var t = document.createElement("textarea"); t.value = txt; document.body.appendChild(t); t.select(); try { document.execCommand("copy"); toast(okMsg); } catch(e){ toast("No se pudo copiar. Selecciona el texto manualmente."); } t.remove(); }
+  if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(txt).then(function(){ toast(okMsg); }, fallback); else fallback();
+}
+
+function wire(){
+  var st = document.getElementById("stage");
+  var go0 = document.getElementById("go0");
+  if (go0) go0.onclick = function(){
+    var id = document.getElementById("idfield").value.trim();
+    if (!/^\d{3}$/.test(id)){ alert("Escribe los tres últimos dígitos de tu clave académica (solo tres números)."); return; }
+    S.id = id; if (!S.inicio) S.inicio = Date.now(); S.step = 1; save(); render();
+  };
+  var idf = document.getElementById("idfield");
+  if (idf) idf.addEventListener("input", function(){ S.id = idf.value.replace(/\D/g,"").slice(0,3); idf.value = S.id; save(); });
+  st.querySelectorAll("[data-consent]").forEach(function(c){ c.onchange = function(){ S.consent[+c.dataset.consent] = c.checked; save(); }; });
+  st.querySelectorAll("[data-start]").forEach(function(b){ b.onclick = function(){ S.tiempos[b.dataset.start] = { start: Date.now() }; save(); render(); }; });
+  st.querySelectorAll("[data-finish]").forEach(function(b){ b.onclick = function(){ finish(b.dataset.finish); }; });
+  st.querySelectorAll("[data-addrow]").forEach(function(b){ b.onclick = function(){
+    var k = b.dataset.addrow;
+    S[k].rows.push(k === "a" ? { frase:"", correccion:"", plano:"" } : { propuesta:"", decision:"", plano:"", justificacion:"" });
+    save(); render(); }; });
+  var cp = document.getElementById("copyprompt"); if (cp) cp.onclick = function(){ copyText(PROMPT_B, "Mensaje copiado. Pégalo en Copilot con Ctrl+V."); };
+  var dl = document.getElementById("dl"); if (dl) dl.onclick = download;
+  var wp = document.getElementById("wipe"); if (wp) wp.onclick = function(){
+    if (confirm("¿Seguro? Se borrarán tus respuestas de este ordenador. Asegúrate de haber descargado y entregado el archivo.")){ try { sessionStorage.removeItem(KEY); } catch(e){} S = fresh(); render(); } };
+}
+
+// Guardado de campos (delegado) y bloqueo de pegar en las hojas sin IA
+document.getElementById("stage").addEventListener("input", function(e){ var p = e.target.dataset && e.target.dataset.path; if (p){ setPath(p, e.target.value); save(); } });
+document.getElementById("stage").addEventListener("change", function(e){ var p = e.target.dataset && e.target.dataset.path; if (p){ setPath(p, e.target.value); save(); } });
+["paste","drop"].forEach(function(ev){
+  document.getElementById("stage").addEventListener(ev, function(e){
+    if (e.target.dataset && e.target.dataset.nopaste){ e.preventDefault(); toast("En esta hoja no se puede pegar texto: escribe tu respuesta."); }
+  });
+});
+
+render();
+}
+</script>
+</body>
+</html>
