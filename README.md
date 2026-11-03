@@ -5,7 +5,7 @@ portada de su asignatura** (el mapa contraseña→asignatura está en `build.js`
 La contraseña de profesora (`TEACHER_PASSWORD`) muestra todas las asignaturas.
 
 - `build.js` genera `index.html` (portada) y las páginas provisionales de las asignaturas sin actividad. `node build.js`.
-- `tee/index.html` es el menú de TEE (3 opciones); `tee/principal`, `tee/retro` y `tee/posterior` se editan a mano.
+- `tee/index.html` es el menú de TEE (3 opciones: 1 principal, 2 actividad posterior, 3 retroalimentación final asíncrono); `tee/principal`, `tee/retro` y `tee/posterior` se editan a mano.
 - `tee/config.json` controla qué opciones de TEE ve el alumnado (`principal`, `retro`, `posterior`); se cambia desde el
   menú de TEE con la contraseña de profesora + token de GitHub (Modo profesora).
 - Las respuestas del alumnado no se envían a ningún servidor: se guardan en la pestaña (sessionStorage) y el alumnado
