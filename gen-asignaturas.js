@@ -26,7 +26,9 @@ textarea.code{ font-family:Menlo,Consolas,"Courier New",monospace; font-size:14p
 textarea.tall{ min-height:260px; }
 textarea.big.code{ min-height:200px; } textarea.big.code.tall{ min-height:320px; }
 .explain h3{ margin:14px 0 6px; color:var(--azul); font-size:16px; } .explain h3:first-child{ margin-top:0; }
-.explain p, .explain li{ font-size:14px; line-height:1.55; } .explain ol{ padding-left:20px; margin:6px 0; }
+.explain p, .explain li{ font-size:14px; line-height:1.55; }
+.split > div{ min-width:0; }
+pre.cx{ background:#0E2A3A; color:#EAF2F6; padding:12px 14px; border-radius:10px; overflow:auto; font-size:12.5px; line-height:1.45; margin:8px 0; white-space:pre; user-select:text; } .explain ol{ padding-left:20px; margin:6px 0; }
 code{ background:#EEF3F6; padding:1px 5px; border-radius:4px; font-size:.92em; font-family:Menlo,Consolas,"Courier New",monospace; }
 `+DIF_CSS;
 
@@ -64,6 +66,8 @@ table.terms td{ border:1px solid #D8DEE1; padding:7px 9px; vertical-align:top; f
 table.terms td.o{ font-weight:bold; color:var(--azul); } table.terms td.d{ color:var(--verde); font-weight:bold; } table.terms td.n{ color:#5a6b72; }
 pre.code{ background:#0E2A3A; color:#EAF2F6; padding:14px 16px; border-radius:10px; overflow:auto; font-size:13px; line-height:1.5; margin:8px 0; }
 pre.code.bad{ background:#3A1A1A; }
+.split > div{ min-width:0; }
+.qa{ border-top:1px dashed #D0D8DD; padding-top:10px; margin-top:10px; } .qa:first-of-type{ border-top:none; margin-top:0; padding-top:0; }
 code{ background:#EEF3F6; padding:1px 5px; border-radius:4px; font-size:.92em; font-family:Menlo,Consolas,"Courier New",monospace; }
 .errs{ border-left:6px solid var(--rojo); background:#FDF5F6; border-radius:10px; padding:8px 14px 8px 14px; margin:8px 0; }
 .errs ul{ margin:4px 0; padding-left:20px; }
@@ -146,6 +150,14 @@ const termsTable = (rows, head3) => `<table class="terms"><thead><tr><th>${head3
 const preCode = (c, cls) => `<pre class="code${cls ? ' ' + cls : ''}">${esc(c)}</pre>`;
 
 function retroPane(s, t) {
+  const qaCards = qas => qas.map((x, i) => `<div class="qa"><h3>${i + 1}. ${esc(x.q)}</h3><p>${x.a}</p></div>`).join('');
+  if (t.kind === 'interp') {
+    return `<div class="intro">${t.intro}</div><div class="split"><div class="left"><div class="card"><h2>${esc(t.title)}</h2><h3>Código</h3>${preCode(t.code)}<h3>Resultado</h3>${preCode(t.out)}</div></div>` +
+      `<div class="right"><div class="card"><h2>Respuestas de referencia</h2>${qaCards(t.qas)}<h3>Errores frecuentes (también de la IA)</h3><div class="errs"><ul>${t.errs.map(e => `<li>${e}</li>`).join('')}</ul></div></div></div></div>`;
+  }
+  if (t.kind === 'qa') {
+    return `<div class="intro">${t.intro}</div><div class="card"><h2>${esc(t.title)}</h2>${t.pre ? preCode(t.pre) : ''}${qaCards(t.qas)}${t.note ? `<p>${t.note}</p>` : ''}</div>`;
+  }
   if (s.kind === 'translation') {
     if (t.kind === 'recall') {
       return `<div class="intro">${t.intro}</div><div class="card">` +

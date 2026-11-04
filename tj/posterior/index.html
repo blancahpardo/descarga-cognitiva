@@ -99,7 +99,9 @@ textarea.code{ font-family:Menlo,Consolas,"Courier New",monospace; font-size:14p
 textarea.tall{ min-height:260px; }
 textarea.big.code{ min-height:200px; } textarea.big.code.tall{ min-height:320px; }
 .explain h3{ margin:14px 0 6px; color:var(--azul); font-size:16px; } .explain h3:first-child{ margin-top:0; }
-.explain p, .explain li{ font-size:14px; line-height:1.55; } .explain ol{ padding-left:20px; margin:6px 0; }
+.explain p, .explain li{ font-size:14px; line-height:1.55; }
+.split > div{ min-width:0; }
+pre.cx{ background:#0E2A3A; color:#EAF2F6; padding:12px 14px; border-radius:10px; overflow:auto; font-size:12.5px; line-height:1.45; margin:8px 0; white-space:pre; user-select:text; } .explain ol{ padding-left:20px; margin:6px 0; }
 code{ background:#EEF3F6; padding:1px 5px; border-radius:4px; font-size:.92em; font-family:Menlo,Consolas,"Courier New",monospace; }
 
 .idrow .pref{ font-size:22px; font-weight:bold; color:var(--azul); }
@@ -179,10 +181,12 @@ function save(){ try { sessionStorage.setItem(KEY, JSON.stringify(S)); } catch(e
 
 var COPILOT = "https://m365.cloud.microsoft/chat";
 var ISCODE = CFG.kind === "code";
+var ISINTERP = CFG.kind === "interp";
 var ATTR = 'spellcheck="false" autocorrect="off" autocapitalize="off" autocomplete="off" translate="no" lang="es" ' +
            'data-gramm="false" data-gramm_editor="false" data-enable-grammarly="false" data-lt-active="false" data-ms-editor="false"';
 function esc(s){ return String(s==null?"":s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
 function toast(msg){ var t = document.getElementById("toast"); t.textContent = msg; t.style.display = "block"; clearTimeout(toast._t); toast._t = setTimeout(function(){ t.style.display = "none"; }, 3500); }
+function getPath(p){ return p.split(".").reduce(function(o,k){ return o[k]; }, S); }
 function setPath(p,v){ var ks = p.split("."), last = ks.pop(); var o = ks.reduce(function(o,k){ return o[k]; }, S); o[last] = v; }
 function ta(path, val, nopaste, cls, ph){ return '<textarea '+ATTR+' data-path="'+path+'"'+(nopaste?' data-nopaste="1"':'')+(cls?' class="'+cls+'"':'')+(ph?' placeholder="'+esc(ph)+'"':'')+'>'+esc(val)+'</textarea>'; }
 function rulesBox(items){ return '<div class="rules"><b>Condiciones de realización</b><ul>' + items.map(function(i){ return '<li>'+i+'</li>'; }).join("") + '</ul></div>'; }

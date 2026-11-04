@@ -36,3 +36,9 @@ No subir solucionarios que no deban verse; la retroalimentación y la hoja difer
 - **Vista profesora** (clave maestra): en `principal` y `posterior` de todas las asignaturas, la barra de pasos es clicable para saltar a cualquier paso
   sin enviar nada, y aparece un selector de versión N/S (en TJ, TM, PLN y DM) para ver el contenido que verá cada código. Usa otra clave de
   `sessionStorage` (`..._prof`), así que no toca nada guardado de un alumno. Con clave de alumno todo sigue bloqueado como antes.
+
+- **PLN (tipo `interp`)**: la actividad de PLN no es programar sino **interpretar resultados ya calculados**: Caso 1 (Tema 5, métricas de traducción: precision, recall, F1,
+  Jaccard, BLEU, chrF, METEOR) y Caso 2 (Tema 6, tuits sobre «trabajo»). El contenido y las salidas reales están en `gen/pln_interp.js` y `gen/casos_pln.json`
+  (se generaron ejecutando el código mostrado). En la tarea con IA el alumno **escribe sus propios mensajes** y registra turno a turno su mensaje y la
+  respuesta de Copilot (el botón «Copiar» de Copilot solo copia la respuesta); el JSON guarda `conversacion_con_copilot`, `n_mensajes_declarado`,
+  `respuestas_finales` y `correcciones_a_la_ia`. Contrabalanceo igual que en las demás: par = Caso 1 manual y Caso 2 con IA; impar, al revés.

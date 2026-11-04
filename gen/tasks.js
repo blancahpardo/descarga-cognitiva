@@ -96,25 +96,7 @@ function code(dir, o) {
   };
 }
 
-const PLN_T = code('pln', {
-  recIntro: 'Responde de memoria sobre cada uno de los dos algoritmos. No tienes tu código, la explicación ni la IA disponibles.',
-  recQs: ['Explica por escrito, paso a paso, la lógica del algoritmo que implementaste (sin ver tu código).', '¿Qué caso especial o límite del algoritmo recuerdas que fuera más complicado de resolver?'],
-  extra: { q: 'Detecta el error en este fragmento de pseudocódigo relacionado con la lógica del tokenizador. Escribe qué está mal y cómo lo corregirías.', img: 'img/pseudocodigo.png' },
-  tasks: [
-    { name: 'tokenizar(texto)', recTitle: 'Tokenizador basado en reglas · tokenizar(texto)',
-      ctx: '<p>Vas a implementar en Python una función de tokenización basada en reglas. El enunciado y la explicación del algoritmo aparecerán cuando pulses el botón.</p>',
-      ctxAI: '<p>Vas a implementar una función de tokenización basada en reglas, esta vez con ayuda de <b>Microsoft Copilot</b> (con tu cuenta de la universidad). El enunciado y la explicación del algoritmo aparecerán cuando pulses el botón.</p>',
-      manualTest: 'Prueba tu función con al menos 3 frases de ejemplo, incluyendo alguna con el caso especial elegido.',
-      aiTest: 'Revisa y depura el código: pruébalo con al menos 3 frases de ejemplo, incluyendo alguna con un caso especial (por ejemplo, un número decimal), y corrige cualquier error o comportamiento inesperado.',
-      prompt: 'Escribe en Python una función tokenizar(texto) que reciba una cadena de texto y devuelva una lista de tokens, separando correctamente palabras y signos de puntuación, y tratando al menos un caso especial (por ejemplo, números decimales).' },
-    { name: 'extraer_fechas(texto)', recTitle: 'Extracción de fechas con expresiones regulares · extraer_fechas(texto)',
-      ctx: '<p>Vas a implementar una función de extracción de fechas con expresiones regulares. El enunciado y la explicación aparecerán cuando pulses el botón.</p>',
-      ctxAI: '<p>Vas a implementar una función de extracción de fechas con expresiones regulares, esta vez con ayuda de <b>Microsoft Copilot</b> (con tu cuenta de la universidad). El enunciado y la explicación aparecerán cuando pulses el botón.</p>',
-      manualTest: 'Prueba tu función con al menos 3 frases de ejemplo.',
-      aiTest: 'Revisa y depura el código: pruébalo con al menos 3 frases de ejemplo y corrige cualquier error o comportamiento inesperado.',
-      prompt: 'Escribe en Python una función extraer_fechas(texto) que reciba una cadena de texto y devuelva una lista con todas las fechas en formato dd/mm/aaaa que encuentre, usando expresiones regulares.' }
-  ]
-});
+const PLN_T = require('./pln_interp.js').TASKS;
 
 const DM_T = code('dm', {
   recIntro: 'Responde de memoria sobre cada una de las dos funciones. No tienes tu código, la explicación ni la IA disponibles.',
@@ -140,7 +122,7 @@ const DM_T = code('dm', {
 const POST_Q1 = {
   tj: { prompt: 'Explica de nuevo, de memoria, el efecto jurídico de cada una de las dos cláusulas que tradujiste hace una semana.' },
   tm: { prompt: 'Explica de nuevo, de memoria, la idea principal de cada uno de los dos fragmentos que tradujiste hace una semana.' },
-  pln: { prompt: 'Explica de nuevo, de memoria, la lógica de cada uno de los dos algoritmos que implementaste hace una semana.' },
+  pln: { prompt: 'Explica de nuevo, de memoria, qué concluiste en cada uno de los dos casos que interpretaste hace una semana.' },
   dm: { prompt: 'Explica de nuevo, de memoria, la lógica de cada una de las dos funciones que implementaste hace una semana.' }
 };
 
@@ -152,8 +134,7 @@ const RETRO = {
         b: { tab: 'Responsabilidad', intro: 'Este fragmento (<b>Artículo 5 — Responsabilidad</b>) lo trabajaste en la Tarea A o en la Tarea B, según tu versión de la actividad. Hay varias soluciones válidas: compara sobre todo la <b>terminología</b> y el <b>efecto jurídico</b>.' + AI_NOTE_T } },
   tm: { a: { tab: 'Párkinson', intro: 'Este fragmento (artículo sobre la enfermedad de Parkinson) lo trabajaste en la Tarea A o en la Tarea B, según tu versión de la actividad. Tu traducción no tiene por qué coincidir palabra por palabra con la de referencia: hay varias soluciones válidas. Compara sobre todo la <b>terminología médica</b> y el <b>registro divulgativo</b>.' + AI_NOTE_T },
         b: { tab: 'Sensores de glucosa', intro: 'Este fragmento (artículo sobre sensores de glucosa) lo trabajaste en la Tarea A o en la Tarea B, según tu versión de la actividad. Hay varias soluciones válidas: compara sobre todo la <b>terminología médica</b> y el <b>registro divulgativo</b>.' + AI_NOTE_T } },
-  pln: { a: { tab: 'tokenizar()', intro: 'Esta función la implementaste en la Tarea A o en la Tarea B, según tu versión de la actividad. Hay varias implementaciones válidas: lo importante es que tu función trate los signos de puntuación como tokens independientes y cubra al menos un caso especial (como los números decimales).' + AI_NOTE_C },
-         b: { tab: 'extraer_fechas()', intro: 'Esta función la implementaste en la Tarea A o en la Tarea B, según tu versión de la actividad. Hay varias implementaciones válidas: lo importante es que devuelva todas las fechas con formato dd/mm/aaaa y solo esas.' + AI_NOTE_C } },
+  pln: { a: { tab: 'Caso 1 · Métricas', intro: '' }, b: { tab: 'Caso 2 · Tuits', intro: '' } },
   dm: { a: { tab: 'limpiar_columna()', intro: 'Esta función la implementaste en la Tarea A o en la Tarea B, según tu versión de la actividad. Hay varias implementaciones válidas; fíjate sobre todo en el <b>orden</b> de las operaciones.' + AI_NOTE_C },
         b: { tab: 'detectar_atipicos()', intro: 'Esta función la implementaste en la Tarea A o en la Tarea B, según tu versión de la actividad. Hay varias implementaciones válidas; fíjate sobre todo en el cálculo del IQR y en la máscara.' + AI_NOTE_C } }
 };
@@ -170,7 +151,7 @@ function apply(subs) {
     s.post.q1.items = s.rec.blocks.map(b => b.title);
     s.post.q1.prompt = POST_Q1[s.dir].prompt;
     for (const t of s.retro.tabs) {
-      const r = RETRO[s.dir][t.key]; if (r) { t.tab = r.tab; t.intro = r.intro; }
+      const r = RETRO[s.dir][t.key]; if (r) { t.tab = r.tab; if (r.intro) t.intro = r.intro; }
       if (t.kind === 'recall') {
         t.intro = 'La hoja de recuerdo inmediato te pedía explicar, de memoria, lo trabajado en cada una de las dos tareas. Revisa cada bloque.';
         t.blocks[0].h = s.rec.blocks[0].title; t.blocks[1].h = s.rec.blocks[1].title;

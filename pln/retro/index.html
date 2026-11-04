@@ -39,6 +39,8 @@ table.terms td{ border:1px solid #D8DEE1; padding:7px 9px; vertical-align:top; f
 table.terms td.o{ font-weight:bold; color:var(--azul); } table.terms td.d{ color:var(--verde); font-weight:bold; } table.terms td.n{ color:#5a6b72; }
 pre.code{ background:#0E2A3A; color:#EAF2F6; padding:14px 16px; border-radius:10px; overflow:auto; font-size:13px; line-height:1.5; margin:8px 0; }
 pre.code.bad{ background:#3A1A1A; }
+.split > div{ min-width:0; }
+.qa{ border-top:1px dashed #D0D8DD; padding-top:10px; margin-top:10px; } .qa:first-of-type{ border-top:none; margin-top:0; padding-top:0; }
 code{ background:#EEF3F6; padding:1px 5px; border-radius:4px; font-size:.92em; font-family:Menlo,Consolas,"Courier New",monospace; }
 .errs{ border-left:6px solid var(--rojo); background:#FDF5F6; border-radius:10px; padding:8px 14px 8px 14px; margin:8px 0; }
 .errs ul{ margin:4px 0; padding-left:20px; }
@@ -55,35 +57,120 @@ footer.copy{ text-align:center; padding:18px 4vw 34px; font-size:11px; color:var
     <div class="kicker">Descarga cognitiva e IA · Programación orientada al PLN</div>
     <h1>Retroalimentación de «Con copiloto o a pelo»</h1>
     <p>Revisa con calma, a tu ritmo, la corrección de cada parte de la actividad.</p>
-    <div class="tabs" id="tabs"><button class="on" data-k="a">tokenizar()</button><button class="" data-k="b">extraer_fechas()</button><button class="" data-k="r">Recuerdo inmediato</button><button class="" data-k="d">Hoja diferida</button></div>
+    <div class="tabs" id="tabs"><button class="on" data-k="a">Caso 1 · Métricas</button><button class="" data-k="b">Caso 2 · Tuits</button><button class="" data-k="r">Recuerdo inmediato</button><button class="" data-k="d">Hoja diferida</button></div>
   </header>
   <main id="stage">
-<section class="pane on" data-k="a"><div class="intro">Esta función la implementaste en la Tarea A o en la Tarea B, según tu versión de la actividad. Hay varias implementaciones válidas: lo importante es que tu función trate los signos de puntuación como tokens independientes y cubra al menos un caso especial (como los números decimales). Si usaste Copilot, fíjate además en qué errores de la IA detectaste, cuáles <b>no</b> detectaste y si cambiaste algo que no hacía falta cambiar.</div><div class="split"><div class="left"><div class="card"><h2>Tarea A · tokenizar(texto)</h2><p><b>Qué se pedía.</b> Una función <code>tokenizar(texto)</code> que devuelva una lista de tokens: palabras y signos de puntuación separados, y un caso especial bien tratado.</p></div></div><div class="right"><div class="card"><h2>Solución de referencia</h2><pre class="code">import re
+<section class="pane on" data-k="a"><div class="intro">Este caso lo trabajaste en la Tarea A o en la Tarea B, según tu versión de la actividad. Tu redacción no tiene por qué coincidir con las respuestas de referencia: lo importante es que cada afirmación se apoye en los valores de la tabla y en lo que mide cada métrica.</div><div class="split"><div class="left"><div class="card"><h2>Caso 1 · Evaluación de tres traducciones (Tema 5)</h2><h3>Código</h3><pre class="code">from nltk.translate.bleu_score import sentence_bleu, SmoothingFunction
+from nltk.translate.meteor_score import meteor_score
+from evaluate import load
 
-def tokenizar(texto):
-    # Palabras (incluye tildes y ñ), números decimales como un solo token
-    # y signos de puntuación sueltos
-    patron = r&quot;\d+\.\d+|[A-Za-zÁÉÍÓÚÑáéíóúñ]+|[.,;:!?]&quot;
-    return re.findall(patron, texto)</pre><p>También es válida una implementación carácter a carácter con una bandera para detectar si el punto está entre dos dígitos (caso especial de número decimal) antes de tratarlo como separador.</p><h3>Errores frecuentes</h3><div class="errs"><ul><li>Separar los números decimales por el punto (p. ej. «3.14» se convierte en «3», «.», «14» en vez de un solo token «3.14»).</li><li>No tratar los signos de puntuación como tokens independientes (quedan pegados a la palabra anterior).</li><li>No volcar el último token acumulado al final del bucle si el texto no termina en un separador.</li><li>No contemplar mayúsculas ni tildes en la clase de caracteres de «letra».</li></ul></div></div></div></div></section>
-<section class="pane" data-k="b"><div class="intro">Esta función la implementaste en la Tarea A o en la Tarea B, según tu versión de la actividad. Hay varias implementaciones válidas: lo importante es que devuelva todas las fechas con formato dd/mm/aaaa y solo esas. Si usaste Copilot, fíjate además en qué errores de la IA detectaste, cuáles <b>no</b> detectaste y si cambiaste algo que no hacía falta cambiar.</div><div class="split"><div class="left"><div class="card"><h2>Tarea B · extraer_fechas(texto)</h2><p><b>Qué se pedía.</b> Una función <code>extraer_fechas(texto)</code> que devuelva todas las fechas con formato dd/mm/aaaa, usando expresiones regulares.</p></div></div><div class="right"><div class="card"><h2>Solución de referencia</h2><pre class="code">import re
+referencia = &quot;El paciente recibió el alta médica después de una semana de tratamiento.&quot;
+traducciones = {
+    &quot;TA1&quot;: &quot;Después de una semana de tratamiento, el paciente recibió el alta médica.&quot;,
+    &quot;TA2&quot;: &quot;El paciente recibió el alta medica despues de una semana de tratamiento.&quot;,
+    &quot;TA3&quot;: &quot;El enfermo obtuvo el alta clínica tras siete días de terapia.&quot;,
+}
 
-def extraer_fechas(texto):
-    patron = r&quot;\b\d{2}/\d{2}/\d{4}\b&quot;
-    return re.findall(patron, texto)</pre><h3>Errores frecuentes</h3><div class="errs"><ul><li>Un patrón demasiado permisivo como <code>\d+/\d+/\d+</code>, que también captura fracciones o números mal formateados (por ejemplo «5/6/78», con menos dígitos de los que pide el enunciado).</li><li>Olvidar los delimitadores de palabra (<code>\b</code>), lo que puede capturar fragmentos de una cadena de dígitos más larga.</li><li>Usar <code>re.search</code> (solo devuelve la primera coincidencia) en vez de <code>re.findall</code> (devuelve todas).</li><li>No probar el caso de una fecha al principio o al final de la frase.</li></ul></div></div></div></div></section>
-<section class="pane" data-k="r"><div class="intro">La hoja de recuerdo inmediato te pedía explicar la lógica, encontrar un error en un pseudocódigo y recordar un caso límite.</div><div class="split"><div class="left"><div class="card"><h2>Pseudocódigo con error</h2><div class="casebox zoomable"><img src="../img/pseudocodigo.png" alt="Pseudocódigo con error"></div><p class="hintzoom">Pulsa sobre el texto para verlo más grande.</p></div></div><div class="right"><div class="card"><p><b>Dónde está el error.</b> La lógica está invertida. Cuando el carácter <b>es</b> un espacio hay que <b>cerrar</b> el token actual (añadirlo a la lista y reiniciarlo); cuando <b>no</b> lo es, hay que <b>seguir acumulando</b> caracteres. Tal como está escrito, el código añade el espacio al token en vez de usarlo como separador, y vuelca el token a la lista cada vez que encuentra una letra normal, lo que trocea las palabras letra a letra en vez de por espacios.</p><h3>Pseudocódigo corregido</h3><pre class="code">PARA cada caracter EN texto:
-  SI caracter ES espacio:
-    SI token_actual NO ES vacío:
-      anadir token_actual a lista_tokens
-      token_actual = &quot;&quot;
-  SI_NO:
-    token_actual = token_actual + caracter</pre><p><b>Casos especiales y límites</b> que se trabajaron: los números decimales («3.14» no debe partirse por el punto), las contracciones y las abreviaturas, que un separador simple rompería de forma incorrecta; y, en la extracción de fechas, que las expresiones regulares solo detectan los formatos que el patrón contempla (p. ej. «5 de marzo de 2024» no se detecta con un patrón dd/mm/aaaa).</p></div></div></div></section>
-<section class="pane" data-k="d"><div class="intro">La hoja diferida te pedía resolver, sin ayuda, un problema nuevo pero análogo.</div><div class="split"><div class="left"><div class="card"><h2>Transferencia · contar palabras que empiezan por mayúscula</h2><p><b>Enunciado.</b> Escribe la lógica de una función que cuente cuántas palabras de un texto empiezan por mayúscula.</p></div></div><div class="right"><div class="card"><h2>Solución de referencia</h2><pre class="code">def contar_mayusculas(texto):
-    palabras = texto.split()
-    contador = 0
-    for palabra in palabras:
-        if palabra and palabra[0].isupper():
-            contador += 1
-    return contador</pre><p>Idea clave que había que transferir de la tarea original: dividir el texto en unidades (palabras) recorriéndolo y aplicar una condición carácter a carácter o token a token; es el mismo patrón general que en <code>tokenizar()</code>.</p></div></div></div></section>
+def limpiar_palabra(palabra):
+    return palabra.strip('.,;:!?&quot;¡¿()[]{}')
+
+def procesar_texto(texto):
+    return [limpiar_palabra(p) for p in texto.lower().split()]
+
+chrf = load(&quot;chrf&quot;)
+ref_proc = procesar_texto(referencia)
+
+for nombre, tradu in traducciones.items():
+    tr_proc = procesar_texto(tradu)
+    precision = sum(1 for p in tr_proc if p in ref_proc) / len(tr_proc)
+    recall = sum(1 for p in ref_proc if p in tr_proc) / len(ref_proc)
+    f1 = 2 * precision * recall / (precision + recall)
+    jaccard = len(set(tr_proc) &amp; set(ref_proc)) / len(set(tr_proc) | set(ref_proc))
+    bleu = sentence_bleu([ref_proc], tr_proc, smoothing_function=SmoothingFunction().method1)
+    chrf_score = chrf.compute(predictions=[tradu], references=[referencia])[&quot;score&quot;]
+    meteor = meteor_score([referencia.split()], tradu.split())
+    print(f&quot;{nombre} | Precision {precision:.2f} | Recall {recall:.2f} | F1 {f1:.2f} | Jaccard {jaccard:.2f} | BLEU {bleu:.2f} | chrF {chrf_score:.1f} | METEOR {meteor:.2f}&quot;)
+</pre><h3>Resultado</h3><pre class="code">TA1 | Precision 1.00 | Recall 1.00 | F1 1.00 | Jaccard 1.00 | BLEU 0.83 | chrF 90.5 | METEOR 0.83
+TA2 | Precision 0.83 | Recall 0.83 | F1 0.83 | Jaccard 0.67 | BLEU 0.63 | chrF 87.9 | METEOR 0.83
+TA3 | Precision 0.36 | Recall 0.42 | F1 0.39 | Jaccard 0.18 | BLEU 0.04 | chrF 22.3 | METEOR 0.27</pre></div></div><div class="right"><div class="card"><h2>Respuestas de referencia</h2><div class="qa"><h3>1. TA1 obtiene 1.00 en Precision, Recall, F1 y Jaccard. ¿Significa que es idéntica a la referencia? ¿Por qué BLEU y METEOR sí la penalizan?</h3><p>No. Precision, Recall, F1 y Jaccard solo comprueban qué palabras aparecen (Jaccard compara conjuntos), así que no ven el orden: TA1 tiene las mismas palabras y saca 1.00. BLEU compara secuencias de palabras (n-gramas) y el cambio de orden rompe varias coincidencias, por eso baja a 0.83. METEOR también penaliza que las coincidencias queden fragmentadas (0.83). TA1 dice lo mismo, pero con otra estructura: no es idéntica.</p></div><div class="qa"><h3>2. TA2 solo se diferencia de la referencia en dos tildes que faltan. ¿Qué métrica la castiga menos y por qué?</h3><p>chrF (87.9), porque compara secuencias de caracteres: «medica» y «médica» (y «despues» y «después») comparten casi todos los caracteres. Las métricas que comparan palabras completas cuentan cada palabra sin tilde como una palabra distinta que no coincide (Jaccard 0.67, BLEU 0.63).</p></div><div class="qa"><h3>3. TA3 dice prácticamente lo mismo que la referencia con otras palabras, pero puntúa muy bajo en todas las métricas. ¿A qué se debe y qué limitación de las métricas revela?</h3><p>Estas métricas miden coincidencia formal con la referencia, no significado. «Enfermo/paciente», «obtuvo/recibió», «clínica/médica», «tras/después de», «siete días/una semana» y «terapia/tratamiento» no coinciden como palabras ni como secuencias, así que todas las métricas bajan (BLEU 0.04, chrF 22.3). Revela que penalizan paráfrasis y sinónimos válidos. METEOR (0.27) tampoco la rescata: la versión de <code>nltk</code> que usamos se apoya en recursos en inglés, como vimos en el cuaderno de METEOR.</p></div><div class="qa"><h3>4. Ordena las tres traducciones de mejor a peor según las métricas y según tu propio criterio. ¿Coinciden los dos órdenes? Justifícalo.</h3><p>Según las métricas: TA1 &gt; TA2 &gt; TA3. Según un criterio de traductor/a: TA1 es correcta; TA3 es una paráfrasis aceptable (con matices: «clínica» no es exactamente «médica»); TA2 tiene dos faltas de ortografía que en un texto final sí son errores. Lo normal es que los dos órdenes no coincidan: TA3 sale penalizada por reformular y TA2 sale favorecida pese a las faltas. Lo importante es argumentarlo.</p></div><h3>Errores frecuentes (también de la IA)</h3><div class="errs"><ul><li>Dar TA1 por perfecta porque Precision, Recall, F1 y Jaccard valen 1.00, sin explicar que esas métricas ignoran el orden.</li><li>Decir que chrF o METEOR «reconocen sinónimos» y que por eso TA3 debería puntuar más.</li><li>Concluir que TA3 es una mala traducción porque su puntuación es muy baja.</li><li>Usar métricas o conceptos que no se han visto en la asignatura (por ejemplo, BERTScore o COMET) en vez de apoyarse en la tabla.</li></ul></div></div></div></div></section>
+<section class="pane" data-k="b"><div class="intro">Este caso lo trabajaste en la Tarea A o en la Tarea B, según tu versión de la actividad. Es el mismo tipo de razonamiento que la práctica y el evaluable del Tema 6: apoyarse en cifras, tuits y palabras concretas del resultado, y distinguir presencia temática de actitud.</div><div class="split"><div class="left"><div class="card"><h2>Caso 2 · Tuits sobre «trabajo» (Tema 6)</h2><h3>Código</h3><pre class="code"># df_real ya está construido como en 11.1 y 11.2: 2400 tuits (800 por clase), columnas &quot;texto&quot; y &quot;etiqueta&quot;.
+# tok_tweet y coocurrencias_df son las funciones del cuaderno (apartados 11.8).
+tema = &quot;trabajo&quot;
+terminos_objetivo = [&quot;trabajo&quot;,&quot;trabajar&quot;,&quot;curro&quot;,&quot;jefe&quot;,&quot;jefes&quot;,&quot;jefa&quot;,&quot;jefas&quot;,&quot;empresa&quot;,&quot;oficina&quot;,
+                     &quot;contrato&quot;,&quot;sueldo&quot;,&quot;salario&quot;,&quot;paro&quot;,&quot;desempleo&quot;,&quot;horas&quot;,&quot;turno&quot;,&quot;turnos&quot;,
+                     &quot;currículum&quot;,&quot;entrevista&quot;]
+
+df_real[&quot;n_objetivo&quot;] = df_real[&quot;texto&quot;].apply(lambda t: sum(1 for w in tok_tweet(t) if w in terminos_objetivo))
+subcorpus = df_real[df_real[&quot;n_objetivo&quot;] &gt; 0].reset_index(drop=True)
+
+resumen_tema = subcorpus.groupby(&quot;etiqueta&quot;).agg(n_tuits=(&quot;n_objetivo&quot;, &quot;size&quot;),
+                                                 n_objetivo_medio=(&quot;n_objetivo&quot;, &quot;mean&quot;)).round(2)
+print(&quot;Tuits en el subcorpus:&quot;, len(subcorpus), &quot;de&quot;, len(df_real))
+print(resumen_tema)
+
+def kwic(textos, etiquetas, termino, ventana=6, max_lineas=8):
+    n = 0
+    for i, (t, e) in enumerate(zip(textos, etiquetas), start=1):
+        toks = tok_tweet(t)
+        for j, w in enumerate(toks):
+            if w == termino and n &lt; max_lineas:
+                n += 1
+                print(i, e, &quot; &quot;.join(toks[max(0, j-ventana):j]), &quot;[&quot;, w, &quot;]&quot;, &quot; &quot;.join(toks[j+1:j+1+ventana]))
+
+for palabra in [&quot;trabajo&quot;, &quot;horas&quot;]:
+    print(&quot;--- KWIC de&quot;, palabra)
+    kwic(subcorpus[&quot;texto&quot;], subcorpus[&quot;etiqueta&quot;], palabra)
+
+cooc_df = coocurrencias_df(subcorpus[&quot;texto&quot;].tolist(), terminos_objetivo, window_tokens=8, top_n=12,
+                           stopwords=STOPWORDS_ES, extra_stop={&quot;rt&quot;,&quot;dm&quot;,&quot;http&quot;,&quot;https&quot;,&quot;tco&quot;}, min_len=3)
+print(cooc_df)
+</pre><h3>Resultado</h3><pre class="code">Tuits en el subcorpus: 42 de 2400
+          n_tuits  n_objetivo_medio
+etiqueta                           
+neg            16              1.06
+neu            19              1.00
+pos             7              1.00
+--- KWIC de trabajo
+3 pos usuario es que en octubre [ trabajo ] y me la voy a comprar
+4 pos falta para las y en el [ trabajo ] se hace eterno
+5 pos lo que haces y admira tu [ trabajo ] no vivas para que otros lo
+6 pos usuario qué [ trabajo ] les cuesta a los maestros estar
+7 pos tenía que hacer un [ trabajo ] con un compañero y bueno que
+12 neg usuario oh dios que [ trabajo ] tan triste
+16 neg de limpiar esta casa y el [ trabajo ] nunca termina soylachachademicasa sinremuneración yamatenme
+17 neg lunes sin [ trabajo ] con un hermoso día y yo
+--- KWIC de horas
+1 pos paises y comparar la diferencia de [ horas ] entre dos paises
+2 pos  [ horas ] de los simpson lo mejor de
+9 neg solo he dormido [ horas ] las ultimas horas
+9 neg solo he dormido horas las ultimas [ horas ] 
+14 neg ver en facebook activo hace [ horas ] me pone triste porque no de
+15 neg usuario lleva [ horas ] ignorandome pug traviesillo pillo http t
+19 neg muchas [ horas ] en la compu dolor de espalda
+21 neg que dormir porque me despiertan en [ horas ] cuando me despierte sigo votando mtvhottest
+   coocurrencia  frecuencia
+0        mañana           4
+1        dormir           3
+2        paises           2
+3       dormido           2
+4       ultimas           2
+5         doble           2
+6          dios           2
+7        triste           2
+8          sigo           2
+9        madrid           2
+10         baja           2
+11      emppleo           2</pre></div></div><div class="right"><div class="card"><h2>Respuestas de referencia</h2><div class="qa"><h3>1. El subcorpus de «trabajo» tiene más tuits negativos que positivos. ¿Mide esto la actitud hacia el trabajo o solo la presencia del tema? Apóyate en los valores de la tabla y menciona una limitación del método.</h3><p>Presencia temática. Hay 42 tuits de 2400 (7 positivos, 16 negativos y 19 neutros): que haya más negativos no indica una actitud negativa hacia el trabajo, solo que más tuits etiquetados como negativos contienen alguna palabra de la lista. Además, <code>n_objetivo_medio</code> es casi igual en las tres clases (1.00-1.06), la muestra es muy pequeña y la etiqueta es un dato del corpus, no un resultado del análisis. Limitaciones: palabras clave aisladas, polisemia y tamaño de muestra.</p></div><div class="qa"><h3>2. Fíjate en las líneas KWIC de «trabajo» y de «horas». ¿Qué usos de esas palabras no se refieren al mundo laboral y qué problema crea eso para el recuento?</h3><p>En «trabajo»: «hacer un trabajo con un compañero» (tarea académica) y «qué trabajo les cuesta a los maestros…» (esfuerzo); «admira tu trabajo» se acerca más a obra. En «horas»: «diferencia de horas entre dos países», «horas de los Simpson», «solo he dormido horas»… casi ninguna se refiere al empleo. El recuento cuenta cualquier aparición como tema laboral, así que mete tuits que no hablan de trabajo (ruido) y distorsiona las cifras.</p></div><div class="qa"><h3>3. Elige tres palabras de la tabla de coocurrencias. Para cada una, explica por qué podría estar relacionada con el tema o por qué crees que es ruido.</h3><p>Respuesta posible. «Triste» y «dios» vienen de «oh dios qué trabajo tan triste»: valoración relacionada con el tema (aunque con solo 2 apariciones). «Dormir», «dormido», «últimas» y «países» vienen sobre todo de la palabra «horas» (dormir horas, diferencia de horas entre países): no hablan del trabajo, son ruido. «Baja» y «emppleo» vienen de «baja el paro, seguimos creando empleo»: relevantes, aunque con una errata. Lo importante es justificar cada palabra con las líneas KWIC en vez de suponer.</p></div><div class="qa"><h3>4. ¿Qué stopwords específicas de Twitter añadirías y qué podrías perder si limpias demasiado?</h3><p>Se pueden añadir como stopwords de Twitter: <code>usuario</code>/menciones, <code>via</code>, <code>amp</code>, risas como <code>jaja</code>, abreviaturas (<code>xq</code>, <code>q</code>, <code>pa</code>) y hashtags que se repiten (como <code>mtvhottest</code>). Si limpias demasiado pierdes señales útiles: risas e intensificadores que marcan ironía o actitud, variantes y erratas (<code>emppleo</code>) que muestran cómo se escribe de verdad, y hashtags que identifican comunidades.</p></div><h3>Errores frecuentes (también de la IA)</h3><div class="errs"><ul><li>Concluir que los tuits negativos reflejan una actitud negativa hacia el trabajo.</li><li>Tratar «horas», «dormir» o «mañana» como parte del tema laboral sin comprobar de dónde vienen en las líneas KWIC.</li><li>No mencionar que las etiquetas pos/neg/neu vienen del corpus (no del análisis) ni que la muestra es muy pequeña (42 tuits).</li><li>Proponer listas largas de stopwords sin tener en cuenta lo que se pierde al limpiar.</li></ul></div></div></div></div></section>
+<section class="pane" data-k="r"><div class="intro">La hoja de recuerdo inmediato te pedía recordar, de memoria, lo que concluiste en cada uno de los dos casos. Compara con estas ideas clave.</div><div class="card"><h2>Hoja de recuerdo inmediato</h2><div class="qa"><h3>1. Caso 1 · Evaluación de tres traducciones</h3><p><b>TA1</b>: mismas palabras, otro orden. <b>TA2</b>: dos palabras sin tilde. <b>TA3</b>: paráfrasis con sinónimos. Precision, Recall, F1 y Jaccard no ven el orden (TA1 = 1.00); BLEU y METEOR sí lo notan; chrF tolera las tildes (TA2 alta) porque compara caracteres; todas castigan mucho a TA3. Limitación: miden coincidencia formal con la referencia, no significado ni calidad.</p></div><div class="qa"><h3>2. Caso 2 · Tuits sobre «trabajo»</h3><p>42 tuits de 2400 (7 positivos, 16 negativos, 19 neutros); <code>n_objetivo_medio</code> casi igual en las tres clases: se mide presencia temática, no actitud. Usos no laborales: «hacer un trabajo con un compañero», «qué trabajo les cuesta…», «horas» de dormir o diferencias horarias. Coocurrencias: «triste», «baja» y «emppleo» relevantes; «dormir», «dormido» y «países» ruido que viene de «horas».</p></div></div></section>
+<section class="pane" data-k="d"><div class="intro">La hoja diferida te pedía interpretar, sin ayuda, un resultado nuevo con el mismo tipo de razonamiento del Caso 1.</div><div class="card"><h2>Transferencia · interpretar un resultado nuevo</h2><pre class="code">referencia = &quot;Los resultados del estudio se publicaron en una revista científica.&quot;
+traducciones = {
+    &quot;TB1&quot;: &quot;Los resultados del estudio fueron publicados en una revista científica.&quot;,
+    &quot;TB2&quot;: &quot;Los resultados del estudio se publicaron en una revista cientifica.&quot;,
+}
+# (se aplica el mismo código del Caso 1)
+
+TB1 | Precision 0.80 | Recall 0.80 | F1 0.80 | Jaccard 0.67 | BLEU 0.53 | chrF 83.8 | METEOR 0.79
+TB2 | Precision 0.90 | Recall 0.90 | F1 0.90 | Jaccard 0.82 | BLEU 0.88 | chrF 93.6 | METEOR 0.90</pre><div class="qa"><h3>1. TB1 y TB2: ¿qué traducción puntúa mejor en todas las métricas? ¿Por qué TB1 queda por debajo si no tiene faltas de ortografía?</h3><p>TB2 puntúa mejor en todas (BLEU 0.88, chrF 93.6): solo le falta una tilde en «científica». TB1 cambia la estructura («se publicaron» por «fueron publicados») y añade una palabra, así que coinciden menos palabras y secuencias con la referencia, y chrF también baja (83.8).</p></div><div class="qa"><h3>2. Según tu criterio como traductor/a, ¿qué traducción es mejor? ¿Coincide con las métricas?</h3><p>TB1 es correcta (voz pasiva, sin faltas); TB2 tiene una falta de ortografía. Para un criterio profesional, TB1 es igual o mejor, y las métricas dicen lo contrario porque miden cercanía formal con la referencia, no calidad. Es el mismo fenómeno que con TA2 y TA3.</p></div><p>Idea clave que había que transferir: las métricas basadas en coincidencia formal favorecen la cercanía a la referencia, aunque no sea la mejor traducción.</p></div></section>
   </main>
   <footer class="copy">© Dra. Blanca Hernández Pardo · Programación orientada al PLN · Descarga cognitiva e IA<br>
   Queda prohibida la difusión, distribución o reproducción total o parcial de este material sin autorización expresa de la autora.</footer>

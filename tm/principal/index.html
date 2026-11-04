@@ -99,7 +99,9 @@ textarea.code{ font-family:Menlo,Consolas,"Courier New",monospace; font-size:14p
 textarea.tall{ min-height:260px; }
 textarea.big.code{ min-height:200px; } textarea.big.code.tall{ min-height:320px; }
 .explain h3{ margin:14px 0 6px; color:var(--azul); font-size:16px; } .explain h3:first-child{ margin-top:0; }
-.explain p, .explain li{ font-size:14px; line-height:1.55; } .explain ol{ padding-left:20px; margin:6px 0; }
+.explain p, .explain li{ font-size:14px; line-height:1.55; }
+.split > div{ min-width:0; }
+pre.cx{ background:#0E2A3A; color:#EAF2F6; padding:12px 14px; border-radius:10px; overflow:auto; font-size:12.5px; line-height:1.45; margin:8px 0; white-space:pre; user-select:text; } .explain ol{ padding-left:20px; margin:6px 0; }
 code{ background:#EEF3F6; padding:1px 5px; border-radius:4px; font-size:.92em; font-family:Menlo,Consolas,"Courier New",monospace; }
 
 .idrow .pref{ font-size:22px; font-weight:bold; color:var(--azul); }
@@ -173,10 +175,12 @@ var STEPS = ["Inicio","Tarea A","Tarea B","Pausa","Recuerdo","Autoevaluación","
 
 var COPILOT = "https://m365.cloud.microsoft/chat";
 var ISCODE = CFG.kind === "code";
+var ISINTERP = CFG.kind === "interp";
 var ATTR = 'spellcheck="false" autocorrect="off" autocapitalize="off" autocomplete="off" translate="no" lang="es" ' +
            'data-gramm="false" data-gramm_editor="false" data-enable-grammarly="false" data-lt-active="false" data-ms-editor="false"';
 function esc(s){ return String(s==null?"":s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
 function toast(msg){ var t = document.getElementById("toast"); t.textContent = msg; t.style.display = "block"; clearTimeout(toast._t); toast._t = setTimeout(function(){ t.style.display = "none"; }, 3500); }
+function getPath(p){ return p.split(".").reduce(function(o,k){ return o[k]; }, S); }
 function setPath(p,v){ var ks = p.split("."), last = ks.pop(); var o = ks.reduce(function(o,k){ return o[k]; }, S); o[last] = v; }
 function ta(path, val, nopaste, cls, ph){ return '<textarea '+ATTR+' data-path="'+path+'"'+(nopaste?' data-nopaste="1"':'')+(cls?' class="'+cls+'"':'')+(ph?' placeholder="'+esc(ph)+'"':'')+'>'+esc(val)+'</textarea>'; }
 function rulesBox(items){ return '<div class="rules"><b>Condiciones de realización</b><ul>' + items.map(function(i){ return '<li>'+i+'</li>'; }).join("") + '</ul></div>'; }
@@ -227,8 +231,8 @@ function dlJson(obj, name){
 }
 
 function fresh(){
-  var a = ISCODE ? { codigo:"", pruebas:"" } : { trad:"", rows:mkRows(4,["termino","solucion"]) };
-  var b = ISCODE ? { codigo:"", pruebas:"", correcciones:"", conversacion:"" } : { borrador:"", trad:"", rows:mkRows(4,["ia","correccion","porque"]), conversacion:"" };
+  var a = ISINTERP ? { resp:["","","",""] } : ISCODE ? { codigo:"", pruebas:"" } : { trad:"", rows:mkRows(4,["termino","solucion"]) };
+  var b = ISINTERP ? { turnos:[{ mensaje:"", respuesta:"" }], nmensajes:"", confirma:false, resp:["","","",""], rows:mkRows(3,["ia","correccion","porque"]) } : ISCODE ? { codigo:"", pruebas:"", correcciones:"", conversacion:"" } : { borrador:"", trad:"", rows:mkRows(4,["ia","correccion","porque"]), conversacion:"" };
   return { v:2, step:0, id:"", version:"", consent:[false,false,false], inicio:null, fin:null, tiempos:{}, a:a, b:b,
            r:{ blocks: CFG.rec.blocks.map(function(bl){ return bl.qs.map(function(){ return ""; }); }), extra: CFG.rec.extra.map(function(){ return ""; }) },
            auto:CFG.likert.map(function(){ return ""; }) };
@@ -289,6 +293,32 @@ function leftPane(which){
   return '<h2>'+title+'</h2><div class="explain">'+t.left+'</div>';
 }
 
+
+function qBoxes(w, nopaste){
+  return tk(w).qs.map(function(q,i){ return '<div class="recrow"><h3 style="margin-top:0">'+(i+1)+'. '+esc(q)+'</h3>' + ta(w+'.resp.'+i, S[w].resp[i], nopaste, 'big') + '</div>'; }).join("");
+}
+function turnsHtml(){
+  return S.b.turnos.map(function(tn,i){
+    return '<div class="recrow"><h3 style="margin-top:0">Turno '+(i+1)+'</h3>' +
+      '<p style="font-size:13px;margin:0 0 4px"><b>① Mi mensaje a Copilot.</b> Escríbelo aquí tal como lo vas a enviar. Pulsa «Copiar mi mensaje», pégalo en Copilot (Ctrl+V) y envíalo.</p>' +
+      ta('b.turnos.'+i+'.mensaje', tn.mensaje, false, 'big') +
+      '<div class="btnrow" style="margin:4px 0 10px"><button class="btn" data-copy="b.turnos.'+i+'.mensaje">Copiar mi mensaje</button></div>' +
+      '<p style="font-size:13px;margin:0 0 4px"><b>② Respuesta de Copilot.</b> Cuando conteste, pulsa el botón <b>Copiar</b> (icono de dos hojas, justo debajo de su respuesta) y pégala aquí (Ctrl+V).</p>' +
+      ta('b.turnos.'+i+'.respuesta', tn.respuesta, false, 'big') + '</div>';
+  }).join("") + '<div class="btnrow"><button class="btn alt" id="addturn">+ Si le has escrito otro mensaje a Copilot, añade otro turno</button></div>';
+}
+function interpRightB(){
+  var rows = S.b.rows.map(function(r,i){ return '<div class="brow"><div class="n">'+(i+1)+'</div>' +
+    '<div class="bf">'+ta('b.rows.'+i+'.ia',r.ia,false,null,'Qué decía la IA')+'</div>' +
+    '<div class="bj">'+ta('b.rows.'+i+'.correccion',r.correccion,false,null,'Qué corregiste o añadiste tú')+'</div>' +
+    '<div class="bj">'+ta('b.rows.'+i+'.porque',r.porque,false,null,'Por qué')+'</div></div>'; }).join("");
+  return '<h3>Paso 1. Tu conversación con Copilot</h3><p style="font-size:14px">Decide tú qué le pasas a Copilot y cómo se lo preguntas. Para que quede registrada <b>toda</b> la conversación, ve apuntando aquí cada mensaje tuyo y cada respuesta suya, turno a turno.</p>' + turnsHtml() +
+    '<h3>Paso 2. Comprobación</h3><p>¿Cuántos mensajes le has enviado en total a Copilot? <input type="text" inputmode="numeric" maxlength="2" data-path="b.nmensajes" value="'+esc(S.b.nmensajes)+'" style="width:70px;padding:6px 8px;font-size:16px;border:1px solid #AEBBC2;border-radius:8px"></p>' +
+    '<label class="chk"><input type="checkbox" data-chk="b.confirma"'+(S.b.confirma?' checked':'')+'><span>He pegado la conversación completa: todos mis mensajes y todas las respuestas de Copilot.</span></label>' +
+    '<h3>Paso 3. Tus respuestas finales</h3><p style="font-size:14px">Escribe tu respuesta definitiva a cada pregunta, con tus palabras. Puedes aprovechar lo que te haya dicho Copilot, pero debes revisarlo y poder explicarlo.</p>' + qBoxes("b", false) +
+    '<h3>Paso 4. Qué corregiste o añadiste a lo que dijo la IA</h3><p style="font-size:14px">Anota 2-3 puntos en los que has cambiado, matizado o completado lo que decía Copilot, y por qué.</p>' + rows;
+}
+
 function viewA(){
   var t = S.tiempos.a || {};
   if (!t.start) return '<div class="card"><h2>Tarea A — Condición MANUAL (sin IA)</h2>' + tk("a").manualIntro +
@@ -296,7 +326,9 @@ function viewA(){
     '<p><b>Tiempo disponible: '+CFG.minA+' minutos.</b> El material aparecerá cuando pulses el botón; empieza cuando la profesora lo indique.</p>' +
     '<div class="btnrow"><button class="btn amar" data-start="a">Empezar la Tarea A</button></div></div>';
   var right;
-  if (ISCODE){
+  if (ISINTERP){
+    right = '<h3>Tus respuestas</h3><p style="font-size:14px">Responde con tus propias palabras (2-4 líneas cada una) y apóyate en los valores y ejemplos concretos del resultado.</p>' + qBoxes('a', true);
+  } else if (ISCODE){
     right = '<h3>Tu función</h3><p>Escribe tu código en Python, con un comentario breve que explique la lógica de cada bloque.</p>' + ta('a.codigo',S.a.codigo,false,'big code tall') +
       '<h3>Tus pruebas</h3><p>Anota con qué ejemplos has probado tu función y qué ha devuelto en cada caso.</p>' + ta('a.pruebas',S.a.pruebas,false,'big code');
   } else {
@@ -317,7 +349,9 @@ function viewB(){
     rulesBox(CFG.aiRules) +
     '<p><b>Tiempo disponible: '+CFG.minB+' minutos.</b></p><div class="btnrow"><button class="btn amar" data-start="b">Empezar la Tarea B</button></div></div>';
   var right;
-  if (ISCODE){
+  if (ISINTERP){
+    right = interpRightB();
+  } else if (ISCODE){
     right = '<h3>Tu código final</h3><p>Pega o escribe aquí la versión final de la función, después de revisarla y depurarla. Añade tus propios comentarios (no copiados de la explicación de la IA).</p>' + ta('b.codigo',S.b.codigo,false,'big code tall') +
       '<h3>Tus pruebas</h3><p>Anota con qué ejemplos has probado la función y qué ha devuelto en cada caso.</p>' + ta('b.pruebas',S.b.pruebas,false,'big code') +
       '<h3>¿Qué tuviste que corregir o pedir de nuevo a la IA para llegar a la versión final?</h3>' + ta('b.correcciones',S.b.correcciones,false,'big');
@@ -330,13 +364,13 @@ function viewB(){
       '<h3>Tu traducción final (posedición)</h3><p>Escribe aquí tu versión revisada y corregida.</p>' + ta('b.trad',S.b.trad,false,'big tall') +
       '<h3>Los 3-4 puntos en los que corregiste o matizaste la propuesta de la IA, y por qué</h3>' + rows;
   }
-  right += '<h3>Pega aquí tu conversación completa con Copilot</h3><p style="font-size:13px">Se usa para el estudio (cómo revisas lo que propone la IA). Selecciona toda la conversación en Copilot, cópiala y pégala.</p>' + ta('b.conversacion',S.b.conversacion,false,'big');
+  if (!ISINTERP) right += '<h3>Pega aquí tu conversación completa con Copilot</h3><p style="font-size:13px">Se usa para el estudio (cómo revisas lo que propone la IA). Selecciona toda la conversación en Copilot, cópiala y pégala.</p>' + ta('b.conversacion',S.b.conversacion,false,'big');
   return timerBar('b',CFG.minB) +
     '<div class="split"><div class="left"><div class="card">' + leftPane("b") +
-    '<div class="btnrow"><button class="btn" id="copyprompt">① Copiar el mensaje para Copilot</button>' +
-    '<a class="btn alt" href="'+COPILOT+'" target="_blank" rel="noopener noreferrer">② Abrir Microsoft Copilot</a></div></div></div>' +
+    (ISINTERP ? '<div class="btnrow"><a class="btn alt" href="'+COPILOT+'" target="_blank" rel="noopener noreferrer">Abrir Microsoft Copilot</a></div></div></div>' : '<div class="btnrow"><button class="btn" id="copyprompt">① Copiar el mensaje para Copilot</button>' +
+    '<a class="btn alt" href="'+COPILOT+'" target="_blank" rel="noopener noreferrer">② Abrir Microsoft Copilot</a></div></div></div>') +
     '<div class="right"><div class="card">' +
-    '<p style="font-size:14px;margin-top:0">Copia el mensaje, abre Copilot con tu cuenta de la universidad, pégalo (<b>Ctrl+V</b>) y envíalo. Después revisa con criterio lo que te proponga.</p>' +
+    (ISINTERP ? '<p style="font-size:14px;margin-top:0">Abre Copilot con tu cuenta de la universidad en otra pestaña y úsalo para ayudarte a interpretar el resultado. Después revisa con criterio lo que te diga.</p>' : '<p style="font-size:14px;margin-top:0">Copia el mensaje, abre Copilot con tu cuenta de la universidad, pégalo (<b>Ctrl+V</b>) y envíalo. Después revisa con criterio lo que te proponga.</p>') +
     right +
     '<div class="btnrow"><span style="flex:1"></span><button class="btn amar" data-finish="b">Terminar la Tarea B y continuar →</button></div></div></div></div>';
 }
@@ -381,8 +415,9 @@ function viewAuto(){
 }
 
 function viewEntrega(){
-  var main = ISCODE ? (S.a.codigo.trim()?'código entregado':'sin código') : (S.a.trad.trim()?'traducción entregada':'sin traducción');
-  var mainB = ISCODE ? (S.b.codigo.trim()?'código entregado':'sin código') : (S.b.trad.trim()?'traducción entregada':'sin traducción');
+  var nA = ISINTERP ? S.a.resp.filter(function(x){ return String(x).trim(); }).length : 0, nB = ISINTERP ? S.b.resp.filter(function(x){ return String(x).trim(); }).length : 0;
+  var main = ISINTERP ? (nA+' de '+S.a.resp.length+' respuestas') : ISCODE ? (S.a.codigo.trim()?'código entregado':'sin código') : (S.a.trad.trim()?'traducción entregada':'sin traducción');
+  var mainB = ISINTERP ? (nB+' de '+S.b.resp.length+' respuestas') : ISCODE ? (S.b.codigo.trim()?'código entregado':'sin código') : (S.b.trad.trim()?'traducción entregada':'sin traducción');
   return '<div class="card"><h2>¡Has terminado! Descarga y entrega tus respuestas</h2>' +
     '<p class="ok">Tarea A: '+main+' · Tarea B: '+mainB+' · Recuerdo inmediato: '+nRec()+' de '+totRec()+' preguntas</p>' +
     '<ol><li>Pulsa <b>Descargar mis respuestas</b>: se guardará un archivo con tu código como nombre (por ejemplo, <b>'+esc(CFG.prefix+(S.id||'274'))+'-1.json</b>).</li>' +
@@ -401,10 +436,17 @@ function render(){
 
 function finish(which){
   if (which === "a"){
-    var empty = ISCODE ? !S.a.codigo.trim() : !S.a.trad.trim();
+    var empty = ISINTERP ? !S.a.resp.some(function(x){ return String(x).trim(); }) : ISCODE ? !S.a.codigo.trim() : !S.a.trad.trim();
     if (!confirm(empty ? "Todavía no has escrito nada en el cuadro principal. ¿Terminar la Tarea A de todas formas? Después no podrás volver a ella." : "¿Terminar la Tarea A? Después no podrás volver a ella.")) return;
     S.tiempos.a.end = Date.now(); S.step = 2;
   } else if (which === "b"){
+    if (ISINTERP){
+      var tn = S.b.turnos.filter(function(x){ return x.mensaje.trim() || x.respuesta.trim(); });
+      if (!S.b.turnos[0].mensaje.trim() || !S.b.turnos[0].respuesta.trim()){ alert("Falta la conversación con Copilot: en el Turno 1 escribe tu mensaje y pega la respuesta de Copilot."); return; }
+      if (!String(S.b.nmensajes).trim()){ alert("Indica cuántos mensajes le has enviado en total a Copilot (Paso 2)."); return; }
+      if (!S.b.confirma){ alert("Marca la casilla «He pegado la conversación completa» cuando hayas terminado de pegarla (Paso 2)."); return; }
+      if (+S.b.nmensajes !== tn.length && !confirm("Dices que has enviado "+S.b.nmensajes+" mensajes, pero has registrado "+tn.length+" turnos. ¿Continuar de todas formas?")) return;
+    }
     if (!confirm("¿Terminar la Tarea B? Después no podrás volver a ella.")) return;
     S.tiempos.b.end = Date.now(); S.step = 3;
   } else if (which === "pausa"){ S.step = 4; }
@@ -433,8 +475,14 @@ function download(){
     consentimiento: { leido_entendido: S.consent[0], voluntario: S.consent[1], autoriza_uso_investigacion: S.consent[2] },
     herramienta_ia: "Microsoft Copilot (" + COPILOT + ")",
     tiempos_ms: S.tiempos,
-    tarea_a_manual: S.a,
-    tarea_b_con_ia: S.b,
+    tipo_tarea: ISINTERP ? "interpretacion_de_resultados" : undefined,
+    tarea_a_manual: ISINTERP ? { respuestas: tk("a").qs.map(function(q,i){ return { pregunta: q, respuesta: S.a.resp[i] }; }) } : S.a,
+    tarea_b_con_ia: ISINTERP ? {
+      conversacion_con_copilot: S.b.turnos.map(function(t,i){ return { turno: i+1, mensaje_del_alumno: t.mensaje, respuesta_de_copilot: t.respuesta }; }),
+      n_mensajes_declarado: S.b.nmensajes, conversacion_completa_confirmada: S.b.confirma,
+      respuestas_finales: tk("b").qs.map(function(q,i){ return { pregunta: q, respuesta: S.b.resp[i] }; }),
+      correcciones_a_la_ia: S.b.rows
+    } : S.b,
     recuerdo_inmediato: {
       bloques: CFG.rec.blocks.map(function(b,bi){ return { contenido: b.title, condicion: cod[bi], respuestas: b.qs.map(function(q,qi){ return { pregunta: q, respuesta: S.r.blocks[bi][qi] }; }) }; }),
       extra: CFG.rec.extra.map(function(e,ei){ return { pregunta: e.q, respuesta: S.r.extra[ei] }; })
@@ -457,6 +505,10 @@ function wire(){
   st.querySelectorAll("[data-consent]").forEach(function(c){ c.onchange = function(){ S.consent[+c.dataset.consent] = c.checked; save(); }; });
   st.querySelectorAll("[data-start]").forEach(function(b){ b.onclick = function(){ S.tiempos[b.dataset.start] = { start: Date.now() }; save(); render(); }; });
   st.querySelectorAll("[data-finish]").forEach(function(b){ b.onclick = function(){ finish(b.dataset.finish); }; });
+  var at = document.getElementById("addturn");
+  if (at) at.onclick = function(){ if (S.b.turnos.length >= 10){ toast("Máximo 10 turnos."); return; } S.b.turnos.push({ mensaje:"", respuesta:"" }); save(); render(); };
+  st.querySelectorAll("[data-copy]").forEach(function(b){ b.onclick = function(){ var v = getPath(b.dataset.copy); if (!String(v).trim()){ toast("Escribe primero tu mensaje."); return; } copyText(v, "Mensaje copiado. Pégalo en Copilot con Ctrl+V."); }; });
+  st.querySelectorAll("[data-chk]").forEach(function(c){ c.onchange = function(){ setPath(c.dataset.chk, c.checked); save(); }; });
   var cp = document.getElementById("copyprompt"); if (cp) cp.onclick = function(){ copyText(tk("b").promptAI, "Mensaje copiado. Pégalo en Copilot con Ctrl+V."); };
   var dl = document.getElementById("dl"); if (dl) dl.onclick = download;
   wireZoom(st);
