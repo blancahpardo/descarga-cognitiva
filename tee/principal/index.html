@@ -127,7 +127,32 @@ footer.copy{ text-align:center; padding:18px 4vw 34px; font-size:11px; color:var
 
 function startApp(){
 // ---------- Datos fijos de la actividad ----------
-var KEY = "dc_tee_v1";
+var TEACHER = false; try { TEACHER = sessionStorage.getItem("dc_unlocked") === "teacher"; } catch(e){}
+function teacherNav(){
+  if (!S.id) S.id = "000";
+  if ("version" in S && typeof versionDe === "function") S.version = versionDe(S.id);
+  var el = document.getElementById("stepper");
+  el.querySelectorAll("span").forEach(function(sp,i){
+    sp.style.cursor = "pointer"; sp.title = "Vista profesora: ir a este paso";
+    sp.onclick = function(){ S.step = i; render(); };
+  });
+  var b = document.createElement("span");
+  b.style.cssText = "background:transparent;color:#FFE08A;padding:5px 4px;font-size:12px;";
+  b.appendChild(document.createTextNode("\u2699 Vista profesora: navegas libremente"));
+  if (typeof versionDe === "function"){
+    b.appendChild(document.createTextNode(" \u00b7 versi\u00f3n: "));
+    ["N","S"].forEach(function(v){
+      var x = document.createElement("button"); x.type = "button"; x.textContent = v;
+      var on = versionDe(S.id) === v;
+      x.style.cssText = "margin-left:4px;padding:2px 9px;border-radius:999px;border:1px solid #FFE08A;cursor:pointer;font-size:12px;background:" + (on ? "#FFE08A" : "transparent") + ";color:" + (on ? "#00283F" : "#FFE08A") + ";";
+      x.title = v === "N" ? "Orden de contenidos de c\u00f3digo par" : "Orden de contenidos de c\u00f3digo impar";
+      x.onclick = function(){ S.id = (v === "N" ? "000" : "001"); render(); };
+      b.appendChild(x);
+    });
+  }
+  el.appendChild(b);
+}
+var KEY = "dc_tee_v1" + (TEACHER ? "_prof" : "");
 var COPILOT = "https://m365.cloud.microsoft/chat";
 var PLANOS = ["Ortográfico","Ortotipográfico","Morfosintáctico","Léxico","Discursivo","De puntuación"];
 var STEPS = ["Inicio","Tarea A","Tarea B","Pausa","Recuerdo","Autoevaluación","Entrega"];
@@ -168,6 +193,7 @@ function stepper(){
   document.getElementById("stepper").innerHTML = STEPS.map(function(n,i){
     return '<span class="'+(i<S.step?'done':i===S.step?'now':'')+'">'+(i<S.step?'✓ ':'')+n+'</span>';
   }).join("");
+  if (TEACHER) teacherNav();
 }
 function timerBar(key, minutes, label){
   var t = S.tiempos[key]; if (!t || !t.start) return "";

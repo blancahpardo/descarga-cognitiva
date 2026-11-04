@@ -32,3 +32,7 @@ completa: tarea A, tarea B, recuerdo inmediato y hoja diferida) y `posterior`, m
 ## Avisos
 Todo lo que se sube es técnicamente accesible desde el código fuente (la contraseña es solo una barrera ligera).
 No subir solucionarios que no deban verse; la retroalimentación y la hoja diferida están ocultas por configuración, no cifradas.
+
+- **Vista profesora** (clave maestra): en `principal` y `posterior` de todas las asignaturas, la barra de pasos es clicable para saltar a cualquier paso
+  sin enviar nada, y aparece un selector de versión N/S (en TJ, TM, PLN y DM) para ver el contenido que verá cada código. Usa otra clave de
+  `sessionStorage` (`..._prof`), así que no toca nada guardado de un alumno. Con clave de alumno todo sigue bloqueado como antes.
