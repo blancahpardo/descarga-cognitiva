@@ -98,32 +98,14 @@ function code(dir, o) {
 
 const PLN_T = require('./pln_interp.js').TASKS;
 
-const DM_T = code('dm', {
-  recIntro: 'Responde de memoria sobre cada una de las dos funciones. No tienes tu código, la explicación ni la IA disponibles.',
-  recQs: ['Explica por escrito, paso a paso, la lógica del algoritmo que implementaste (sin ver tu código).', '¿Qué caso especial o límite del algoritmo recuerdas que fuera más complicado de resolver?'],
-  extra: { q: 'Detecta el error en este fragmento de pseudocódigo relacionado con la detección de valores atípicos. Escribe qué está mal y cómo lo corregirías.', img: 'img/pseudocodigo.png' },
-  tasks: [
-    { name: 'limpiar_columna(df, columna)', recTitle: 'Limpieza de una columna · limpiar_columna(df, columna)',
-      ctx: '<p>Vas a implementar en Python, con Pandas, una función de limpieza de una columna de texto. El enunciado y la explicación del proceso aparecerán cuando pulses el botón.</p>',
-      ctxAI: '<p>Vas a implementar con Pandas una función de limpieza de una columna de texto, esta vez con ayuda de <b>Microsoft Copilot</b> (con tu cuenta de la universidad). El enunciado y la explicación del proceso aparecerán cuando pulses el botón.</p>',
-      manualTest: 'Pruébala con un DataFrame de ejemplo de al menos 6 filas que incluya espacios sobrantes, mayúsculas inconsistentes, al menos un valor vacío/«NA» y una fila duplicada.',
-      aiTest: 'Revisa y depura el código: pruébalo con un DataFrame de ejemplo de al menos 6 filas que incluya espacios sobrantes, mayúsculas inconsistentes, al menos un valor vacío/«NA» y una fila duplicada, y corrige cualquier error o comportamiento inesperado.',
-      prompt: 'Escribe en Python, con Pandas, una función limpiar_columna(df, columna) que reciba un DataFrame y el nombre de una columna de texto, y devuelva un nuevo DataFrame con esa columna limpia (sin espacios sobrantes, en minúsculas, con los valores vacíos o «NA» convertidos a NaN) y sin filas duplicadas.' },
-    { name: 'detectar_atipicos(df, columna)', recTitle: 'Valores atípicos con IQR · detectar_atipicos(df, columna)',
-      ctx: '<p>Vas a implementar con Pandas una función de detección de valores atípicos con el método IQR. El enunciado y la explicación aparecerán cuando pulses el botón.</p>',
-      ctxAI: '<p>Vas a implementar con Pandas una función de detección de valores atípicos con el método IQR, esta vez con ayuda de <b>Microsoft Copilot</b> (con tu cuenta de la universidad). El enunciado y la explicación aparecerán cuando pulses el botón.</p>',
-      manualTest: 'Pruébala con un DataFrame de ejemplo de al menos 8 filas que incluya al menos 2 valores claramente atípicos.',
-      aiTest: 'Revisa y depura el código: pruébalo con un DataFrame de ejemplo de al menos 8 filas que incluya al menos 2 valores claramente atípicos, y corrige cualquier error o comportamiento inesperado.',
-      prompt: 'Escribe en Python, con Pandas, una función detectar_atipicos(df, columna) que reciba un DataFrame y el nombre de una columna numérica, y devuelva un DataFrame solo con las filas cuyo valor en esa columna se considere atípico según el método del rango intercuartílico (IQR).' }
-  ]
-});
+const DM_T = require('./dm_interp.js').TASKS;
 
 // ----- Diferido: recuerdo por tarea -----
 const POST_Q1 = {
   tj: { prompt: 'Explica de nuevo, de memoria, el efecto jurídico de cada una de las dos cláusulas que tradujiste hace una semana.' },
   tm: { prompt: 'Explica de nuevo, de memoria, la idea principal de cada uno de los dos fragmentos que tradujiste hace una semana.' },
   pln: { prompt: 'Explica de nuevo, de memoria, qué concluiste en cada uno de los dos casos que interpretaste hace una semana.' },
-  dm: { prompt: 'Explica de nuevo, de memoria, la lógica de cada una de las dos funciones que implementaste hace una semana.' }
+  dm: { prompt: 'Explica de nuevo, de memoria, qué concluiste en cada uno de los dos casos que interpretaste hace dos semanas.' }
 };
 
 // ----- Etiquetas e introducciones de la retroalimentación (independientes de la versión A/B del alumno) -----
@@ -135,8 +117,7 @@ const RETRO = {
   tm: { a: { tab: 'Párkinson', intro: 'Este fragmento (artículo sobre la enfermedad de Parkinson) lo trabajaste en la Tarea A o en la Tarea B, según tu versión de la actividad. Tu traducción no tiene por qué coincidir palabra por palabra con la de referencia: hay varias soluciones válidas. Compara sobre todo la <b>terminología médica</b> y el <b>registro divulgativo</b>.' + AI_NOTE_T },
         b: { tab: 'Sensores de glucosa', intro: 'Este fragmento (artículo sobre sensores de glucosa) lo trabajaste en la Tarea A o en la Tarea B, según tu versión de la actividad. Hay varias soluciones válidas: compara sobre todo la <b>terminología médica</b> y el <b>registro divulgativo</b>.' + AI_NOTE_T } },
   pln: { a: { tab: 'Caso 1 · Métricas', intro: '' }, b: { tab: 'Caso 2 · Tuits', intro: '' } },
-  dm: { a: { tab: 'limpiar_columna()', intro: 'Esta función la implementaste en la Tarea A o en la Tarea B, según tu versión de la actividad. Hay varias implementaciones válidas; fíjate sobre todo en el <b>orden</b> de las operaciones.' + AI_NOTE_C },
-        b: { tab: 'detectar_atipicos()', intro: 'Esta función la implementaste en la Tarea A o en la Tarea B, según tu versión de la actividad. Hay varias implementaciones válidas; fíjate sobre todo en el cálculo del IQR y en la máscara.' + AI_NOTE_C } }
+  dm: { a: { tab: 'Caso 1 · Calidad', intro: '' }, b: { tab: 'Caso 2 · Exploración', intro: '' } }
 };
 const PREFIX = { tj: 'J', tm: 'M', pln: 'P', dm: 'D' };
 const MIN_REC = 15, MIN_POST = 20;

@@ -94,7 +94,7 @@ function pageEngine(sub, kind) {
   const cfg = Object.assign({}, sub);
   delete cfg.retro;
   const code = kind === 'principal'
-    ? ACCESS('principal', '../../') + PRINCIPAL(CONSENT)
+    ? ACCESS('principal', '../../') + PRINCIPAL(sub.lapso ? CONSENT.replace('aproximadamente una semana después', 'aproximadamente ' + sub.lapso + ' después') : CONSENT)
     : ACCESS('posterior', '../../') + POSTERIOR;
   return `<script>\nvar CFG = ${jsonForScript(cfg)};\n${code}\n</script>`;
 }

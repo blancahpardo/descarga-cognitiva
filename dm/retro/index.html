@@ -57,36 +57,106 @@ footer.copy{ text-align:center; padding:18px 4vw 34px; font-size:11px; color:var
     <div class="kicker">Descarga cognitiva e IA · Datos Masivos (Big Data)</div>
     <h1>Retroalimentación de «Dato limpio, dato sospechoso»</h1>
     <p>Revisa con calma, a tu ritmo, la corrección de cada parte de la actividad.</p>
-    <div class="tabs" id="tabs"><button class="on" data-k="a">limpiar_columna()</button><button class="" data-k="b">detectar_atipicos()</button><button class="" data-k="r">Recuerdo inmediato</button><button class="" data-k="d">Hoja diferida</button></div>
+    <div class="tabs" id="tabs"><button class="on" data-k="a">Caso 1 · Calidad</button><button class="" data-k="b">Caso 2 · Exploración</button><button class="" data-k="r">Recuerdo inmediato</button><button class="" data-k="d">Hoja diferida</button></div>
   </header>
   <main id="stage">
-<section class="pane on" data-k="a"><div class="intro">Esta función la implementaste en la Tarea A o en la Tarea B, según tu versión de la actividad. Hay varias implementaciones válidas; fíjate sobre todo en el <b>orden</b> de las operaciones. Si usaste Copilot, fíjate además en qué errores de la IA detectaste, cuáles <b>no</b> detectaste y si cambiaste algo que no hacía falta cambiar.</div><div class="split"><div class="left"><div class="card"><h2>Tarea A · limpiar_columna(df, columna)</h2><p><b>Qué se pedía.</b> Una función <code>limpiar_columna(df, columna)</code> que devuelva un nuevo DataFrame con la columna sin espacios sobrantes, en minúsculas, con los vacíos/«NA» convertidos a NaN y sin filas duplicadas.</p></div></div><div class="right"><div class="card"><h2>Solución de referencia</h2><pre class="code">import pandas as pd
+<section class="pane on" data-k="a"><div class="intro">Este caso lo trabajaste en la Tarea A o en la Tarea B, según tu versión de la actividad. Tu redacción no tiene por qué coincidir con las respuestas de referencia: lo importante es que cada afirmación se apoye en cifras del resultado y que la decisión quede justificada.</div><div class="split"><div class="left"><div class="card"><h2>Caso 1 · ¿Está limpio este volcado? (Unidad 2)</h2><h3>Código</h3><pre class="code"># df se ha construido como en el cuaderno de U2: una fila por tuit (100 tuits)
+print(df.shape)
+df.info()
+print(df.isna().sum())
+print(&quot;Duplicados por id_str:&quot;, df[&quot;id_str&quot;].duplicated().sum())
+print(&quot;Duplicados por texto:&quot;, df[&quot;texto&quot;].duplicated().sum())
+print(df[&quot;idioma&quot;].value_counts(dropna=False))
+print(df[&quot;es_retuit&quot;].value_counts())</pre><h3>Resultado</h3><pre class="code">(100, 12)
+&lt;class 'pandas.core.frame.DataFrame'&gt;
+RangeIndex: 100 entries, 0 to 99
+Data columns (total 12 columns):
+ #   Column             Non-Null Count  Dtype
+---  ------             --------------  -----
+ 0   id_str             100 non-null    object  
+ 1   fecha_publicacion  100 non-null    object  
+ 2   texto              100 non-null    object  
+ 3   idioma             100 non-null    object  
+ 4   usuario            100 non-null    object  
+ 5   ubicacion_usuario  55 non-null     object  
+ 6   fuente             100 non-null    object  
+ 7   num_hashtags       100 non-null    int64
+ 8   num_menciones      100 non-null    int64
+ 9   num_urls           100 non-null    int64
+ 10  es_retuit          100 non-null    bool 
+ 11  longitud_texto     100 non-null    int64
+dtypes: bool(1), int64(4), object(7)
+id_str                0
+fecha_publicacion     0
+texto                 0
+idioma                0
+usuario               0
+ubicacion_usuario    45
+fuente                0
+num_hashtags          0
+num_menciones         0
+num_urls              0
+es_retuit             0
+longitud_texto        0
+dtype: int64
+Duplicados por id_str: 0
+Duplicados por texto: 27
+idioma
+es    100
+Name: count, dtype: int64
+es_retuit
+True     83
+False    17
+Name: count, dtype: int64</pre></div></div><div class="right"><div class="card"><h2>Respuestas de referencia</h2><div class="qa"><h3>1. Hay 0 duplicados por id_str y 27 por texto. ¿Qué significa cada cifra? ¿Eliminarías esas 27 filas? Justifica tu decisión.</h3><p>Por <code>id_str</code> hay 0 duplicados: no hay dos registros con el mismo identificador. Por <code>texto</code> hay 27: mensajes con el mismo texto pero con identificador distinto, que aquí son sobre todo retuits del mismo mensaje (83 de los 100 lo son). No son registros repetidos por error, sino publicaciones distintas. Eliminarlos o no depende del objetivo: para estudiar contenidos distintos puede interesar quitar los repetidos; para medir difusión, conservarlos. Lo importante es no borrarlos a ciegas y documentar la decisión. En el cuaderno de la unidad se eliminan duplicados por identificador.</p></div><div class="qa"><h3>2. ubicacion_usuario tiene 45 valores ausentes de 100. ¿Qué opciones tienes (eliminar filas, rellenar, dejar el valor ausente) y qué ganas o pierdes con cada una? ¿Cuál elegirías?</h3><p><b>Eliminar filas:</b> deja el dataset más completo en esa columna, pero se pierde el 45 % de los tuits (45 de 100). <b>Rellenar con una etiqueta</b> (como «sin_ubicacion» en el cuaderno): conserva todas las filas y hace explícita la ausencia, aunque esa etiqueta no es una ubicación real y no debe contarse como tal. <b>Dejar el valor ausente:</b> es lo más fiel a los datos, pero algunas operaciones lo ignoran o lo tratan distinto. Una opción razonable es etiquetar, como en el cuaderno, y dejarlo documentado.</p></div><div class="qa"><h3>3. La columna idioma vale «es» en los 100 tuits y 83 son retuits. ¿Qué te dicen estos datos sobre la calidad y la utilidad del dataset para un análisis posterior?</h3><p>La columna <code>idioma</code> vale «es» en los 100 tuits: no distingue nada y no aporta para filtrar o comparar (aunque confirma que el volcado está en un solo idioma). Que 83 de 100 sean retuits significa que el dataset está dominado por mensajes que no son originales y que muchos textos se repiten (27 repetidos por texto). Además, 100 tuits es una muestra muy pequeña. Un análisis posterior de contenido no debería tratar cada retuit como una voz independiente ni leerlo como opinión pública.</p></div><div class="qa"><h3>4. Indica dos decisiones de preparación que tomarías antes de pasar a la fase de análisis y justifica cada una con una cifra del resultado.</h3><p>Respuestas posibles: etiquetar los ausentes de <code>ubicacion_usuario</code> (45); decidir y documentar qué hacer con los 27 textos repetidos (conservarlos o deduplicar, según el objetivo); conservar la marca <code>es_retuit</code> para poder separar retuits de mensajes originales (83 y 17); no usar <code>idioma</code> como variable de análisis porque es constante. Lo importante es que cada decisión se justifique con una cifra del resultado.</p></div><h3>Errores frecuentes (también de la IA)</h3><div class="errs"><ul><li>Concluir que no hay duplicados porque <code>id_str</code> da 0, sin mirar los 27 de <code>texto</code>.</li><li>Eliminar las 45 filas sin ubicación sin comentar que se pierde casi la mitad de los datos.</li><li>Tratar la etiqueta «sin_ubicacion» como si fuera un lugar real.</li><li>Dar el dataset por listo sin mencionar la proporción de retuits ni el tamaño de la muestra.</li><li>Proponer técnicas que no se han visto en la asignatura en lugar de apoyarse en las cifras del resultado.</li></ul></div></div></div></div></section>
+<section class="pane" data-k="b"><div class="intro">Este caso lo trabajaste en la Tarea A o en la Tarea B, según tu versión de la actividad. Es el mismo tipo de razonamiento que la práctica de la Unidad 3: describir con cifras, no eliminar valores extremos solo porque aparezcan y hacer una lectura prudente de lo que no se puede concluir.</div><div class="split"><div class="left"><div class="card"><h2>Caso 2 · Primera lectura de un dataset (Unidad 3)</h2><h3>Código</h3><pre class="code"># df es el CSV preparado de U3 (100 tuits)
+df = pd.read_csv(&quot;U3_tweets_preparados.csv&quot;)
+print(df[[&quot;longitud_texto&quot;, &quot;num_hashtags&quot;, &quot;num_menciones&quot;, &quot;num_urls&quot;]].describe().round(2))
 
-def limpiar_columna(df, columna):
-    df = df.copy()
-    df[columna] = (df[columna]
-                   .astype(&quot;string&quot;)
-                   .str.strip()               # espacios sobrantes
-                   .str.lower()               # mayúsculas/minúsculas
-                   .replace([&quot;&quot;, &quot;na&quot;, &quot;n/a&quot;], pd.NA))  # vacíos y «NA» → nulo
-    return df.drop_duplicates()               # duplicados, al final</pre><p>Se limpia primero y se eliminan los duplicados al final. Como el texto ya está en minúsculas, los valores nulos se buscan en minúsculas («na», «n/a»).</p><h3>Errores frecuentes</h3><div class="errs"><ul><li>Aplicar <code>strip()</code> o <code>lower()</code> sin encadenar correctamente el accesor <code>.str</code> de Pandas.</li><li>Eliminar duplicados antes de limpiar: deja pasar duplicados «disfrazados» por espacios o mayúsculas distintas.</li><li>No gestionar el caso de que la columna ya contenga NaN reales.</li></ul></div></div></div></div></section>
-<section class="pane" data-k="b"><div class="intro">Esta función la implementaste en la Tarea A o en la Tarea B, según tu versión de la actividad. Hay varias implementaciones válidas; fíjate sobre todo en el cálculo del IQR y en la máscara. Si usaste Copilot, fíjate además en qué errores de la IA detectaste, cuáles <b>no</b> detectaste y si cambiaste algo que no hacía falta cambiar.</div><div class="split"><div class="left"><div class="card"><h2>Tarea B · detectar_atipicos(df, columna)</h2><p><b>Qué se pedía.</b> Una función <code>detectar_atipicos(df, columna)</code> que devuelva solo las filas cuyo valor en la columna sea atípico según el método IQR.</p></div></div><div class="right"><div class="card"><h2>Solución de referencia</h2><pre class="code">def detectar_atipicos(df, columna):
-    q1 = df[columna].quantile(0.25)
-    q3 = df[columna].quantile(0.75)
-    iqr = q3 - q1
-    limite_inf = q1 - 1.5 * iqr
-    limite_sup = q3 + 1.5 * iqr
-    mascara = (df[columna] &lt; limite_inf) | (df[columna] &gt; limite_sup)
-    return df[mascara].copy()</pre><h3>Errores frecuentes</h3><div class="errs"><ul><li>Invertir Q1 y Q3 al calcular el IQR (da un IQR negativo).</li><li>Usar <code>&amp;</code> en vez de <code>|</code> en la máscara: con <code>&amp;</code> la condición nunca se cumple, porque ningún valor puede ser a la vez menor que el límite inferior y mayor que el superior.</li><li>No copiar el DataFrame filtrado (<code>SettingWithCopyWarning</code> si se modifica después).</li></ul></div></div></div></div></section>
-<section class="pane" data-k="r"><div class="intro">La hoja de recuerdo inmediato te pedía explicar la lógica, encontrar un error en un pseudocódigo y recordar un caso límite.</div><div class="split"><div class="left"><div class="card"><h2>Pseudocódigo con error</h2><div class="casebox zoomable"><img src="../img/pseudocodigo.png" alt="Pseudocódigo con error"></div><p class="hintzoom">Pulsa sobre el texto para verlo más grande.</p></div></div><div class="right"><div class="card"><p><b>Dónde está el error.</b> La línea <code>IQR = Q1 - Q3</code> está invertida: debería ser <code>IQR = Q3 - Q1</code>. Con el orden del enunciado, el IQR sale negativo y los límites quedan invertidos (el «inferior» resulta mayor que el «superior»).</p><h3>Pseudocódigo corregido</h3><pre class="code">Q1 = percentil(columna, 25)
-Q3 = percentil(columna, 75)
-IQR = Q3 - Q1
-limite_sup = Q3 + 1.5 * IQR
-limite_inf = Q1 - 1.5 * IQR</pre><p><b>Casos especiales y límites</b> que se trabajaron: el método IQR es sensible al tamaño de la muestra y puede marcar como atípicos valores que en realidad son válidos en columnas con distribuciones muy asimétricas; y, en la limpieza de texto, los duplicados «disfrazados» por espacios o mayúsculas, y las columnas que ya contienen NaN reales.</p></div></div></div></section>
-<section class="pane" data-k="d"><div class="intro">La hoja diferida te pedía resolver, sin ayuda, un problema nuevo pero análogo.</div><div class="split"><div class="left"><div class="card"><h2>Transferencia · contar valores con más de n caracteres</h2><p><b>Enunciado.</b> Escribe la lógica de una función que, dado un DataFrame y una columna de texto, cuente cuántos valores de esa columna tienen más de un número determinado de caracteres.</p></div></div><div class="right"><div class="card"><h2>Solución de referencia</h2><pre class="code">def contar_largos(df, columna, n):
-    # .str.len() da la longitud de cada valor (NaN si el valor es nulo)
-    # y la comparación con n da una máscara booleana
-    return int((df[columna].str.len() &gt; n).sum())</pre><p>Idea clave que había que transferir de la tarea original: aplicar una operación elemento a elemento sobre la columna con el accesor <code>.str</code> (como en la limpieza) y filtrar o contar con una máscara booleana (como en la detección de atípicos). Los valores nulos no cuentan, porque NaN no supera ningún umbral.</p></div></div></div></section>
+tabla_fuente = df.groupby(&quot;fuente&quot;).agg(
+    mensajes=(&quot;id_str&quot;, &quot;count&quot;),
+    longitud_media=(&quot;longitud_texto&quot;, &quot;mean&quot;),
+    menciones_medias=(&quot;num_menciones&quot;, &quot;mean&quot;),
+    url_medias=(&quot;num_urls&quot;, &quot;mean&quot;)
+).sort_values(&quot;mensajes&quot;, ascending=False).round(2)
+print(tabla_fuente)
+
+variables = [&quot;longitud_texto&quot;, &quot;num_hashtags&quot;, &quot;num_menciones&quot;, &quot;num_urls&quot;]
+print(df[variables].corr().round(2))</pre><h3>Resultado</h3><pre class="code">       longitud_texto  num_hashtags  num_menciones  num_urls
+count          100.00        100.00         100.00    100.00
+mean           133.42          0.32           1.09      0.24
+std             14.72          1.37           0.65      0.43
+min             70.00          0.00           0.00      0.00
+25%            139.00          0.00           1.00      0.00
+50%            140.00          0.00           1.00      0.00
+75%            140.00          0.00           1.00      0.00
+max            140.00         12.00           5.00      1.00
+                     mensajes  longitud_media  menciones_medias  url_medias
+fuente                                                                     
+Twitter for Android        61          134.98              1.00        0.15
+Twitter for iPhone         18          136.72              1.11        0.17
+Twitter Web App            16          122.50              1.44        0.56
+Twitter for iPad            2          138.50              1.50        0.50
+Instagram                   1          132.00              0.00        1.00
+Sprout Social               1          138.00              1.00        0.00
+TweetDeck                   1          140.00              1.00        1.00
+                longitud_texto  num_hashtags  num_menciones  num_urls
+longitud_texto            1.00          0.02           0.06     -0.21
+num_hashtags              0.02          1.00          -0.10      0.01
+num_menciones             0.06         -0.10           1.00     -0.08
+num_urls                 -0.21          0.01          -0.08      1.00</pre></div></div><div class="right"><div class="card"><h2>Respuestas de referencia</h2><div class="qa"><h3>1. longitud_texto tiene media 133.42, mediana 140 y máximo 140. ¿Qué indica esa diferencia entre media y mediana? ¿Por qué tantos tuits miden exactamente 140?</h3><p>La media (133.42) es menor que la mediana (140) porque unos pocos mensajes cortos (mínimo 70) tiran de la media hacia abajo mientras la mayoría se acumula en el valor máximo: el primer cuartil ya es 139 y la mediana, el tercer cuartil y el máximo valen 140. Que tantos mensajes midan exactamente 140 indica un tope en los datos (un límite de longitud o un texto cortado), no un comportamiento de los usuarios. Conviene mirar los textos antes de interpretarlo.</p></div><div class="qa"><h3>2. num_hashtags tiene media 0.32, mediana 0 y máximo 12. ¿Cómo describirías esta variable? ¿Eliminarías el valor de 12? Justifícalo.</h3><p>El 75 % de los mensajes no tiene hashtags (mediana 0 y tercer cuartil 0) y un único valor de 12 eleva la media a 0.32 y la desviación a 1.37. Es un valor extremo, no necesariamente un error: no se elimina solo porque sea extremo. Se revisa ese registro y, si se decide excluirlo del análisis, se hace de forma explícita y documentada. Para describir esta variable, la mediana y los cuartiles representan mejor a la mayoría que la media.</p></div><div class="qa"><h3>3. En tabla_fuente, ¿qué puedes concluir y qué no a partir de las cifras por fuente? Ten en cuenta cuántos mensajes hay en cada una.</h3><p>Android reúne 61 de los 100 mensajes y iPhone y Web App 18 y 16; Instagram, Sprout Social y TweetDeck tienen 1 mensaje cada una e iPad 2, así que sus medias no son comparables ni fiables. Las diferencias entre las tres fuentes grandes (por ejemplo, 0.56 URL de media en Web frente a 0.15 en Android) merecen una mirada, pero con 16 mensajes hay que ser prudente. No se puede concluir nada sobre los usuarios, sus preferencias de dispositivo ni la opinión pública: la fuente es la aplicación de publicación y la muestra es pequeña y mayoritariamente de retuits.</p></div><div class="qa"><h3>4. Entre longitud_texto y num_urls la correlación es −0.21. ¿Cómo la interpretarías? ¿Puedes afirmar que poner una URL hace los mensajes más cortos?</h3><p>Una correlación de −0.21 es débil (más cerca de 0 que de −1) y, con 100 mensajes, poco estable. Además, <code>num_urls</code> solo toma los valores 0 y 1 y la longitud se acumula en 140, así que hay poca variación en ambas variables. Correlación no implica causalidad: no se puede afirmar que incluir una URL acorte los mensajes. Como mucho, es una relación débil que habría que comprobar con más datos y mirando los textos.</p></div><h3>Errores frecuentes (también de la IA)</h3><div class="errs"><ul><li>Interpretar la media sin compararla con la mediana (y los cuartiles).</li><li>Eliminar el valor de 12 hashtags solo porque es extremo, sin revisarlo ni documentarlo.</li><li>Sacar conclusiones de fuentes con 1 o 2 mensajes.</li><li>Leer una correlación de −0.21 como una relación causal o como una relación fuerte.</li><li>Concluir algo sobre los usuarios o sobre la opinión pública a partir de estas tablas.</li></ul></div></div></div></div></section>
+<section class="pane" data-k="r"><div class="intro">La hoja de recuerdo inmediato te pedía recordar, de memoria, lo que concluiste en cada uno de los dos casos. Compara con estas ideas clave.</div><div class="card"><h2>Hoja de recuerdo inmediato</h2><div class="qa"><h3>1. Caso 1 · ¿Está limpio este volcado?</h3><p>0 duplicados por <code>id_str</code> y 27 por <code>texto</code> (retuits distintos del mismo mensaje: no se borran a ciegas). 45 de 100 sin ubicación: eliminar pierde casi la mitad; etiquetar conserva las filas. <code>idioma</code> constante («es») y 83 retuits de 100: dataset pequeño y dominado por mensajes no originales.</p></div><div class="qa"><h3>2. Caso 2 · Primera lectura de un dataset</h3><p>Longitud: media 133.42 &lt; mediana 140, con acumulación en 140 (tope en los datos). Hashtags: mediana 0, máximo 12; el extremo no se elimina sin revisarlo. Tabla por fuente: solo Android (61), iPhone y Web son comparables; las demás tienen 1-2 mensajes. Correlación longitud-URL de −0.21: débil y no causal.</p></div></div></section>
+<section class="pane" data-k="d"><div class="intro">La hoja diferida te pedía interpretar, sin ayuda, un resultado nuevo con el mismo tipo de razonamiento del Caso 2.</div><div class="card"><h2>Transferencia · interpretar un resultado nuevo</h2><pre class="code">tabla_retuit = df.groupby(&quot;es_retuit&quot;).agg(
+    mensajes=(&quot;id_str&quot;, &quot;count&quot;),
+    longitud_media=(&quot;longitud_texto&quot;, &quot;mean&quot;),
+    hashtags_medios=(&quot;num_hashtags&quot;, &quot;mean&quot;),
+    url_medias=(&quot;num_urls&quot;, &quot;mean&quot;)
+).round(2)
+print(tabla_retuit)
+
+           mensajes  longitud_media  hashtags_medios  url_medias
+es_retuit                                                       
+False            17          128.53             0.59        0.71
+True             83          134.42             0.27        0.14</pre><div class="qa"><h3>1. ¿Qué diferencias ves entre retuits y no retuits? ¿Cuáles te parecen fiables y cuáles no, y por qué?</h3><p>Los no retuits (17 mensajes) tienen más URL de media (0.71 frente a 0.14) y más hashtags (0.59 frente a 0.27), y una longitud media algo menor (128.53 frente a 134.42). Con solo 17 mensajes en un grupo y 83 en el otro, las medias del grupo pequeño son poco estables. Además, la media de hashtags de los retuits (0.27) incluye el valor extremo de 12: ese único mensaje aporta casi la mitad de esa media (12/83 ≈ 0.14), así que no es una diferencia fiable. La diferencia en URL es la más marcada, pero sigue siendo prudente por el tamaño del grupo.</p></div><div class="qa"><h3>2. ¿Qué comprobarías antes de afirmar que los mensajes originales tienen más URL que los retuits?</h3><p>Comprobaría el tamaño de cada grupo (17 y 83) y cuántos mensajes tienen URL en cada uno (como <code>num_urls</code> es 0 o 1, la media es una proporción), miraría la mediana y la distribución además de la media para ver el efecto de valores extremos, y recordaría que es una muestra pequeña de un único tema, por lo que no se generaliza. Solo después diría que los mensajes originales llevan más URL, y con cautela.</p></div><p>Idea clave que había que transferir: ante una tabla de medias por grupo, comprobar primero el tamaño de los grupos y el efecto de los valores extremos, y hacer una lectura prudente.</p></div></section>
   </main>
   <footer class="copy">© Dra. Blanca Hernández Pardo · Datos Masivos · Descarga cognitiva e IA<br>
   Queda prohibida la difusión, distribución o reproducción total o parcial de este material sin autorización expresa de la autora.</footer>

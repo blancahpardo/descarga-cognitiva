@@ -16,7 +16,7 @@ Se generan con `node gen-asignaturas.js` (datos en `gen/subjects.js` y `gen/task
 (el CSS y el consentimiento se leen de `tee/principal`). Cada una tiene `index.html` (menú), `principal`, `retro` (retroalimentación
 completa: tarea A, tarea B, recuerdo inmediato y hoja diferida) y `posterior`, más su `config.json`
 (`principal`/`retro`/`posterior`; el generador solo lo crea si no existe). **No editar a mano esas páginas: editar el generador y volver a generar.**
-`tee/` sigue editándose a mano. Entrega en Moodlerooms: sección «Descarga cognitiva» → tarea «Descarga cognitiva» (parte principal) y
+PLN y DM usan el tipo `interp` (interpretar resultados ya calculados): su contenido está en `gen/pln_interp.js` + `gen/casos_pln.json` y `gen/dm_interp.js` + `gen/casos_dm.json` (salidas reales; en DM, el intervalo hasta la hoja diferida es de dos semanas y se declara con `lapso`). `tee/` sigue editándose a mano. Entrega en Moodlerooms: sección «Descarga cognitiva» → tarea «Descarga cognitiva» (parte principal) y
 «Descarga cognitiva - segunda parte» (hoja diferida).
 
 ### Diseño de datos (TJ, TM, PLN, DM)
